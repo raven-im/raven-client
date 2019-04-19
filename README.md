@@ -1,6 +1,8 @@
-# myapp
+# Tim-Client(mobile)
 
-A new Flutter project.
+A new Flutter project for Tim IM server.
+
+https://github.com/IamNotShady/tim
 
 ## Getting Started
 
