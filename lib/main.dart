@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SPUtil.getInstance();
-    bool isLogin = false;
+    bool isLogin = false; //TODO load from sp.
     return MaterialApp(
       home: !isLogin ? new LoginPage() : new MainPage(),
       routes: {

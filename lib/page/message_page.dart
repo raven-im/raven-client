@@ -68,21 +68,22 @@ class Message extends MessageState<MessagePage> with WidgetsBindingObserver {
   Widget _itemWidget(int index) {
     Widget res;
     ConversationEntity entity = map[list.elementAt(index).toString()];
-    String time = DateUtil.getDateStrByDateTime(DateUtil.getDateTimeByMs(entity.timestamp));
+    String timeTmp = DateUtil.getDateStrByDateTime(DateUtil.getDateTimeByMs(entity.timestamp));
+    String time = DateUtil.formatDateTime(timeTmp, DateFormat.YEAR_MONTH_DAY, '/', '');
     res = MoreWidgets.conversationListViewItem(entity.senderAccount, entity.conversationType,
         content: entity.lastMessage,
         time: time,
         unread: entity.isUnreadCount, onItemClick: (res) {
-      // if (entity.type == Constants.MESSAGE_TYPE_CHAT) {
-      //   //聊天消息，跳转聊天对话页面
-      //   Navigator.push(
-      //       context,
-      //       new CupertinoPageRoute<void>(
-      //           builder: (ctx) => ChatPage(
-      //                 title: entity.titleName,
-      //                 senderAccount: entity.senderAccount,
-      //               )));
-      // }
+      if (entity.conversationType == Constants.CONVERSATION_SINGLE) {
+        //聊天消息，跳转聊天对话页面
+        Navigator.push(
+            context,
+            new CupertinoPageRoute<void>(
+                builder: (ctx) => ChatPage(
+                      title: entity.senderAccount,
+                      senderAccount: entity.senderAccount,
+                    )));
+      }
     });
     return res;
   }

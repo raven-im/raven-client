@@ -6,4 +6,7 @@ class Constants {
   static int currentPage = 0;
 
   static const String MESSAGE_TYPE_CHAT = 'chat';
+
+  static const int CONVERSATION_SINGLE = 1;
+  static const int CONVERSATION_GROUP = 2;
 }

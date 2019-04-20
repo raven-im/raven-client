@@ -152,7 +152,7 @@ class ConversationEntity {
 
   ConversationEntity({
     @required this.senderAccount,
-    this.id,
+    @required this.id,
     this.isUnreadCount = 0,
     this.timestamp = 0,
     @required this.lastMessage,
@@ -172,6 +172,7 @@ class ConversationEntity {
   // Currently not used
   Map<String, dynamic> toMap() {
     return {
+      CON_ID: id,
       SENDER_ACCOUNT: senderAccount,
       IS_UNREAD_COUNT: isUnreadCount,
       LAST_MESSAGE: lastMessage,

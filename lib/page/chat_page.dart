@@ -5,6 +5,7 @@ import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/page/chat_item_widgets.dart';
 import 'package:myapp/page/more_widgets.dart';
+import 'package:myapp/utils/constants.dart';
 
 /*
 *  发送聊天信息
@@ -21,56 +22,24 @@ class ChatPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return ChatState();
   }
 }
 
 class ChatState extends State<ChatPage> {
-  bool _isBlackName = false;
-  var _popString = List<String>();
+  
   bool _isShowSend = false; //是否显示发送按钮
-  bool _isShowVoice = false; //是否显示语音输入栏
-  bool _isShowFace = false; //是否显示表情栏
-  bool _isShowTools = false; //是否显示工具栏
   TextEditingController _controller = new TextEditingController();
   FocusNode _textFieldNode = FocusNode();
-  var voiceText = '按住 说话';
-  var voiceBackground = Colors.grey;
-  Color _headsetColor = Colors.grey;
-  Color _highlightColor = Colors.grey;
-  List<Widget> _guideFaceList = new List();
-  List<Widget> _guideFigureList = new List();
-  List<Widget> _guideToolsList = new List();
-  bool _isFaceFirstList = true;
   List<MessageEntity> _messageList = new List();
-  bool _isLoadAll = false; //是否已经加载完本地数据
-  bool _first = false;
-  bool _alive = false;
   ScrollController _scrollController = new ScrollController();
-  String _audioIconPath = '';
-  String _voiceFilePath = '';
-  String _voiceFileName = '';
 
   @override
   void initState() {
-    // TODO: implement initState
-    _first = true;
-    _alive = true;
     super.initState();
     _getLocalMessage();
     _initData();
   }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    _alive = false;
-    super.dispose();
-    _first = false;
-  }
-
-  
 
   _getLocalMessage() async {
     // await MessageDataBase.get()
@@ -91,15 +60,9 @@ class ChatState extends State<ChatPage> {
   }
 
   _initData() {
-    _popString.add('清空记录');
-    _popString.add('删除好友');
-    _popString.add('加入黑名单');
     KeyboardVisibilityNotification().addNewListener(
       onChange: (bool visible) {
         if (visible) {
-          _isShowTools = false;
-          _isShowFace = false;
-          _isShowVoice = false;
           try {
             _scrollController.position.jumpTo(0);
           } catch (e) {}
@@ -114,17 +77,13 @@ class ChatState extends State<ChatPage> {
     });
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     Widget widgets = MaterialApp(
         theme: ThemeData(
-            primaryColor: Colors.red,
+            primaryColor: Colors.blue,
             primarySwatch: Colors.grey,
-            platform: TargetPlatform.iOS),
+            platform: TargetPlatform.android),
         home: Scaffold(
           appBar: _appBar(),
           body: _body(),
@@ -135,7 +94,7 @@ class ChatState extends State<ChatPage> {
   _appBar() {
     return MoreWidgets.buildAppBar(
       context,
-      _isBlackName ? widget.title + '(黑名单)' : widget.title,
+      widget.title,
       centerTitle: true,
       elevation: 2.0,
       leading: IconButton(
@@ -152,10 +111,10 @@ class ChatState extends State<ChatPage> {
                   size: 22,
                 )),
             onTap: () {
-              MoreWidgets.buildDefaultMessagePop(context, _popString,
-                  onItemClick: (res) {
+              // MoreWidgets.buildDefaultMessagePop(context, _popString,
+              //     onItemClick: (res) {
                 
-              });
+              // });
             })
       ],
     );
@@ -169,9 +128,6 @@ class ChatState extends State<ChatPage> {
         onTap: () {
           _hideKeyBoard();
           setState(() {
-            _isShowVoice = false;
-            _isShowFace = false;
-            _isShowTools = false;
           });
         },
       )),
@@ -185,40 +141,23 @@ class ChatState extends State<ChatPage> {
           child: Row(
             children: <Widget>[
               IconButton(
-                  icon: _isShowVoice
-                      ? Icon(Icons.keyboard)
-                      : Icon(Icons.play_circle_outline),
+                  icon: Icon(Icons.keyboard),
                   iconSize: 32,
                   onPressed: () {
                     setState(() {
                       _hideKeyBoard();
-                      if (_isShowVoice) {
-                        _isShowVoice = false;
-                      } else {
-                        _isShowVoice = true;
-                        _isShowFace = false;
-                        _isShowTools = false;
-                      }
                     });
                   }),
               new Flexible(child: _enterWidget()),
-              IconButton(
-                  icon: _isShowFace
-                      ? Icon(Icons.keyboard)
-                      : Icon(Icons.sentiment_very_satisfied),
-                  iconSize: 32,
-                  onPressed: () {
-                    _hideKeyBoard();
-                    setState(() {
-                      if (_isShowFace) {
-                        _isShowFace = false;
-                      } else {
-                        _isShowFace = true;
-                        _isShowVoice = false;
-                        _isShowTools = false;
-                      }
-                    });
-                  }),
+              // IconButton(
+              //     icon: Icon(Icons.sentiment_very_satisfied),
+              //     iconSize: 32,
+              //     onPressed: () {
+              //       _hideKeyBoard();
+              //       setState(() {
+                      
+              //       });
+              //     }),
               _isShowSend
                   ? InkWell(
                       onTap: () {
@@ -231,14 +170,14 @@ class ChatState extends State<ChatPage> {
                         alignment: Alignment.center,
                         width: 40,
                         height: 32,
-                        margin: EdgeInsets.only(right: 8),
+                        margin: EdgeInsets.only(right: 8, left: 8),
                         child: new Text(
-                          '发送',
+                          'Send',
                           style: new TextStyle(
                               fontSize: 14.0, color: Colors.white),
                         ),
                         decoration: new BoxDecoration(
-                          color: Colors.green,
+                          color: Colors.blueGrey,
                           borderRadius: BorderRadius.all(Radius.circular(8.0)),
                         ),
                       ),
@@ -249,13 +188,7 @@ class ChatState extends State<ChatPage> {
                       onPressed: () {
                         _hideKeyBoard();
                         setState(() {
-                          if (_isShowTools) {
-                            _isShowTools = false;
-                          } else {
-                            _isShowTools = true;
-                            _isShowFace = false;
-                            _isShowVoice = false;
-                          }
+                          
                         });
                       }),
             ],
@@ -274,9 +207,10 @@ class ChatState extends State<ChatPage> {
   /*输入框*/
   _enterWidget() {
     return new Material(
+      
       borderRadius: BorderRadius.circular(8.0),
       shadowColor: Colors.grey,
-      color: Colors.green,
+      color: Colors.blueGrey[100],
       elevation: 0,
       child: new TextField(
           focusNode: _textFieldNode,
@@ -312,7 +246,7 @@ class ChatState extends State<ChatPage> {
 
   _messageListView() {
     return Container(
-        color: Colors.grey,
+        color: Colors.grey[300],
         child: Column(
           //如果只有一条数据，listView的高度由内容决定了，所以要加列，让listView看起来是满屏的
           children: <Widget>[
@@ -360,7 +294,7 @@ class ChatState extends State<ChatPage> {
 
   //重发
   _onResend(MessageEntity entity) {
-    if (entity.type == "chat") {
+    if (entity.type == Constants.MESSAGE_TYPE_CHAT) {
       _sendMessage(entity, isResend: true);
     }
   }

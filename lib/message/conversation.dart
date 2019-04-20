@@ -28,6 +28,7 @@ class Conversaion {
   */
   Future<List<ConversationEntity>> getConversationEntity(String myUid) async {
     var map = {
+      ConversationEntity.CON_ID: 123,
       ConversationEntity.SENDER_ACCOUNT: "user1",
       ConversationEntity.IS_UNREAD_COUNT: 2,
       ConversationEntity.LAST_MESSAGE: "hello world1",
@@ -35,14 +36,23 @@ class Conversaion {
       ConversationEntity.CONVERATION_TYPE: 1,
     };
     var map1 = {
+      ConversationEntity.CON_ID: 321,
       ConversationEntity.SENDER_ACCOUNT: "user2", 
       ConversationEntity.IS_UNREAD_COUNT: 3,
       ConversationEntity.LAST_MESSAGE: "hello world2",
       ConversationEntity.LAST_MESSAGE_TIME: 1555692586000,
       ConversationEntity.CONVERATION_TYPE: 1,
     };
+    var map2 = {
+      ConversationEntity.CON_ID: 321,
+      ConversationEntity.SENDER_ACCOUNT: "user3", 
+      ConversationEntity.IS_UNREAD_COUNT: 3,
+      ConversationEntity.LAST_MESSAGE: "hello world3",
+      ConversationEntity.LAST_MESSAGE_TIME: 1555622586000,
+      ConversationEntity.CONVERATION_TYPE: 1,
+    };
     List<Map<String, dynamic>> result = new List();
-    result..add(map1)..add(map);
+    result..add(map1)..add(map)..add(map2);
 
     List<ConversationEntity> res = [];
     for (Map<String, dynamic> item in result) {
