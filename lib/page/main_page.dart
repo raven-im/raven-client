@@ -48,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
      * 2个子界面
      */
     _pageList = [
-      new MessagePage(rootContext: context),
+      new ConversationPage(rootContext: context),
       new ContactsPage(rootContext: context)
     ];
   }

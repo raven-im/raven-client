@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:myapp/base/messag_state.dart';
+import 'package:myapp/base/base_state.dart';
 import 'package:myapp/entity/message_entity.dart';
-import 'package:myapp/message/contacts.dart';
+import 'package:myapp/manager/contacts_manager.dart';
 import 'package:myapp/page/chat_page.dart';
 import 'package:myapp/page/more_widgets.dart';
 import 'package:myapp/utils/constants.dart';
@@ -22,7 +22,7 @@ class ContactsPage extends StatefulWidget {
   }
 }
 
-class Contacts extends MessageState<ContactsPage> with AutomaticKeepAliveClientMixin {
+class Contacts extends BaseState<ContactsPage> with AutomaticKeepAliveClientMixin {
   var _list = List();
   var _map = Map();
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();

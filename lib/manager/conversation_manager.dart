@@ -1,13 +1,13 @@
 import 'package:myapp/entity/conversation_entity.dart';
 
-class Conversaion {
-  static final Conversaion _conversaion = new Conversaion._internal();
+class ConversaionManager {
+  static final ConversaionManager _conversaion = new ConversaionManager._internal();
 
-  static Conversaion get() {
+  static ConversaionManager get() {
     return _conversaion;
   }
 
-  Conversaion._internal();
+  ConversaionManager._internal();
 
   // Future<Database> _init() async {
     

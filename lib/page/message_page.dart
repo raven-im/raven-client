@@ -2,27 +2,27 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:myapp/base/messag_state.dart';
+import 'package:myapp/base/base_state.dart';
 import 'package:myapp/entity/conversation_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
-import 'package:myapp/message/conversation.dart';
+import 'package:myapp/manager/conversation_manager.dart';
 import 'package:myapp/page/chat_page.dart';
 import 'package:myapp/page/more_widgets.dart';
 import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/date_util.dart';
 import 'package:myapp/utils/sp_util.dart';
 
-class MessagePage extends StatefulWidget {
-  MessagePage({Key key, this.rootContext}) : super(key: key);
+class ConversationPage extends StatefulWidget {
+  ConversationPage({Key key, this.rootContext}) : super(key: key);
   final BuildContext rootContext;
 
   @override
   State<StatefulWidget> createState() {
-    return new Message();
+    return new Conversation();
   }
 }
 
-class Message extends MessageState<MessagePage> with WidgetsBindingObserver {
+class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserver {
   var map = Map();
   var list = new List();
   bool isShowNoPage = false;
@@ -90,7 +90,7 @@ class Message extends MessageState<MessagePage> with WidgetsBindingObserver {
 
   _getData() async {
     String myUid = SPUtil.getString(Constants.KEY_LOGIN_ACCOUNT);
-    Conversaion.get().getConversationEntity(myUid).then((entities) async {
+    ConversaionManager.get().getConversationEntity(myUid).then((entities) async {
       if (entities.length > 0) {
         list.clear();
         map.clear();
