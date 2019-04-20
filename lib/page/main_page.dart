@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/page/contacts_page.dart';
-import 'package:myapp/page/message_page.dart';
+import 'package:myapp/page/conversation_page.dart';
 import 'package:myapp/utils/constants.dart';
 
 /*
@@ -87,13 +87,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     new BottomNavigationBarItem(
                         icon: new Icon(
                           Icons.message,
-                          color: _tabIndex == 0 ? Colors.grey : null,
+                          color: _tabIndex == 0 ? Colors.blueGrey : null,
                         ),
                         title: getTabTitle(0)),
                     new BottomNavigationBarItem(
                         icon: new Icon(
-                          _tabIndex == 1 ? Icons.favorite : Icons.favorite_border,
-                          color: _tabIndex == 1 ? Colors.grey : null,
+                          Icons.contacts,
+                          color: _tabIndex == 1 ? Colors.blueGrey : null,
                         ),
                         title: getTabTitle(1)),
                   ],

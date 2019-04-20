@@ -10,7 +10,7 @@ class DialogUtil {
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIos: 1,
-        backgroundColor: Colors.orange[300],
+        backgroundColor: Colors.red[300],
         textColor: Colors.lightBlue[50]);
   }
 

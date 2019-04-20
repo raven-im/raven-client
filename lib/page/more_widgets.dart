@@ -34,7 +34,7 @@ class MoreWidgets {
   }
 
   /*
-  *  生成朋友-ListView的item
+  *  生成ContactsListView的item
   */
   static Widget buildListViewItem(String fileName, String text,
       {String dir = 'icon',
@@ -52,8 +52,8 @@ class MoreWidgets {
               ),
               ClipRRect(
                 borderRadius: BorderRadius.circular(6.0),
-                child: new Icon(Icons.favorite_border,
-                    color: Colors.grey,
+                child: new Icon(Icons.face,
+                    color: Colors.blueGrey,
                 ),
               ),
               SizedBox(

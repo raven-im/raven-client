@@ -48,6 +48,8 @@ class _LoginState extends State<Login> {
                           style: TextStyle(
                               color: Colors.blue,
                               fontSize: 36.0,
+                              fontStyle: FontStyle.italic,
+                              
                             ))
                     ),
                   ),
@@ -108,7 +110,7 @@ class _LoginState extends State<Login> {
                         inputFormatters: [
                           LengthLimitingTextInputFormatter(18),
                           WhitelistingTextInputFormatter(
-                              RegExp('[a-zA-Z0-9!.?,~@#%^&*()]'))
+                              RegExp(Constants.INPUTFORMATTERS))
                         ],
                         obscureText: true,
                         decoration: InputDecoration(

@@ -11,7 +11,7 @@ import 'package:myapp/utils/object_util.dart';
 /*
 * 对话页面中的widget
 */
-class ChatItemWidgets {
+class MessageItemWidgets {
   static Widget buildChatListItem(
       MessageEntity nextEntity, MessageEntity entity,
       {OnItemClick onResend, OnItemClick onItemClick}) {

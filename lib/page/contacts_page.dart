@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/base/base_state.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/contacts_manager.dart';
-import 'package:myapp/page/chat_page.dart';
+import 'package:myapp/page/message_page.dart';
 import 'package:myapp/page/more_widgets.dart';
 import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/sp_util.dart';
@@ -98,7 +98,7 @@ class Contacts extends BaseState<ContactsPage> with AutomaticKeepAliveClientMixi
         Navigator.push(
             context,
             new CupertinoPageRoute<void>(
-                builder: (ctx) => ChatPage(
+                builder: (ctx) => MessagePage(
                       title: _list[index],
                       senderAccount: _list[index],
                     )));

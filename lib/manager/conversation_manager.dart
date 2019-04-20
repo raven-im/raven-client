@@ -26,7 +26,7 @@ class ConversaionManager {
   Future<List<ConversationEntity>> getConversationEntity(String myUid) async {
     var map = {
       ConversationEntity.CON_ID: 123,
-      ConversationEntity.SENDER_ACCOUNT: "user1",
+      ConversationEntity.SENDER_ACCOUNT: "Helen",
       ConversationEntity.IS_UNREAD_COUNT: 2,
       ConversationEntity.LAST_MESSAGE: "hello world1",
       ConversationEntity.LAST_MESSAGE_TIME: 1555606186000,
@@ -34,7 +34,7 @@ class ConversaionManager {
     };
     var map1 = {
       ConversationEntity.CON_ID: 321,
-      ConversationEntity.SENDER_ACCOUNT: "user2", 
+      ConversationEntity.SENDER_ACCOUNT: "Lisa", 
       ConversationEntity.IS_UNREAD_COUNT: 3,
       ConversationEntity.LAST_MESSAGE: "hello world2",
       ConversationEntity.LAST_MESSAGE_TIME: 1555692586000,
@@ -42,7 +42,7 @@ class ConversaionManager {
     };
     var map2 = {
       ConversationEntity.CON_ID: 321,
-      ConversationEntity.SENDER_ACCOUNT: "user3", 
+      ConversationEntity.SENDER_ACCOUNT: "George", 
       ConversationEntity.IS_UNREAD_COUNT: 3,
       ConversationEntity.LAST_MESSAGE: "hello world3",
       ConversationEntity.LAST_MESSAGE_TIME: 1555622586000,
