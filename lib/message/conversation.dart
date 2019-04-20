@@ -1,7 +1,4 @@
-import 'dart:io';
-import 'package:myapp/entity/message_entity.dart';
-import 'package:path/path.dart';
-
+import 'package:myapp/entity/conversation_entity.dart';
 
 class Conversaion {
   static final Conversaion _conversaion = new Conversaion._internal();

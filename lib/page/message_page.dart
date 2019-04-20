@@ -3,13 +3,13 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/base/messag_state.dart';
+import 'package:myapp/entity/conversation_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/message/conversation.dart';
 import 'package:myapp/page/chat_page.dart';
 import 'package:myapp/page/more_widgets.dart';
 import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/date_util.dart';
-import 'package:myapp/utils/dialog_util.dart';
 import 'package:myapp/utils/sp_util.dart';
 
 class MessagePage extends StatefulWidget {

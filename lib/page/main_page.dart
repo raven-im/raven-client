@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/page/contacts_page.dart';
 import 'package:myapp/page/message_page.dart';
-import 'package:myapp/page/more_widgets.dart';
 import 'package:myapp/utils/constants.dart';
 
 /*
@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
      */
     _pageList = [
       new MessagePage(rootContext: context),
-      new MessagePage(rootContext: context)
+      new ContactsPage(rootContext: context)
     ];
   }
 
