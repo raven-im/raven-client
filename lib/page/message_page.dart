@@ -294,23 +294,20 @@ class MessageState extends State<MessagePage> {
 
   //重发
   _onResend(MessageEntity entity) {
-    if (entity.type == Constants.MESSAGE_TYPE_CHAT) {
+    if (entity.contentType == Constants.MESSAGE_TYPE_CHAT) {
       _sendMessage(entity, isResend: true);
     }
   }
 
   _buildTextMessage(String content) {
     MessageEntity messageEntity = new MessageEntity(
-        type: "chat",
-        senderAccount: widget.senderAccount,
+        contentType: Constants.MESSAGE_TYPE_CHAT,
+        targetUid: widget.senderAccount,
         titleName: widget.senderAccount,
         content: content, //如果是assets里的图片，则这里是assets图片的路径
         time: new DateTime.now().millisecondsSinceEpoch.toString());
-    messageEntity.imageUrl = ''; //这里可以加上头像的url，不过对方和自己的头像目前都是取assets中固定的
-    messageEntity.contentUrl = content;
     messageEntity.messageOwner = 0;
-    messageEntity.status = '2';
-    messageEntity.contentType = "system";
+    messageEntity.status = 0;
     setState(() {
       _messageList.insert(0, messageEntity);
       _controller.clear();
@@ -322,7 +319,7 @@ class MessageState extends State<MessagePage> {
   _sendMessage(MessageEntity messageEntity, {bool isResend = false}) {
     if (isResend) {
       setState(() {
-        messageEntity.status = '2';
+        messageEntity.status = 1;
       });
     }
     // TODO socket send message.

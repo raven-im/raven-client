@@ -115,8 +115,8 @@ class Contacts extends BaseState<ContactsPage> with AutomaticKeepAliveClientMixi
   @override
   void updateData(MessageEntity entity) {
     if (entity != null &&
-        entity.type == Constants.MESSAGE_TYPE_CHAT) {
-      _list.remove(entity.senderAccount);
+        entity.contentType == Constants.MESSAGE_TYPE_CHAT) {
+      _list.remove(entity.targetUid);
       _getContacts();
     }
   }

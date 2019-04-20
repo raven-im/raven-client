@@ -1,10 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:myapp/entity/message_entity.dart';
+import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/date_util.dart';
-import 'package:myapp/utils/dialog_util.dart';
 import 'package:myapp/utils/functions.dart';
 import 'package:myapp/utils/object_util.dart';
 
@@ -81,14 +79,14 @@ class MessageItemWidgets {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _headPortrait(entity.imageUrl, 1),
+            _headPortrait('', 1),
             SizedBox(width: 10),
             new Expanded(
                 child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  entity.senderAccount,
+                  entity.targetUid,
                   style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
                 SizedBox(height: 5),
@@ -100,7 +98,7 @@ class MessageItemWidgets {
                     }
                   },
                   onLongPress: () {
-                    DialogUtil.buildToast('长按了消息');
+                    // DialogUtil.buildToast('长按了消息');
                   },
                 ),
               ],
@@ -120,7 +118,7 @@ class MessageItemWidgets {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
                 Text(
-                  '我',
+                  'Me',
                   style: TextStyle(fontSize: 14, color: Colors.grey),
                 ),
                 SizedBox(height: 5),
@@ -132,11 +130,11 @@ class MessageItemWidgets {
                     }
                   },
                   onLongPress: () {
-                    DialogUtil.buildToast('长按了消息');
+                    // DialogUtil.buildToast('长按了消息');
                   },
                 ),
                 //显示是否重发1、发送2中按钮，发送成功0或者null不显示
-                entity.status == '1'
+                entity.status == 1
                     ? IconButton(
                         icon: Icon(Icons.refresh, color: Colors.red, size: 18),
                         onPressed: () {
@@ -144,7 +142,7 @@ class MessageItemWidgets {
                             onResend(entity);
                           }
                         })
-                    : (entity.status == '2'
+                    : (entity.status == 2
                         ? Container(
                             alignment: Alignment.center,
                             padding: EdgeInsets.only(top: 20, right: 20),
@@ -166,7 +164,7 @@ class MessageItemWidgets {
               ],
             )),
             SizedBox(width: 10),
-            _headPortrait(entity.imageUrl, 0),
+            _headPortrait('', 0),
           ],
         ),
       );
@@ -182,7 +180,7 @@ class MessageItemWidgets {
         child: url.isEmpty
             ? owner == 1
               ? new Icon(Icons.face)
-              : new Icon(Icons.alarm_on)
+              : new Icon(Icons.computer)
             : (ObjectUtil.isNetUri(url)
                 ? Image.network(
                     url,
@@ -198,7 +196,7 @@ class MessageItemWidgets {
   */
   static Widget _contentWidget(MessageEntity entity) {
     Widget widget;
-    if (entity.contentType == "chat") {
+    if (entity.contentType == Constants.MESSAGE_TYPE_CHAT) {
       //文本
       widget = buildTextWidget(entity);
     } else {
@@ -208,7 +206,7 @@ class MessageItemWidgets {
           padding: EdgeInsets.all(10),
           color: Colors.grey,
           child: Text(
-            '未知消息类型',
+            'Unknown Message',
             style: TextStyle(fontSize: 16, color: Colors.black),
           ),
         ),

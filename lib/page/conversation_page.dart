@@ -70,7 +70,7 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
     ConversationEntity entity = map[list.elementAt(index).toString()];
     String timeTmp = DateUtil.getDateStrByDateTime(DateUtil.getDateTimeByMs(entity.timestamp));
     String time = DateUtil.formatDateTime(timeTmp, DateFormat.YEAR_MONTH_DAY, '/', '');
-    res = MoreWidgets.conversationListViewItem(entity.senderAccount, entity.conversationType,
+    res = MoreWidgets.conversationListViewItem(entity.targetUid, entity.conversationType,
         content: entity.lastMessage,
         time: time,
         unread: entity.isUnreadCount, onItemClick: (res) {
@@ -80,8 +80,8 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
             context,
             new CupertinoPageRoute<void>(
                 builder: (ctx) => MessagePage(
-                      title: entity.senderAccount,
-                      senderAccount: entity.senderAccount,
+                      title: entity.targetUid,
+                      senderAccount: entity.targetUid,
                     )));
       }
     });
@@ -96,8 +96,8 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
         map.clear();
 
         entities.forEach((entity) {
-            list.insert(0, entity.senderAccount);//TODO  group?
-            map[entity.senderAccount] = entity;
+            list.insert(0, entity.targetUid);//TODO  group?
+            map[entity.targetUid] = entity;
         });
         setState(() {
           isShowNoPage = list.length <= 0;
@@ -158,7 +158,7 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
   @override
   void updateData(MessageEntity entity) {
     if (null != entity) {
-      if (entity.type == Constants.MESSAGE_TYPE_CHAT) {
+      if (entity.contentType == Constants.MESSAGE_TYPE_CHAT) {
 
         if (list.contains(entity.titleName)) {
           //如果已经存在

@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 */
 class ConversationEntity {
   static const String CON_ID = "id";
-  static const String SENDER_ACCOUNT = "sender_account";
+  static const String TARGET_UID = "targetUid";
   static const String LAST_MESSAGE = "last_message";
   static const String IS_UNREAD_COUNT = "is_unread_count";
   static const String LAST_MESSAGE_TIME = "last_message_time";
   static const String CONVERATION_TYPE = "conversation_type";
 
-  String senderAccount;
+  String targetUid;
   String lastMessage;
   int timestamp;
   int id;
@@ -19,7 +19,7 @@ class ConversationEntity {
   int conversationType;
 
   ConversationEntity({
-    @required this.senderAccount,
+    @required this.targetUid,
     @required this.id,
     this.isUnreadCount = 0,
     this.timestamp = 0,
@@ -29,7 +29,7 @@ class ConversationEntity {
 
   ConversationEntity.fromMap(Map<String, dynamic> map)
       : this(
-          senderAccount: map[SENDER_ACCOUNT],
+          targetUid: map[TARGET_UID],
           isUnreadCount: map[IS_UNREAD_COUNT],
           id: map[CON_ID],
           timestamp: map[LAST_MESSAGE_TIME],
@@ -41,7 +41,7 @@ class ConversationEntity {
   Map<String, dynamic> toMap() {
     return {
       CON_ID: id,
-      SENDER_ACCOUNT: senderAccount,
+      TARGET_UID: targetUid,
       IS_UNREAD_COUNT: isUnreadCount,
       LAST_MESSAGE: lastMessage,
       LAST_MESSAGE_TIME: timestamp,

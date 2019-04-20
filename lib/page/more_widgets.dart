@@ -67,7 +67,7 @@ class MoreWidgets {
                   maxLines: 1,
                   softWrap: true,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 17.0, color: Colors.black),
+                  style: TextStyle(fontSize: 22.0, color: Colors.black),
                 ),
               ),
             ],
