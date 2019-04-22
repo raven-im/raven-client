@@ -21,6 +21,10 @@ class SocketMngr {
     return socket;
   }
 
+  static void write(List<int> list) {
+    socket?.add(list);
+  }
+
   static void release() {
     socket?.close();
   }

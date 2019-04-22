@@ -54,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
       new ConversationPage(rootContext: context),
       new ContactsPage(rootContext: context),
     ];
-    SenderMngr.loginReq(0, _callback);
+    SenderMngr.init(_callback);
   }
 
   void _callback(Object data) {
