@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'dart:convert';
 
 import 'package:myapp/entity/rest_entity.dart';
+import 'package:myapp/entity/rest_list_entity.dart';
 
 class RestManager {
   //TODO  through config file
@@ -10,6 +11,7 @@ class RestManager {
 
   static const String GET_TOKEN = '/user/login';
   static const String GET_ACCESS_NODE = '/user/access';
+  static const String GET_USER_LIST = '/user/list';
   static final RestManager _contacts = new RestManager._internal();
 
   static RestManager get() {
@@ -35,6 +37,15 @@ class RestManager {
     print(response);
     var data = json.decode(response.toString());
     RestEntity entity = RestEntity.fromMap(data);
+    return entity;
+  }
+
+  Future<RestListEntity> getUserList() async {
+
+    Response response = await Dio().get(APP_SERVER_URL + GET_USER_LIST, queryParameters: {"type": 1});
+    print(response);
+    var data = json.decode(response.toString());
+    RestListEntity entity = RestListEntity.fromMap(data);
     return entity;
   }
 }

@@ -66,12 +66,12 @@ class _MyHomePageState extends State<MyHomePage> {
     switch (message.type) {
       case TimMessage_Type.LoginAck:
         SenderMngr.sendAllConvListReq(myUid);
-                  // InteractNative.getMessageEventSink().add(ObjectUtil.getDefaultData(
-          // InteractNative.SYSTEM_MESSAGE_HAS_READ,
-          // Constants.MESSAGE_TYPE_SYSTEM_ZH));
-        //TODO send message to pull the conversation, send EVENT to UI.
         break;
       case TimMessage_Type.ConverAck:
+        // InteractNative.getMessageEventSink().add(ObjectUtil.getDefaultData(
+        // InteractNative.SYSTEM_MESSAGE_HAS_READ,
+        // Constants.MESSAGE_TYPE_SYSTEM_ZH));
+        //TODO send message to pull the conversation, send EVENT to UI.
         break;
     }
   }

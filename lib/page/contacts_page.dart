@@ -39,8 +39,8 @@ class Contacts extends BaseState<ContactsPage> with AutomaticKeepAliveClientMixi
   }
 
   _getContacts() {
-    String myUid = SPUtil.getString(Constants.KEY_LOGIN_ACCOUNT);
-    ContactManager.get().getContactsEntity(myUid).then((entities) async {
+    String myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
+    ContactManager.get().getContactsEntity(myUid).then((entities) {
       if (entities.length > 0) {
         setState(() {
           _list.clear();

@@ -1,5 +1,8 @@
 import 'package:myapp/entity/contact_entity.dart';
-
+import 'package:myapp/entity/rest_list_entity.dart';
+import 'package:myapp/manager/restful_manager.dart';
+import 'package:myapp/utils/constants.dart';
+import 'package:myapp/utils/dialog_util.dart';
 
 class ContactManager {
   static final ContactManager _contacts = new ContactManager._internal();
@@ -14,32 +17,22 @@ class ContactManager {
   *  查询联系人列表
   */
   Future<List<ContactEntity>> getContactsEntity(String myUid) async {
-    var map = {
-      ContactEntity.USER_ID: 'xfdsfdfdfa',
-      ContactEntity.USER_NAME: "George",
-      ContactEntity.PORTRAIT: 'http://google.com/1.jpg',
-      ContactEntity.STATUS: 0,
-    };
-    var map1 = {
-      ContactEntity.USER_ID: 'xfdsfdsfafdfdfa',
-      ContactEntity.USER_NAME: "Helen",
-      ContactEntity.PORTRAIT: 'http://google.com/2.jpg',
-      ContactEntity.STATUS: 0,
-    };
-    var map2 = {
-      ContactEntity.USER_ID: 'xfd3432432sfdfdfa',
-      ContactEntity.USER_NAME: "Lisa",
-      ContactEntity.PORTRAIT: 'http://google.com/3.jpg',
-      ContactEntity.STATUS: 0,
-    };
-    List<Map<String, dynamic>> result = new List();
-    result..add(map1)..add(map)..add(map2);
-
     List<ContactEntity> res = [];
-    for (Map<String, dynamic> item in result) {
-      res.add(new ContactEntity.fromMap(item));
+    RestListEntity entity = await RestManager.get().getUserList();
+    if (Constants.RSP_COMMON_SUCCESS != entity.code) {
+      DialogUtil.buildToast(entity.message);
+    } else {
+      entity.data.forEach((item) {
+        if (item['userId'] != myUid) {
+          res.add(new ContactEntity(
+            userId: item['userId'],
+            userName: item['name'],
+            portrait: 'http://google.com/1.jpg',
+            status: item['status'],
+            ));
+        }
+      });
     }
     return res;
   }
-
 }
