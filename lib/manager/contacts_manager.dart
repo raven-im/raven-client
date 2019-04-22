@@ -23,12 +23,12 @@ class ContactManager {
       DialogUtil.buildToast(entity.message);
     } else {
       entity.data.forEach((item) {
-        if (item['userId'] != myUid) {
+        if (item['id'] != myUid) {
           res.add(new ContactEntity(
-            userId: item['userId'],
+            userId: item['id'],
             userName: item['name'],
             portrait: 'http://google.com/1.jpg',
-            status: item['status'],
+            status: item['state'],
             ));
         }
       });
