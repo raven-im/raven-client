@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/manager/sender_manager.dart';
 import 'package:myapp/page/contacts_page.dart';
 import 'package:myapp/page/conversation_page.dart';
+import 'package:myapp/pb/message.pb.dart';
 import 'package:myapp/utils/constants.dart';
-import 'package:myapp/utils/sp_util.dart';
+
 
 /*
 *  主页
@@ -50,8 +52,15 @@ class _MyHomePageState extends State<MyHomePage> {
      */
     _pageList = [
       new ConversationPage(rootContext: context),
-      new ContactsPage(rootContext: context)
+      new ContactsPage(rootContext: context),
     ];
+    SenderMngr.loginReq(0, _callback);
+  }
+
+  void _callback(Object data) {
+    //TODO send the message as Event to notify every UI.
+    TimMessage message = TimMessage.fromBuffer(data);
+    print(message.type);
   }
 
   @override

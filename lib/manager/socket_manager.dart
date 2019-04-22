@@ -1,41 +1,27 @@
 import 'dart:io';
 
-import 'dart:typed_data';
+import 'package:myapp/utils/constants.dart';
+import 'package:myapp/utils/sp_util.dart';
 
 class SocketMngr {
-  static const String accessAddr = '10.12.9.139';
-  static int port = 7010;
-  Socket socket;
+  static Socket socket;
 
-  // 工厂模式
-  factory SocketMngr() =>_getInstance();
-  static SocketMngr get instance => _getInstance();
-  static SocketMngr _instance;
-  SocketMngr._internal() {
-    // 初始化
-    _initSocket().then((sock) { 
-      sock.listen((data) {
-        print("接收到来自Server的数据：");
-      });
-    });
-  }
-  static SocketMngr _getInstance() {
-    if (_instance == null) {
-      _instance = new SocketMngr._internal();
+  static Future<Socket> getSocket() async {
+    if (socket == null) {
+      return _initSocket();
     }
-    return _instance;
-  }
-
-  Future<Socket> _initSocket() async {
-    socket = await Socket.connect(accessAddr, port);
     return socket;
   }
 
-  void write(Uint8List list) {
-    socket?.add(list);
+  static Future<Socket> _initSocket() async {
+    String ip = SPUtil.getString(Constants.KEY_ACCESS_NODE_IP);
+    int port = SPUtil.getInt(Constants.KEY_ACCESS_NODE_PORT);
+    print("socket connect to $ip:$port");
+    socket = await Socket.connect(ip, port);
+    return socket;
   }
 
-  void release() {
+  static void release() {
     socket?.close();
   }
 }

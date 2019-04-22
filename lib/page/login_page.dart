@@ -188,8 +188,10 @@ class _LoginState extends State<Login> {
                 DialogUtil.buildToast('Sign in success.');
                 SPUtil.putBool(Constants.KEY_LOGIN, true);
                 SPUtil.putString(Constants.KEY_LOGIN_ACCOUNT, username);
+                SPUtil.putString(Constants.KEY_LOGIN_UID, firstEntity.data["uid"]);
                 SPUtil.putString(Constants.KEY_LOGIN_TOKEN, firstEntity.data["token"]);
-                SPUtil.putString(Constants.KEY_ACCESS_NODE, accessIp + ":" + port.toString());
+                SPUtil.putString(Constants.KEY_ACCESS_NODE_IP, accessIp);
+                SPUtil.putInt(Constants.KEY_ACCESS_NODE_PORT, port);
                 Navigator.of(context).pushReplacementNamed('/MainPage');
               }
             });
