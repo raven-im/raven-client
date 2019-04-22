@@ -172,33 +172,29 @@ class _LoginState extends State<Login> {
     }
 
     RestManager.get().login(username, password)
-        .then((entity) {
-          if (Constants.RSP_COMMON_SUCCESS != entity.code) {
+        .then((firstEntity) {
+          if (Constants.RSP_COMMON_SUCCESS != firstEntity.code) {
             // FocusScope.of(context).requestFocus(firstTextFieldNode);
-            DialogUtil.buildToast(entity.message);
+            DialogUtil.buildToast(firstEntity.message);
           } else {
-            DialogUtil.buildToast('Sign in success.');
-            SPUtil.putBool(Constants.KEY_LOGIN, true);
-            SPUtil.putString(Constants.KEY_LOGIN_ACCOUNT, username);
-            SPUtil.putString(Constants.KEY_LOGIN_TOKEN, entity.data["token"]);
-            Navigator.of(context).pushReplacementNamed('/MainPage');
+            RestManager.get().getAccess(firstEntity.data["appKey"], firstEntity.data["token"])
+            .then((secondEntity) {
+              if (Constants.RSP_COMMON_SUCCESS != secondEntity.code) {
+                DialogUtil.buildToast(secondEntity.message);
+              } else {
+                String accessIp = secondEntity.data["ip"];
+                int port = secondEntity.data["port"];
+                print("Access address: $accessIp:$port");
+                DialogUtil.buildToast('Sign in success.');
+                SPUtil.putBool(Constants.KEY_LOGIN, true);
+                SPUtil.putString(Constants.KEY_LOGIN_ACCOUNT, username);
+                SPUtil.putString(Constants.KEY_LOGIN_TOKEN, firstEntity.data["token"]);
+                SPUtil.putString(Constants.KEY_ACCESS_NODE, accessIp + ":" + port.toString());
+                Navigator.of(context).pushReplacementNamed('/MainPage');
+              }
+            });
+
           }
         });
-//     InteractNative.goNativeWithValue(InteractNative.methodNames['login'], map)
-//         .then((success) {
-//       operation.setShowLoading(false);
-//       if (success == true) {
-//         DialogUtil.buildToast('登录成功');
-//         SPUtil.putBool(Constants.KEY_LOGIN, true);
-//         SPUtil.putString(Constants.KEY_LOGIN_ACCOUNT, username);
-// //        Navigator.of(context).pushReplacementNamed('/MainPage');
-//         InteractNative.getAppEventSink()
-//             .add(InteractNative.CHANGE_PAGE_TO_MAIN);
-//       } else if (success is String) {
-//         DialogUtil.buildToast(success);
-//       } else {
-//         DialogUtil.buildToast('登录失败');
-//       }
-//     });
   }
 }
