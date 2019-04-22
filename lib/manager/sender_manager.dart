@@ -12,11 +12,6 @@ class SenderMngr {
   static int _msgId = 1;
   // client message list.
   static Map<int, List<int>> _msgMap = new Map<int, List<int>>();
-
-  // static void sendConvListReq(int id, String cid) {
-  //   List<int> list = MessageBuilder.getConversationList(id, cid);
-  //   SocketMngr.instance.write(list);
-  // }
   
   static init(callback(Object data)) {
     SocketMngr.getSocket().then((socket) {
@@ -39,12 +34,24 @@ class SenderMngr {
             break;
           case TimMessage_Type.MessageAck:
             break;
+          case TimMessage_Type.ConverAck:
+            if (_msgMap.containsKey(message.converAck.id)) {
+              _msgMap.remove(message.converAck.id);
+            } else {
+              print("error: $message.converAck.id contains? $_msgMap.containsKey(message.converAck.id)");
+            } 
+            if (message.converAck.code == Code.SUCCESS) {
+              callback(data); 
+            } else {
+              print("error: conversation ack: $message.converAck.code ");
+            }
+            break;
         }
       });
     });
   }
 
-  static void sendMsg(List<int> msg) {
+  static void _sendMsg(List<int> msg) {
     if (isLogined) {
       SocketMngr.write(msg);
       _msgMap.putIfAbsent(_msgId, () => msg);
@@ -66,5 +73,15 @@ class SenderMngr {
     } else {
       print("already logined.");
     }
+  }
+
+  static void sendAllConvListReq(String uid) {
+    List<int> list = MessageBuilder.getConversationList(_msgId, uid, OperationType.ALL);
+    _sendMsg(list);
+  }
+
+    static void sendDetailConvListReq(String uid) {
+    List<int> list = MessageBuilder.getConversationList(_msgId, uid, OperationType.DETAIL);
+    _sendMsg(list);
   }
 }

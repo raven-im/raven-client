@@ -28,19 +28,17 @@ class MessageBuilder {
     data.uid = uid;
     data.token = token;
     message.login = data;
-    // File file = File(arguments.first);
     return message.writeToBuffer();
   }
 
-  static List<int> getConversationList(int id, String cid){
+  static List<int> getConversationList(int id, String cid, OperationType type) {
     var message = new TimMessage();
     message.type = TimMessage_Type.ConverReq;
     var data = ConverReq();
     data.id = Int64(id);
-    data.type = OperationType.ALL;
+    data.type = type;
     data.conversationId = cid;
     message.converReq = data;
-    // File file = File(arguments.first);
     return message.writeToBuffer();
   }
 }

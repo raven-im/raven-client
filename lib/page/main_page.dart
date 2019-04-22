@@ -4,6 +4,7 @@ import 'package:myapp/page/contacts_page.dart';
 import 'package:myapp/page/conversation_page.dart';
 import 'package:myapp/pb/message.pb.dart';
 import 'package:myapp/utils/constants.dart';
+import 'package:myapp/utils/sp_util.dart';
 
 
 /*
@@ -32,6 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _tabIndex = 0;
   var appBarTitles = ['Messages', 'Contacts'];
   List _pageList;
+  String myUid;
 
   /*
    * 获取bottomTab的颜色和文字
@@ -54,13 +56,24 @@ class _MyHomePageState extends State<MyHomePage> {
       new ConversationPage(rootContext: context),
       new ContactsPage(rootContext: context),
     ];
+    myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
     SenderMngr.init(_callback);
   }
 
   void _callback(Object data) {
-    //TODO send the message as Event to notify every UI.
     TimMessage message = TimMessage.fromBuffer(data);
     print(message.type);
+    switch (message.type) {
+      case TimMessage_Type.LoginAck:
+        SenderMngr.sendAllConvListReq(myUid);
+                  // InteractNative.getMessageEventSink().add(ObjectUtil.getDefaultData(
+          // InteractNative.SYSTEM_MESSAGE_HAS_READ,
+          // Constants.MESSAGE_TYPE_SYSTEM_ZH));
+        //TODO send message to pull the conversation, send EVENT to UI.
+        break;
+      case TimMessage_Type.ConverAck:
+        break;
+    }
   }
 
   @override
