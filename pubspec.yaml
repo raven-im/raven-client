@@ -30,11 +30,11 @@ dependencies:
   shared_preferences: ^0.4.3 #存储
   synchronized: ^2.0.2+1 #异步相关
   rxdart: ^0.20.0 #Rx
+  dio: 2.1.2  #latest version
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

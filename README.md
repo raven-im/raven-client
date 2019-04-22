@@ -1,6 +1,6 @@
-# Tim-Client(mobile)
+# Raven-Client(mobile)
 
-A new Flutter project for Tim IM server.
+A new Flutter project for Raven IM server.
 
 https://github.com/IamNotShady/tim
 

@@ -1,6 +1,6 @@
 
-import 'package:myapp/message/socket_manager.dart';
-import 'package:myapp/message/message_builder.dart';
+import 'package:myapp/manager/socket_manager.dart';
+import 'package:myapp/manager/message_builder.dart';
 
 class SenderMngr {
 

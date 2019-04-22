@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:myapp/manager/restful_manager.dart';
 import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/dialog_util.dart';
 import 'package:myapp/utils/sp_util.dart';
@@ -20,8 +21,8 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-  FocusNode firstTextFieldNode = FocusNode();
-  FocusNode secondTextFieldNode = FocusNode();
+  // FocusNode firstTextFieldNode = FocusNode();
+  // FocusNode secondTextFieldNode = FocusNode();
   var _scaffoldkey = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
@@ -44,7 +45,7 @@ class _LoginState extends State<Login> {
                   new Center(
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12.0),
-                      child: new Text("Tim Demo",
+                      child: new Text("Raven IM",
                           style: TextStyle(
                               color: Colors.blue,
                               fontSize: 36.0,
@@ -60,7 +61,7 @@ class _LoginState extends State<Login> {
                     color: Colors.lightBlue,
                     elevation: 5.0,
                     child: new TextField(
-                      focusNode: firstTextFieldNode,
+                      // focusNode: firstTextFieldNode,
                       keyboardType: TextInputType.phone,
                       textInputAction: TextInputAction.next,
                       controller: _usernameController,
@@ -88,8 +89,8 @@ class _LoginState extends State<Login> {
                             color: Colors.white,
                           )
                       ),
-                      onEditingComplete: () => FocusScope.of(context)
-                          .requestFocus(secondTextFieldNode),
+                      // onEditingComplete: () => FocusScope.of(context)
+                      //     .requestFocus(secondTextFieldNode),
                     ),
                   ),
                   SizedBox(height: 12.0),
@@ -99,7 +100,7 @@ class _LoginState extends State<Login> {
                     color: Colors.lightBlue,
                     elevation: 5.0,
                     child: new TextField(
-                        focusNode: secondTextFieldNode,
+                        // focusNode: secondTextFieldNode,
                         keyboardType: TextInputType.text,
                         textInputAction: TextInputAction.done,
                         controller: _passwordController,
@@ -143,7 +144,7 @@ class _LoginState extends State<Login> {
                       style: BorderStyle.solid,
                       color: Colors.grey,
                     )),
-                    child: Text('Login', style: new TextStyle(fontSize: 16.0)),
+                    child: Text('Sign in', style: new TextStyle(fontSize: 16.0)),
                     onPressed: () {
 //                  Navigator.pop(context);
                       _checkInput(context);
@@ -169,12 +170,20 @@ class _LoginState extends State<Login> {
       DialogUtil.buildToast("please enter password.");
       return;
     }
-    Map<String, String> map = {"username": username, "password": password};
-    // TODO add async server info get.
 
-    SPUtil.putBool(Constants.KEY_LOGIN, true);
-    SPUtil.putString(Constants.KEY_LOGIN_ACCOUNT, username);
-    Navigator.of(context).pushReplacementNamed('/MainPage');
+    RestManager.get().login(username, password)
+        .then((entity) {
+          if (Constants.RSP_COMMON_SUCCESS != entity.code) {
+            // FocusScope.of(context).requestFocus(firstTextFieldNode);
+            DialogUtil.buildToast(entity.message);
+          } else {
+            DialogUtil.buildToast('Sign in success.');
+            SPUtil.putBool(Constants.KEY_LOGIN, true);
+            SPUtil.putString(Constants.KEY_LOGIN_ACCOUNT, username);
+            SPUtil.putString(Constants.KEY_LOGIN_TOKEN, entity.data["token"]);
+            Navigator.of(context).pushReplacementNamed('/MainPage');
+          }
+        });
 //     InteractNative.goNativeWithValue(InteractNative.methodNames['login'], map)
 //         .then((success) {
 //       operation.setShowLoading(false);
