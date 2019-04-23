@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:myapp/manager/socket_manager.dart';
 import 'package:myapp/manager/message_builder.dart';
 import 'package:myapp/pb/message.pb.dart';
@@ -13,42 +15,41 @@ class SenderMngr {
   // client message list.
   static Map<int, List<int>> _msgMap = new Map<int, List<int>>();
   
-  static init(callback(Object data)) {
-    SocketMngr.getSocket().then((socket) {
-      _loginReq();
-      socket.listen((data) {
-        TimMessage message = TimMessage.fromBuffer(data);
-        switch (message.type) {
-          case TimMessage_Type.LoginAck:
-            if (_msgMap.containsKey(message.loginAck.id)) {
-              _msgMap.remove(message.loginAck.id);
-            } else {
-              print("error: $message.loginAck.id contains? $_msgMap.containsKey(message.loginAck.id)");
-            } 
-            if (message.loginAck.code == Code.SUCCESS) {
-              isLogined = true;
-              callback(data); 
-            } else {
-              print("error: login ack: $message.loginAck.code ");
-            }
-            break;
-          case TimMessage_Type.MessageAck:
-            break;
-          case TimMessage_Type.ConverAck:
-            if (_msgMap.containsKey(message.converAck.id)) {
-              _msgMap.remove(message.converAck.id);
-            } else {
-              print("error: $message.converAck.id contains? $_msgMap.containsKey(message.converAck.id)");
-            } 
-            if (message.converAck.code == Code.SUCCESS) {
-              callback(data); 
-            } else {
-              print("error: conversation ack: $message.converAck.code ");
-            }
-            break;
-        }
-      });
+  static init(callback(Object data)) async {
+    Socket socket = await SocketMngr.getSocket();
+    socket.listen((data) {
+      TimMessage message = TimMessage.fromBuffer(data);
+      switch (message.type) {
+        case TimMessage_Type.LoginAck:
+          if (_msgMap.containsKey(message.loginAck.id)) {
+            _msgMap.remove(message.loginAck.id);
+          } else {
+            print("error: $message.loginAck.id contains? $_msgMap.containsKey(message.loginAck.id)");
+          } 
+          if (message.loginAck.code == Code.SUCCESS) {
+            isLogined = true;
+            callback(data); 
+          } else {
+            print("error: login ack: $message.loginAck.code ");
+          }
+          break;
+        case TimMessage_Type.MessageAck:
+          break;
+        case TimMessage_Type.ConverAck:
+          if (_msgMap.containsKey(message.converAck.id)) {
+            _msgMap.remove(message.converAck.id);
+          } else {
+            print("error: $message.converAck.id contains? $_msgMap.containsKey(message.converAck.id)");
+          } 
+          if (message.converAck.code == Code.SUCCESS) {
+            callback(data); 
+          } else {
+            print("error: conversation ack: $message.converAck.code ");
+          }
+          break;
+      }
     });
+    _loginReq();
   }
 
   static void _sendMsg(List<int> msg) {

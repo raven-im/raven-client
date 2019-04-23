@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/manager/sender_manager.dart';
+import 'package:myapp/manager/socket_manager.dart';
 import 'package:myapp/page/contacts_page.dart';
 import 'package:myapp/page/conversation_page.dart';
 import 'package:myapp/pb/message.pb.dart';
@@ -85,6 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void dispose() {
     _pageController.dispose();
+    SocketMngr.release();
     super.dispose();
   }
 
