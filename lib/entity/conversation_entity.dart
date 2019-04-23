@@ -14,7 +14,7 @@ class ConversationEntity {
   String targetUid;
   String lastMessage;
   int timestamp;
-  int id;
+  String id;
   int isUnreadCount;
   int conversationType;
 
@@ -22,7 +22,7 @@ class ConversationEntity {
     @required this.targetUid,
     @required this.id,
     this.isUnreadCount = 0,
-    this.timestamp = 0,
+    @required this.timestamp,
     @required this.lastMessage,
     @required this.conversationType,
   });

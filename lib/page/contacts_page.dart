@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/base/base_state.dart';
 import 'package:myapp/entity/contact_entity.dart';
+import 'package:myapp/entity/conversation_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/contacts_manager.dart';
 import 'package:myapp/page/message_page.dart';
@@ -121,5 +122,14 @@ class Contacts extends BaseState<ContactsPage> with AutomaticKeepAliveClientMixi
       _list.remove(entity);
       _getContacts();
     }
+  }
+
+  @override
+  void updateConversation(List<ConversationEntity> entities) {
+    // if (entity != null &&
+    //     entity.contentType == Constants.MESSAGE_TYPE_CHAT) {
+    //   _list.remove(entity);
+    //   _getContacts();
+    // }
   }
 }

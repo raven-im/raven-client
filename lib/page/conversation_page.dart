@@ -90,26 +90,11 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
   }
 
   _getData() async {
-    String myUid = SPUtil.getString(Constants.KEY_LOGIN_ACCOUNT);
-    ConversaionManager.get().getConversationEntity(myUid).then((entities) async {
-      if (entities.length > 0) {
-        list.clear();
-        map.clear();
-
-        entities.forEach((entity) {
-            list.insert(0, entity.targetUid);//TODO  group?
-            map[entity.targetUid] = entity;
-        });
-        setState(() {
-          isShowNoPage = list.length <= 0;
-        });
-      } else {
-        setState(() {
-          list.clear();
-          map.clear();
-          isShowNoPage = true;
-        });
-      }
+    //display no page.
+    setState(() {
+      list.clear();
+      map.clear();
+      isShowNoPage = true;
     });
   }
 
@@ -158,20 +143,51 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
 
   @override
   void updateData(MessageEntity entity) {
-    if (null != entity) {
-      if (entity.contentType == Constants.MESSAGE_TYPE_CHAT) {
+    // if (null != entity) {
+    //   if (entity.contentType == Constants.MESSAGE_TYPE_CHAT) {
 
-        if (list.contains(entity.titleName)) {
-          //如果已经存在
-          list.remove(entity.titleName);
-          map.remove(entity.titleName);
-        }
-        list.insert(0, entity.titleName);
-        map[entity.titleName] = entity;
-        setState(() {
-          isShowNoPage = list.length <= 0;
+    //     if (list.contains(entity.titleName)) {
+    //       //如果已经存在
+    //       list.remove(entity.titleName);
+    //       map.remove(entity.titleName);
+    //     }
+    //     list.insert(0, entity.titleName);
+    //     map[entity.titleName] = entity;
+    //     setState(() {
+    //       isShowNoPage = list.length <= 0;
+    //     });
+    //   }
+    // }
+  }
+
+  @override
+  void updateConversation(List<ConversationEntity> entities) {
+    if (0 < entities.length) {
+
+        list.clear();
+        map.clear();
+
+        entities.forEach((entity) {
+            list.insert(0, entity.targetUid);//TODO  group?
+            map[entity.targetUid] = entity;
         });
-      }
+        setState(() {
+          isShowNoPage = false;
+        });
     }
+      // if (entity.contentType == Constants.MESSAGE_TYPE_CHAT) {
+
+      //   if (list.contains(entity.titleName)) {
+      //     //如果已经存在
+      //     list.remove(entity.titleName);
+      //     map.remove(entity.titleName);
+      //   }
+      //   list.insert(0, entity.titleName);
+      //   map[entity.titleName] = entity;
+      //   setState(() {
+      //     isShowNoPage = list.length <= 0;
+      //   });
+      // }
+    
   }
 }

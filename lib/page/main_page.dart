@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/manager/conversation_manager.dart';
 import 'package:myapp/manager/sender_manager.dart';
 import 'package:myapp/manager/socket_manager.dart';
 import 'package:myapp/page/contacts_page.dart';
 import 'package:myapp/page/conversation_page.dart';
 import 'package:myapp/pb/message.pb.dart';
 import 'package:myapp/utils/constants.dart';
-// import 'package:myapp/utils/sp_util.dart';
+import 'package:myapp/utils/interact_vative.dart';
+import 'package:myapp/utils/object_util.dart';
+import 'package:myapp/utils/sp_util.dart';
 
 
 /*
@@ -34,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _tabIndex = 0;
   var appBarTitles = ['Messages', 'Contacts'];
   List _pageList;
-  // String myUid;
+  String myUid;
 
   /*
    * 获取bottomTab的颜色和文字
@@ -57,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
       new ConversationPage(rootContext: context),
       new ContactsPage(rootContext: context),
     ];
-    // myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
+    myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
     SenderMngr.init(_callback);
   }
 
@@ -65,13 +68,13 @@ class _MyHomePageState extends State<MyHomePage> {
     TimMessage message = TimMessage.fromBuffer(data);
     switch (message.type) {
       case TimMessage_Type.LoginAck:
-        SenderMngr.sendAllConvListReq();
+        print("IM Login success");
+        ConversaionManager.get().requestConverEntities();
         break;
       case TimMessage_Type.ConverAck:
-        // InteractNative.getMessageEventSink().add(ObjectUtil.getDefaultData(
-        // InteractNative.SYSTEM_MESSAGE_HAS_READ,
-        // Constants.MESSAGE_TYPE_SYSTEM_ZH));
-        //TODO send message to pull the conversation, send EVENT to UI.
+        // notify.
+        InteractNative.getConversationEventSink().add(
+            ObjectUtil.getConvEntities(myUid, message.converAck.converList));
         break;
     }
   }
