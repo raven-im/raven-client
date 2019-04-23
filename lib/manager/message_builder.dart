@@ -31,14 +31,81 @@ class MessageBuilder {
     return message.writeToBuffer();
   }
 
-  static List<int> getConversationList(int id, String cid, OperationType type) {
+  static List<int> getAllConversationList(int id) {
     var message = new TimMessage();
     message.type = TimMessage_Type.ConverReq;
     var data = ConverReq();
     data.id = Int64(id);
-    data.type = type;
+    data.type = OperationType.ALL;
+    message.converReq = data;
+    return message.writeToBuffer();
+  }
+
+  static List<int> getDetailConversationList(int id, String cid) {
+    var message = new TimMessage();
+    message.type = TimMessage_Type.ConverReq;
+    var data = ConverReq();
+    data.id = Int64(id);
+    data.type = OperationType.DETAIL;
     data.conversationId = cid;
     message.converReq = data;
+    return message.writeToBuffer();
+  }
+
+  static List<int> sendSingleMessage(int id, String fromId, String targetId, MessageType type, 
+      String content, {String converId}) {
+    var message = new TimMessage();
+    message.type = TimMessage_Type.UpDownMessage;
+    var data = UpDownMessage();
+    // data.id = Int64(id);  server set
+    data.cid = Int64(id);
+    data.fromUid = fromId;
+    data.targetUid = targetId;
+    data.converType = ConverType.SINGLE;
+    if (converId != null) {
+      data.converId = converId;
+    }
+    data.content = _getMessageContent(fromId, type, content);
+    message.upDownMessage = data;
+    return message.writeToBuffer();
+  }
+
+  static List<int> sendGroupMessage(int id, String fromId, String targetId, MessageType type, 
+      String content, String groupId, {String converId}) {
+    var message = new TimMessage();
+    message.type = TimMessage_Type.UpDownMessage;
+    var data = UpDownMessage();
+    // data.id = Int64(id);  server set
+    data.cid = Int64(id);
+    data.fromUid = fromId;
+    data.targetUid = targetId;
+    data.converType = ConverType.GROUP;
+    if (converId != null) {
+      data.converId = converId;
+    }
+    data.groupId = groupId;
+    data.content = _getMessageContent(fromId, type, content);
+    message.upDownMessage = data;
+    return message.writeToBuffer();
+  }
+
+  static MessageContent _getMessageContent(String fromId, MessageType type, String content) {
+    var msgContent = MessageContent();
+    // msgContent.id = Int64(1);   Server set.
+    msgContent.uid = fromId;
+    msgContent.type = type;
+    msgContent.content = content;
+    msgContent.time = Int64(DateTime.now().millisecondsSinceEpoch);
+    return msgContent;
+  }
+
+  static List<int> sendHeartBeat(Int64 id, HeartBeatType type) {
+    var message = new TimMessage();
+    message.type = TimMessage_Type.HeartBeat;
+    var data = HeartBeat();
+    data.id = id;
+    data.heartBeatType = type;
+    message.heartBeat = data;
     return message.writeToBuffer();
   }
 }

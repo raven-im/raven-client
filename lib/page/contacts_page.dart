@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/base/base_state.dart';
+import 'package:myapp/entity/contact_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/contacts_manager.dart';
 import 'package:myapp/page/message_page.dart';
@@ -23,7 +24,7 @@ class ContactsPage extends StatefulWidget {
 }
 
 class Contacts extends BaseState<ContactsPage> with AutomaticKeepAliveClientMixin {
-  var _list = List();
+  var _list = List<ContactEntity>();
   var _map = Map();
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
 
@@ -47,7 +48,7 @@ class Contacts extends BaseState<ContactsPage> with AutomaticKeepAliveClientMixi
           _map.clear();
 
           entities.forEach((entity) {
-              _list.insert(0, entity.userName);
+              _list.insert(0, entity);
               _map[entity.userId] = entity;
           });
         });
@@ -99,12 +100,13 @@ class Contacts extends BaseState<ContactsPage> with AutomaticKeepAliveClientMixi
             context,
             new CupertinoPageRoute<void>(
                 builder: (ctx) => MessagePage(
-                      title: _list[index],
-                      senderAccount: _list[index],
+                      title: _list[index].userName,
+                      targetName: _list[index].userName,
+                      targetUid: _list[index].userId,
                     )));
       },
       
-      child: MoreWidgets.buildListViewItem('img_headportrait', _list[index]),
+      child: MoreWidgets.buildListViewItem('img_headportrait', _list[index].userName),
     );
   
   }
@@ -116,7 +118,7 @@ class Contacts extends BaseState<ContactsPage> with AutomaticKeepAliveClientMixi
   void updateData(MessageEntity entity) {
     if (entity != null &&
         entity.contentType == Constants.MESSAGE_TYPE_CHAT) {
-      _list.remove(entity.targetUid);
+      _list.remove(entity);
       _getContacts();
     }
   }

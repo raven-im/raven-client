@@ -1,6 +1,7 @@
 
 import 'dart:io';
 
+import 'package:fixnum/fixnum.dart';
 import 'package:myapp/manager/socket_manager.dart';
 import 'package:myapp/manager/message_builder.dart';
 import 'package:myapp/pb/message.pb.dart';
@@ -19,6 +20,7 @@ class SenderMngr {
     Socket socket = await SocketMngr.getSocket();
     socket.listen((data) {
       TimMessage message = TimMessage.fromBuffer(data);
+      print(message.type);
       switch (message.type) {
         case TimMessage_Type.LoginAck:
           if (_msgMap.containsKey(message.loginAck.id)) {
@@ -34,6 +36,16 @@ class SenderMngr {
           }
           break;
         case TimMessage_Type.MessageAck:
+          if (_msgMap.containsKey(message.messageAck.id)) {
+            _msgMap.remove(message.messageAck.id);
+          } else {
+            print("error: $message.messageAck.id contains? $_msgMap.containsKey(message.messageAck.id)");
+          } 
+          if (message.messageAck.code == Code.SUCCESS) {
+            callback(data); 
+          } else {
+            print("error: message ack: $message.messageAck.code ");
+          }
           break;
         case TimMessage_Type.ConverAck:
           if (_msgMap.containsKey(message.converAck.id)) {
@@ -47,12 +59,15 @@ class SenderMngr {
             print("error: conversation ack: $message.converAck.code ");
           }
           break;
+        case TimMessage_Type.HeartBeat:
+          _sendPong(message.heartBeat.id);
+          break;
       }
     });
     _loginReq();
   }
 
-  static void _sendMsg(List<int> msg) {
+  static void _sendMsg(List<int> msg) async {
     if (isLogined) {
       SocketMngr.write(msg);
       _msgMap.putIfAbsent(_msgId, () => msg);
@@ -62,7 +77,7 @@ class SenderMngr {
     }
   }
 
-  static void _loginReq() {
+  static void _loginReq() async {
     if (!isLogined) {
       String uid = SPUtil.getString(Constants.KEY_LOGIN_UID);
       String token = SPUtil.getString(Constants.KEY_LOGIN_TOKEN);
@@ -76,13 +91,37 @@ class SenderMngr {
     }
   }
 
-  static void sendAllConvListReq(String uid) {
-    List<int> list = MessageBuilder.getConversationList(_msgId, uid, OperationType.ALL);
+  static void sendAllConvListReq() {
+    List<int> list = MessageBuilder.getAllConversationList(_msgId);
     _sendMsg(list);
   }
 
-    static void sendDetailConvListReq(String uid) {
-    List<int> list = MessageBuilder.getConversationList(_msgId, uid, OperationType.DETAIL);
+  static void sendDetailConvListReq(String uid) {
+    List<int> list = MessageBuilder.getDetailConversationList(_msgId, uid);
+    _sendMsg(list);
+  }
+
+  static void sendSingleMessageReq(String fromId, String targetId, MessageType type, String content, {String convId}) {
+    List<int> list = MessageBuilder.sendSingleMessage(_msgId, fromId, targetId, type, content, converId: convId);
+    _sendMsg(list);
+  }
+
+  static void sendGroupMessageReq(String fromId, String targetId, MessageType type, String content, String groupId, {String convId}) {
+    List<int> list = MessageBuilder.sendGroupMessage(_msgId, fromId, targetId, type, content, groupId, converId: convId);
+    _sendMsg(list);
+  }
+
+  static void _sendPong(Int64 id) {
+    if (isLogined) {
+      List<int> msg = MessageBuilder.sendHeartBeat(id, HeartBeatType.PONG);
+      SocketMngr.write(msg);
+    } else {
+      print(" not login , can't send message.");
+    }
+  }
+
+  static void sendPing() {
+    List<int> list = MessageBuilder.sendHeartBeat(Int64(_msgId), HeartBeatType.PING);
     _sendMsg(list);
   }
 }

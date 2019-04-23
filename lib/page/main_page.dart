@@ -5,7 +5,7 @@ import 'package:myapp/page/contacts_page.dart';
 import 'package:myapp/page/conversation_page.dart';
 import 'package:myapp/pb/message.pb.dart';
 import 'package:myapp/utils/constants.dart';
-import 'package:myapp/utils/sp_util.dart';
+// import 'package:myapp/utils/sp_util.dart';
 
 
 /*
@@ -34,7 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _tabIndex = 0;
   var appBarTitles = ['Messages', 'Contacts'];
   List _pageList;
-  String myUid;
+  // String myUid;
 
   /*
    * 获取bottomTab的颜色和文字
@@ -57,16 +57,15 @@ class _MyHomePageState extends State<MyHomePage> {
       new ConversationPage(rootContext: context),
       new ContactsPage(rootContext: context),
     ];
-    myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
+    // myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
     SenderMngr.init(_callback);
   }
 
   void _callback(Object data) {
     TimMessage message = TimMessage.fromBuffer(data);
-    print(message.type);
     switch (message.type) {
       case TimMessage_Type.LoginAck:
-        SenderMngr.sendAllConvListReq(myUid);
+        SenderMngr.sendAllConvListReq();
         break;
       case TimMessage_Type.ConverAck:
         // InteractNative.getMessageEventSink().add(ObjectUtil.getDefaultData(

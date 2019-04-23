@@ -81,7 +81,8 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
             new CupertinoPageRoute<void>(
                 builder: (ctx) => MessagePage(
                       title: entity.targetUid,
-                      senderAccount: entity.targetUid,
+                      targetName: entity.targetUid, //TODO
+                      targetUid: entity.targetUid,
                     )));
       }
     });

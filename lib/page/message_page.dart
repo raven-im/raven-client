@@ -3,21 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:myapp/entity/message_entity.dart';
+import 'package:myapp/manager/sender_manager.dart';
 import 'package:myapp/page/message_item_widgets.dart';
 import 'package:myapp/page/more_widgets.dart';
+import 'package:myapp/pb/message.pbenum.dart';
 import 'package:myapp/utils/constants.dart';
+import 'package:myapp/utils/sp_util.dart';
 
 /*
 *  发送聊天信息
 */
 class MessagePage extends StatefulWidget {
   final String title;
-  final String senderAccount;
+  final String targetName;
+  final String targetUid;
 
   const MessagePage(
       {Key key,
       @required this.title,
-      @required this.senderAccount})
+      @required this.targetName,
+      @required this.targetUid})
       : super(key: key);
 
   @override
@@ -33,6 +38,7 @@ class MessageState extends State<MessagePage> {
   FocusNode _textFieldNode = FocusNode();
   List<MessageEntity> _messageList = new List();
   ScrollController _scrollController = new ScrollController();
+  String myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
 
   @override
   void initState() {
@@ -302,9 +308,11 @@ class MessageState extends State<MessagePage> {
   _buildTextMessage(String content) {
     MessageEntity messageEntity = new MessageEntity(
         contentType: Constants.MESSAGE_TYPE_CHAT,
-        targetUid: widget.senderAccount,
-        titleName: widget.senderAccount,
-        content: content, //如果是assets里的图片，则这里是assets图片的路径
+        fromUid: myUid,
+        targetUid: widget.targetUid,
+        titleName: widget.targetName,
+        convType: Constants.CONVERSATION_SINGLE,
+        content: content,
         time: new DateTime.now().millisecondsSinceEpoch.toString());
     messageEntity.messageOwner = 0;
     messageEntity.status = 0;
@@ -322,7 +330,8 @@ class MessageState extends State<MessagePage> {
         messageEntity.status = 1;
       });
     }
-    // TODO socket send message.
+    SenderMngr.sendSingleMessageReq(messageEntity.fromUid, messageEntity.targetUid, 
+      MessageType.TEXT, messageEntity.content);
     // InteractNative.goNativeWithValue(InteractNative.methodNames['sendMessage'],
     //         ObjectUtil.buildMessage(messageEntity))
     //     .then((success) {
