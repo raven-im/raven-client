@@ -62,6 +62,14 @@ class SenderMngr {
         case TimMessage_Type.HeartBeat:
           _sendPong(message.heartBeat.id);
           break;
+        case TimMessage_Type.HisMessagesAck:
+          if (_msgMap.containsKey(message.hisMessagesAck.id)) {
+            _msgMap.remove(message.hisMessagesAck.id);
+          } else {
+            print("error: $message.hisMessagesAck.id contains? $_msgMap.containsKey(message.hisMessagesAck.id)");
+          }
+          callback(data);
+          break;
       }
     });
     _loginReq();
@@ -122,6 +130,11 @@ class SenderMngr {
 
   static void sendPing() {
     List<int> list = MessageBuilder.sendHeartBeat(Int64(_msgId), HeartBeatType.PING);
+    _sendMsg(list);
+  }
+
+  static void sendMessageEntityReq(String convId) {
+    List<int> list = MessageBuilder.getMessageList(_msgId, convId, 0); //TODO begin time?
     _sendMsg(list);
   }
 }

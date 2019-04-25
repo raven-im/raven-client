@@ -8,16 +8,11 @@ class SocketMngr {
 
   static Future<Socket> getSocket() async {
     if (socket == null) {
-      return _initSocket();
+      String ip = SPUtil.getString(Constants.KEY_ACCESS_NODE_IP);
+      int port = SPUtil.getInt(Constants.KEY_ACCESS_NODE_PORT);
+      print("socket connect to $ip:$port");
+      socket = await Socket.connect(ip, port);
     }
-    return socket;
-  }
-
-  static Future<Socket> _initSocket() async {
-    String ip = SPUtil.getString(Constants.KEY_ACCESS_NODE_IP);
-    int port = SPUtil.getInt(Constants.KEY_ACCESS_NODE_PORT);
-    print("socket connect to $ip:$port");
-    socket = await Socket.connect(ip, port);
     return socket;
   }
 

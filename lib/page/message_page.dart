@@ -2,7 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:myapp/base/base_state.dart';
+import 'package:myapp/entity/conversation_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
+import 'package:myapp/manager/message_manager.dart';
 import 'package:myapp/manager/sender_manager.dart';
 import 'package:myapp/page/message_item_widgets.dart';
 import 'package:myapp/page/more_widgets.dart';
@@ -15,14 +18,15 @@ import 'package:myapp/utils/sp_util.dart';
 */
 class MessagePage extends StatefulWidget {
   final String title;
-  final String targetName;
   final String targetUid;
+  final String convId;
 
   const MessagePage(
       {Key key,
       @required this.title,
-      @required this.targetName,
-      @required this.targetUid})
+      @required this.targetUid,
+      @required this.convId,
+      })
       : super(key: key);
 
   @override
@@ -31,7 +35,7 @@ class MessagePage extends StatefulWidget {
   }
 }
 
-class MessageState extends State<MessagePage> {
+class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
   
   bool _isShowSend = false; //是否显示发送按钮
   TextEditingController _controller = new TextEditingController();
@@ -81,6 +85,7 @@ class MessageState extends State<MessagePage> {
         _onRefresh();
       }
     });
+    MessageManager.get().requestMessageEntities(widget.convId);
   }
 
   @override
@@ -310,7 +315,6 @@ class MessageState extends State<MessagePage> {
         contentType: Constants.MESSAGE_TYPE_CHAT,
         fromUid: myUid,
         targetUid: widget.targetUid,
-        titleName: widget.targetName,
         convType: Constants.CONVERSATION_SINGLE,
         content: content,
         time: new DateTime.now().millisecondsSinceEpoch.toString());
@@ -361,5 +365,37 @@ class MessageState extends State<MessagePage> {
     //     });
     //   });
     // });
+  }
+
+  @override
+  void updateData(List<MessageEntity> entities) {
+
+    entities.forEach((entity) {
+      _messageList.insert(0, entity);
+    });
+    setState(() {
+
+    });
+    // if (null != entity) {
+    //   if (entity.contentType == Constants.MESSAGE_TYPE_CHAT) {
+
+    //     if (list.contains(entity.titleName)) {
+    //       //如果已经存在
+    //       list.remove(entity.titleName);
+    //       map.remove(entity.titleName);
+    //     }
+    //     list.insert(0, entity.titleName);
+    //     map[entity.titleName] = entity;
+    //     setState(() {
+    //       isShowNoPage = list.length <= 0;
+    //     });
+    //   }
+    // }
+  }
+
+  @override
+  void updateConversation(List<ConversationEntity> entities) {
+    
+  
   }
 }

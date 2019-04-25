@@ -22,7 +22,7 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
   }
 
   @protected
-  void updateData(MessageEntity entity);
+  void updateData(List<MessageEntity> entity);
 
   @protected
   void updateConversation(List<ConversationEntity> entity);

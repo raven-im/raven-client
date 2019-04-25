@@ -6,7 +6,7 @@ class Constants {
   static const String KEY_ACCESS_NODE_IP = 'key_access_ip';
   static const String KEY_ACCESS_NODE_PORT = 'key_access_port';
   static const String INPUTFORMATTERS = '[a-zA-Z0-9!.?,~@#%^&*()]';
-  static const String CONTENT_TYPE_SYSTEM = "text"; //消息内容类型：文本
+  static const String CONTENT_TYPE_TEXT = "text"; //消息内容类型：文本
   static int currentPage = 0;
 
   static const String MESSAGE_TYPE_CHAT = 'chat';

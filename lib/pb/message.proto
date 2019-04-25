@@ -119,13 +119,14 @@ enum MessageType {
 message HisMessagesReq {
   uint64 id = 1; // 消息ID
   string converId = 2; // 会话id
+  uint64 beaginTime = 3; // 消息起始时间
 }
 
 // 历史消息
 message HisMessagesAck {
   uint64 id = 1; // 消息ID
   string converId = 2; // 会话id
-  repeated MessageContent messageList = 3;
+  repeated MessageContent messageList = 4; // 消息列表
 }
 // 会话操作请求  消息ID使用客户端生成
 message ConverReq {
@@ -152,7 +153,7 @@ message ConverAck {
 message ConverInfo {
   string converId = 1; // 会话ID
   ConverType type = 2; // 会话类型
-  repeated string uid = 3; // 单聊会话 用户列表
+  repeated string uidList = 3; // 单聊会话 用户列表
   string groupId = 4; //  群会话 群ID
   uint64 unCount = 5; // 未读数
   MessageContent lastContent = 6; // 最后一条消息

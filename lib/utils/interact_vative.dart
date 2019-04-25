@@ -5,8 +5,8 @@ import 'package:rxdart/rxdart.dart';
 
 class InteractNative {
 
-  static BehaviorSubject<MessageEntity> _messageEvent =
-      BehaviorSubject<MessageEntity>();
+  static BehaviorSubject<List<MessageEntity>> _messageEvent =
+      BehaviorSubject<List<MessageEntity>>();
 
   static BehaviorSubject<List<ConversationEntity>> _converEvent =
       BehaviorSubject<List<ConversationEntity>>();
@@ -18,27 +18,27 @@ class InteractNative {
   /*
   * 自定义通信
   */
-  static BehaviorSubject<MessageEntity> initMessageEvent() {
+  static BehaviorSubject<List<MessageEntity>> initMessageEvent() {
     if (null == _messageEvent || _messageEvent.isClosed) {
-      _messageEvent = BehaviorSubject<MessageEntity>();
+      _messageEvent = BehaviorSubject<List<MessageEntity>>();
     }
     return _messageEvent;
   }
 
   /*发送*/
-  static Sink<MessageEntity> getMessageEventSink() {
+  static Sink<List<MessageEntity>> getMessageEventSink() {
     initMessageEvent();
     return _messageEvent.sink;
   }
 
 
   /*接收*/
-  static Stream<MessageEntity> getMessageEventStream() {
+  static Stream<List<MessageEntity>> getMessageEventStream() {
     initMessageEvent();
     return _messageEvent.stream;
   }
 
-static BehaviorSubject<List<ConversationEntity>> initConversationEvent() {
+  static BehaviorSubject<List<ConversationEntity>> initConversationEvent() {
     if (null == _converEvent || _converEvent.isClosed) {
       _converEvent = BehaviorSubject<List<ConversationEntity>>();
     }

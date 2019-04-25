@@ -108,4 +108,16 @@ class MessageBuilder {
     message.heartBeat = data;
     return message.writeToBuffer();
   }
+
+  static List<int> getMessageList(int id, String convId, int beginTime) {
+    var message = new TimMessage();
+    message.type = TimMessage_Type.HisMessagesReq;
+    var data = HisMessagesReq();
+    // data.id = Int64(id);  server set
+    data.converId = convId;
+    data.beaginTime = Int64(beginTime);
+
+    message.hisMessagesReq = data;
+    return message.writeToBuffer();
+  }
 }

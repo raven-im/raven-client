@@ -1,9 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:myapp/base/base_state.dart';
 import 'package:myapp/entity/contact_entity.dart';
-import 'package:myapp/entity/conversation_entity.dart';
-import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/contacts_manager.dart';
 import 'package:myapp/page/message_page.dart';
 import 'package:myapp/page/more_widgets.dart';
@@ -24,7 +21,7 @@ class ContactsPage extends StatefulWidget {
   }
 }
 
-class Contacts extends BaseState<ContactsPage> with AutomaticKeepAliveClientMixin {
+class Contacts extends State<ContactsPage> with AutomaticKeepAliveClientMixin {
   var _list = List<ContactEntity>();
   var _map = Map();
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
@@ -55,31 +52,6 @@ class Contacts extends BaseState<ContactsPage> with AutomaticKeepAliveClientMixi
         });
       }
     });
-    // InteractNative.goNativeWithValue(
-    //         InteractNative.methodNames['getAllContacts'], null)
-    //     .then((success) {
-    //   if (null != success && success is List) {
-    //     InteractNative.goNativeWithValue(
-    //             InteractNative.methodNames['getBlackListUsernames'], null)
-    //         .then((blackList) {
-    //       setState(() {
-    //         for (String ms in success) {
-    //           if (!_list.contains(ms)) {
-    //             _list.add(ms);
-    //           }
-    //         }
-    //         if (null != blackList && blackList is List) {
-    //           _blackList.clear();
-    //           for (String ms in blackList) {
-    //             if (!_blackList.contains(ms)) {
-    //               _blackList.add(ms);
-    //             }
-    //           }
-    //         }
-    //       });
-    //     });
-    //   }
-    // });
   }
 
   Widget layout(BuildContext context) {
@@ -102,8 +74,8 @@ class Contacts extends BaseState<ContactsPage> with AutomaticKeepAliveClientMixi
             new CupertinoPageRoute<void>(
                 builder: (ctx) => MessagePage(
                       title: _list[index].userName,
-                      targetName: _list[index].userName,
                       targetUid: _list[index].userId,
+                      convId: "TODO", //TODO  get convId from My & Target.
                     )));
       },
       
@@ -114,22 +86,4 @@ class Contacts extends BaseState<ContactsPage> with AutomaticKeepAliveClientMixi
 
   @override
   bool get wantKeepAlive => true;
-
-  @override
-  void updateData(MessageEntity entity) {
-    if (entity != null &&
-        entity.contentType == Constants.MESSAGE_TYPE_CHAT) {
-      _list.remove(entity);
-      _getContacts();
-    }
-  }
-
-  @override
-  void updateConversation(List<ConversationEntity> entities) {
-    // if (entity != null &&
-    //     entity.contentType == Constants.MESSAGE_TYPE_CHAT) {
-    //   _list.remove(entity);
-    //   _getContacts();
-    // }
-  }
 }

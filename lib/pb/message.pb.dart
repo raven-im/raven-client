@@ -452,6 +452,7 @@ class HisMessagesReq extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('HisMessagesReq', package: const $pb.PackageName('com.tim.common.protos'))
     ..a<Int64>(1, 'id', $pb.PbFieldType.OU6, Int64.ZERO)
     ..aOS(2, 'converId')
+    ..a<Int64>(3, 'beaginTime', $pb.PbFieldType.OU6, Int64.ZERO)
     ..hasRequiredFields = false
   ;
 
@@ -476,13 +477,18 @@ class HisMessagesReq extends $pb.GeneratedMessage {
   set converId($core.String v) { $_setString(1, v); }
   $core.bool hasConverId() => $_has(1);
   void clearConverId() => clearField(2);
+
+  Int64 get beaginTime => $_getI64(2);
+  set beaginTime(Int64 v) { $_setInt64(2, v); }
+  $core.bool hasBeaginTime() => $_has(2);
+  void clearBeaginTime() => clearField(3);
 }
 
 class HisMessagesAck extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('HisMessagesAck', package: const $pb.PackageName('com.tim.common.protos'))
     ..a<Int64>(1, 'id', $pb.PbFieldType.OU6, Int64.ZERO)
     ..aOS(2, 'converId')
-    ..pc<MessageContent>(3, 'messageList', $pb.PbFieldType.PM,MessageContent.create)
+    ..pc<MessageContent>(4, 'messageList', $pb.PbFieldType.PM,MessageContent.create)
     ..hasRequiredFields = false
   ;
 
@@ -596,7 +602,7 @@ class ConverInfo extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('ConverInfo', package: const $pb.PackageName('com.tim.common.protos'))
     ..aOS(1, 'converId')
     ..e<ConverType>(2, 'type', $pb.PbFieldType.OE, ConverType.SINGLE, ConverType.valueOf, ConverType.values)
-    ..pPS(3, 'uid')
+    ..pPS(3, 'uidList')
     ..aOS(4, 'groupId')
     ..a<Int64>(5, 'unCount', $pb.PbFieldType.OU6, Int64.ZERO)
     ..a<MessageContent>(6, 'lastContent', $pb.PbFieldType.OM, MessageContent.getDefault, MessageContent.create)
@@ -625,7 +631,7 @@ class ConverInfo extends $pb.GeneratedMessage {
   $core.bool hasType() => $_has(1);
   void clearType() => clearField(2);
 
-  $core.List<$core.String> get uid => $_getList(2);
+  $core.List<$core.String> get uidList => $_getList(2);
 
   $core.String get groupId => $_getS(3, '');
   set groupId($core.String v) { $_setString(3, v); }

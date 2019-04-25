@@ -26,7 +26,7 @@ class ObjectUtil {
     List<ConversationEntity> list = new List();
     convList.forEach((info) {
       String targetId;
-      info.uid.forEach((id){
+      info.uidList.forEach((id){
         if (id != myUid) {
           targetId = id;
         }
@@ -38,6 +38,25 @@ class ObjectUtil {
         lastMessage: info.lastContent.content,
         timestamp: info.lastContent.time.toInt(),
         conversationType: Constants.CONVERSATION_SINGLE); //TODO group
+      list.add(entity);
+    });
+    return list;
+  }
+
+  static List<MessageEntity> getMsgEntities(String myUid, List<MessageContent> msgList) {
+    List<MessageEntity> list = new List();
+    msgList.forEach((msg) {
+      MessageEntity entity = new MessageEntity(
+        msgId: msg.id.toInt(),
+        convType: Constants.CONVERSATION_SINGLE, //TODO Group?
+        fromUid: msg.uid,
+        targetUid: myUid, //??
+        contentType: Constants.MESSAGE_TYPE_CHAT,
+        content: msg.content,
+        time: msg.time.toString(),
+        status: 0,
+        messageOwner: myUid == msg.uid ? 0 : 1,
+      );
       list.add(entity);
     });
     return list;

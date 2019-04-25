@@ -76,6 +76,10 @@ class _MyHomePageState extends State<MyHomePage> {
         InteractNative.getConversationEventSink().add(
             ObjectUtil.getConvEntities(myUid, message.converAck.converList));
         break;
+      case TimMessage_Type.HisMessagesAck:
+        // notify.
+        InteractNative.getMessageEventSink().add(
+            ObjectUtil.getMsgEntities(myUid, message.hisMessagesAck.messageList));
     }
   }
 

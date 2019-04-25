@@ -81,8 +81,8 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
             new CupertinoPageRoute<void>(
                 builder: (ctx) => MessagePage(
                       title: entity.targetUid,
-                      targetName: entity.targetUid, //TODO
                       targetUid: entity.targetUid,
+                      convId: entity.id,
                     )));
       }
     });
@@ -142,7 +142,7 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
   bool get wantKeepAlive => true;
 
   @override
-  void updateData(MessageEntity entity) {
+  void updateData(List<MessageEntity> entity) {
     // if (null != entity) {
     //   if (entity.contentType == Constants.MESSAGE_TYPE_CHAT) {
 
