@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/database/contacts_db.dart';
+
 import 'package:myapp/entity/contact_entity.dart';
-import 'package:myapp/manager/contacts_manager.dart';
 import 'package:myapp/page/message_page.dart';
 import 'package:myapp/page/more_widgets.dart';
 import 'package:myapp/utils/constants.dart';
@@ -39,15 +40,17 @@ class Contacts extends State<ContactsPage> with AutomaticKeepAliveClientMixin {
 
   _getContacts() {
     String myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
-    ContactManager.get().getContactsEntity(myUid).then((entities) {
+    ContactsDataBase.get().getAllContactsEntities().then((entities) {
       if (entities.length > 0) {
         setState(() {
           _list.clear();
           _map.clear();
 
           entities.forEach((entity) {
+            if (entity.userId != myUid) {
               _list.insert(0, entity);
               _map[entity.userId] = entity;
+            }
           });
         });
       }

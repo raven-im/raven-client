@@ -10,9 +10,11 @@ class ConversationEntity {
   static const String IS_UNREAD_COUNT = "is_unread_count";
   static const String LAST_MESSAGE_TIME = "last_message_time";
   static const String CONVERATION_TYPE = "conversation_type";
+  
 
   String targetUid;
   String lastMessage;
+  String name;
   int timestamp;
   String id;
   int isUnreadCount;
@@ -22,6 +24,7 @@ class ConversationEntity {
     @required this.targetUid,
     @required this.id,
     this.isUnreadCount = 0,
+    this.name,
     @required this.timestamp,
     @required this.lastMessage,
     @required this.conversationType,

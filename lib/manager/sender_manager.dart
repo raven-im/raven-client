@@ -75,6 +75,7 @@ class SenderMngr {
           callback(data);
       }
     });
+    // socket connected, login.
     _loginReq();
   }
 

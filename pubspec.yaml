@@ -31,6 +31,8 @@ dependencies:
   synchronized: ^2.0.2+1 #异步相关
   rxdart: ^0.20.0 #Rx
   dio: 2.1.2  #latest version
+  sqflite: ^1.1.1 #数据库
+  path_provider: ^0.5.0+1
 
 dev_dependencies:
   flutter_test:

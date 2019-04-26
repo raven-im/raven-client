@@ -22,6 +22,7 @@ class MessageEntity {
       convId,
       content,
       contentType,
+      senderName,
       time;
   int convType, status, msgId;
   int isUnread, messageOwner, isUnreadCount;
@@ -39,6 +40,7 @@ class MessageEntity {
       this.convId,
       this.isUnread = 0,
       this.messageOwner = 1,
+      this.senderName,
       this.isUnreadCount = 0
       });
 

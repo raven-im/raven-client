@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 * 联系人类实体
 */
 class ContactEntity {
+  static const String DB_ID = "db_id";
   static const String USER_ID = "id";
   static const String USER_NAME = "user_name";
   static const String PORTRAIT = "portrait";

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:myapp/base/base_state.dart';
+import 'package:myapp/database/contacts_db.dart';
 import 'package:myapp/entity/conversation_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/message_manager.dart';
@@ -376,20 +377,23 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
   @override
   void updateData(List<MessageEntity> entities) {
 
-    entities.forEach((entity) {
-      if (entity.contentType == Constants.MESSAGE_TYPE_CHAT) {
-
-        if (myUid==entity.targetUid && entity.fromUid == widget.targetUid) {
-          // for me.
-          _messageList.insert(0, entity);
-        }
-      }
-    });
-    if (this.mounted) {
+    ContactsDataBase.get().getAllContactsEntities().then((contacts) {
+      entities.forEach((entity) {
+        if (entity.contentType == Constants.MESSAGE_TYPE_CHAT && 
+          myUid==entity.targetUid) {
+            // for me.
+            contacts.forEach((contact) {
+                if (contact.userId == entity.fromUid) {
+                  entity.senderName = contact.userName;
+                }
+              });
+            _messageList.insert(0, entity);
+          }
+      });
       setState((){
         //Your state change code goes here
       });
-    }
+    }); 
   }
 
   @override

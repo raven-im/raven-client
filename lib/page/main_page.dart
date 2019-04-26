@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/database/contacts_db.dart';
+import 'package:myapp/manager/contacts_manager.dart';
 import 'package:myapp/manager/conversation_manager.dart';
 import 'package:myapp/manager/sender_manager.dart';
 import 'package:myapp/manager/socket_manager.dart';
@@ -51,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
           style: new TextStyle(fontSize: 12.0, color: Colors.grey));
     }
   }
-
+  
   void initData() {
     /*
      * 2个子界面
@@ -62,6 +64,13 @@ class _MyHomePageState extends State<MyHomePage> {
     ];
     myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
     SenderMngr.init(_callback);
+
+    // request Contacts.
+    ContactManager.get().getContactsEntity(myUid).then((entities) {
+      entities.forEach((entity) {
+        ContactsDataBase.get().updateContactsEntity(entity);
+      });
+    });
   }
 
   void _callback(Object data) {
