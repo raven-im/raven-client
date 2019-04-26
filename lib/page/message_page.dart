@@ -379,7 +379,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
     entities.forEach((entity) {
       if (entity.contentType == Constants.MESSAGE_TYPE_CHAT) {
 
-        if (myUid==entity.targetUid) {
+        if (myUid==entity.targetUid && entity.fromUid == widget.targetUid) {
           // for me.
           _messageList.insert(0, entity);
         }

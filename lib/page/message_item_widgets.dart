@@ -86,7 +86,7 @@ class MessageItemWidgets {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  entity.targetUid,
+                  entity.fromUid,
                   style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
                 SizedBox(height: 5),
