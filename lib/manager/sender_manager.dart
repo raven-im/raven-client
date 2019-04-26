@@ -26,7 +26,7 @@ class SenderMngr {
           if (_msgMap.containsKey(message.loginAck.id)) {
             _msgMap.remove(message.loginAck.id);
           } else {
-            print("error: $message.loginAck.id contains? $_msgMap.containsKey(message.loginAck.id)");
+            print("error: ${message.loginAck.id} contains? ${_msgMap.containsKey(message.loginAck.id)}");
           } 
           if (message.loginAck.code == Code.SUCCESS) {
             isLogined = true;
@@ -36,10 +36,10 @@ class SenderMngr {
           }
           break;
         case TimMessage_Type.MessageAck:
-          if (_msgMap.containsKey(message.messageAck.id)) {
-            _msgMap.remove(message.messageAck.id);
+          if (_msgMap.containsKey(message.messageAck.cid)) {
+            _msgMap.remove(message.messageAck.cid);
           } else {
-            print("error: $message.messageAck.id contains? $_msgMap.containsKey(message.messageAck.id)");
+            print("error: ${message.messageAck.cid} contains? ${_msgMap.containsKey(message.messageAck.cid)}");
           } 
           if (message.messageAck.code == Code.SUCCESS) {
             callback(data); 
@@ -51,7 +51,7 @@ class SenderMngr {
           if (_msgMap.containsKey(message.converAck.id)) {
             _msgMap.remove(message.converAck.id);
           } else {
-            print("error: $message.converAck.id contains? $_msgMap.containsKey(message.converAck.id)");
+            print("error: ${message.converAck.id} contains? ${_msgMap.containsKey(message.converAck.id)}");
           } 
           if (message.converAck.code == Code.SUCCESS) {
             callback(data); 
@@ -65,10 +65,10 @@ class SenderMngr {
         case TimMessage_Type.HisMessagesAck:
           if (_msgMap.containsKey(message.hisMessagesAck.id)) {
             _msgMap.remove(message.hisMessagesAck.id);
+            callback(data);
           } else {
-            print("error: $message.hisMessagesAck.id contains? $_msgMap.containsKey(message.hisMessagesAck.id)");
+            print("error: ${message.hisMessagesAck.id} contains? ${_msgMap.containsKey(message.hisMessagesAck.id)}");
           }
-          callback(data);
           break;
       }
     });
@@ -77,6 +77,7 @@ class SenderMngr {
 
   static void _sendMsg(List<int> msg) async {
     if (isLogined) {
+      print("sending message.  $_msgId");
       SocketMngr.write(msg);
       _msgMap.putIfAbsent(_msgId, () => msg);
       _msgId++;

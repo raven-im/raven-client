@@ -113,7 +113,7 @@ class MessageBuilder {
     var message = new TimMessage();
     message.type = TimMessage_Type.HisMessagesReq;
     var data = HisMessagesReq();
-    // data.id = Int64(id);  server set
+    data.id = Int64(id);
     data.converId = convId;
     data.beaginTime = Int64(beginTime);
 
