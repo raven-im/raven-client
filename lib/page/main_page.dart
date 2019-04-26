@@ -80,6 +80,12 @@ class _MyHomePageState extends State<MyHomePage> {
         // notify.
         InteractNative.getMessageEventSink().add(
             ObjectUtil.getMsgEntities(myUid, message.hisMessagesAck.messageList));
+        break;
+      case TimMessage_Type.UpDownMessage:
+        // notify.
+        InteractNative.getMessageEventSink().add(
+            ObjectUtil.getMsgEntity(myUid, message.upDownMessage));
+        break;
     }
   }
 

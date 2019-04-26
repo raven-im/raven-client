@@ -70,6 +70,9 @@ class SenderMngr {
             print("error: ${message.hisMessagesAck.id} contains? ${_msgMap.containsKey(message.hisMessagesAck.id)}");
           }
           break;
+        case TimMessage_Type.UpDownMessage:
+          print(" receive messages.");
+          callback(data);
       }
     });
     _loginReq();

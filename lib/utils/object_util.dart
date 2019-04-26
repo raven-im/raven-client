@@ -61,6 +61,24 @@ class ObjectUtil {
     });
     return list;
   }
+
+  static List<MessageEntity> getMsgEntity(String myUid, UpDownMessage msg) {
+
+    MessageEntity entity = new MessageEntity(
+      msgId: msg.id.toInt(),
+      convType: Constants.CONVERSATION_SINGLE, //TODO Group?
+      fromUid: msg.fromUid,
+      targetUid: msg.targetUid, //??
+      contentType: Constants.MESSAGE_TYPE_CHAT,
+      content: msg.content.content,
+      time: msg.content.time.toString(),
+      status: 0,
+      messageOwner: myUid == msg.fromUid ? 0 : 1,
+    );
+    List<MessageEntity> entities = new List();
+    entities.add(entity);
+    return entities;
+  }
   // static MessageEntity getDefaultData(String type, String senderAccount) {
   //   return new MessageEntity(
   //           convType: 1,

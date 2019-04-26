@@ -366,31 +366,30 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
     //   });
     // });
   }
+  @override
+  void dispose() {
+    print(" message page dispose");
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
 
   @override
   void updateData(List<MessageEntity> entities) {
 
     entities.forEach((entity) {
-      _messageList.insert(0, entity);
-    });
-    setState(() {
+      if (entity.contentType == Constants.MESSAGE_TYPE_CHAT) {
 
+        if (myUid==entity.targetUid) {
+          // for me.
+          _messageList.insert(0, entity);
+        }
+      }
     });
-    // if (null != entity) {
-    //   if (entity.contentType == Constants.MESSAGE_TYPE_CHAT) {
-
-    //     if (list.contains(entity.titleName)) {
-    //       //如果已经存在
-    //       list.remove(entity.titleName);
-    //       map.remove(entity.titleName);
-    //     }
-    //     list.insert(0, entity.titleName);
-    //     map[entity.titleName] = entity;
-    //     setState(() {
-    //       isShowNoPage = list.length <= 0;
-    //     });
-    //   }
-    // }
+    if (this.mounted) {
+      setState((){
+        //Your state change code goes here
+      });
+    }
   }
 
   @override
