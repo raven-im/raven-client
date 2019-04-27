@@ -4,6 +4,9 @@ A new Flutter project for Raven IM server.
 
 https://github.com/IamNotShady/raven
 
+Application Server for user and group things.
+https://github.com/bbpatience/raven-appserver
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
