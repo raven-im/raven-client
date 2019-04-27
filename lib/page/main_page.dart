@@ -74,23 +74,23 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _callback(Object data) {
-    TimMessage message = TimMessage.fromBuffer(data);
+    RavenMessage message = RavenMessage.fromBuffer(data);
     switch (message.type) {
-      case TimMessage_Type.LoginAck:
+      case RavenMessage_Type.LoginAck:
         print("IM Login success");
         ConversaionManager.get().requestConverEntities();
         break;
-      case TimMessage_Type.ConverAck:
+      case RavenMessage_Type.ConverAck:
         // notify.
         InteractNative.getConversationEventSink().add(
             ObjectUtil.getConvEntities(myUid, message.converAck.converList));
         break;
-      case TimMessage_Type.HisMessagesAck:
+      case RavenMessage_Type.HisMessagesAck:
         // notify.
         InteractNative.getMessageEventSink().add(
             ObjectUtil.getMsgEntities(myUid, message.hisMessagesAck.messageList));
         break;
-      case TimMessage_Type.UpDownMessage:
+      case RavenMessage_Type.UpDownMessage:
         // notify.
         InteractNative.getMessageEventSink().add(
             ObjectUtil.getMsgEntity(myUid, message.upDownMessage));

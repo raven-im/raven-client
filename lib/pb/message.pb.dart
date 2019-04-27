@@ -13,7 +13,7 @@ import 'message.pbenum.dart';
 
 export 'message.pbenum.dart';
 
-enum TimMessage_Data {
+enum RavenMessage_Data {
   login, 
   loginAck, 
   serverInfo, 
@@ -28,23 +28,23 @@ enum TimMessage_Data {
   notSet
 }
 
-class TimMessage extends $pb.GeneratedMessage {
-  static const $core.Map<$core.int, TimMessage_Data> _TimMessage_DataByTag = {
-    2 : TimMessage_Data.login,
-    3 : TimMessage_Data.loginAck,
-    4 : TimMessage_Data.serverInfo,
-    5 : TimMessage_Data.upDownMessage,
-    6 : TimMessage_Data.heartBeat,
-    7 : TimMessage_Data.messageAck,
-    8 : TimMessage_Data.hisMessagesReq,
-    9 : TimMessage_Data.hisMessagesAck,
-    10 : TimMessage_Data.notifyMessage,
-    11 : TimMessage_Data.converReq,
-    12 : TimMessage_Data.converAck,
-    0 : TimMessage_Data.notSet
+class RavenMessage extends $pb.GeneratedMessage {
+  static const $core.Map<$core.int, RavenMessage_Data> _RavenMessage_DataByTag = {
+    2 : RavenMessage_Data.login,
+    3 : RavenMessage_Data.loginAck,
+    4 : RavenMessage_Data.serverInfo,
+    5 : RavenMessage_Data.upDownMessage,
+    6 : RavenMessage_Data.heartBeat,
+    7 : RavenMessage_Data.messageAck,
+    8 : RavenMessage_Data.hisMessagesReq,
+    9 : RavenMessage_Data.hisMessagesAck,
+    10 : RavenMessage_Data.notifyMessage,
+    11 : RavenMessage_Data.converReq,
+    12 : RavenMessage_Data.converAck,
+    0 : RavenMessage_Data.notSet
   };
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('TimMessage', package: const $pb.PackageName('com.tim.common.protos'))
-    ..e<TimMessage_Type>(1, 'type', $pb.PbFieldType.OE, TimMessage_Type.Login, TimMessage_Type.valueOf, TimMessage_Type.values)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('RavenMessage', package: const $pb.PackageName('com.raven.common.protos'))
+    ..e<RavenMessage_Type>(1, 'type', $pb.PbFieldType.OE, RavenMessage_Type.Login, RavenMessage_Type.valueOf, RavenMessage_Type.values)
     ..a<Login>(2, 'login', $pb.PbFieldType.OM, Login.getDefault, Login.create)
     ..a<LoginAck>(3, 'loginAck', $pb.PbFieldType.OM, LoginAck.getDefault, LoginAck.create)
     ..a<ServerInfo>(4, 'serverInfo', $pb.PbFieldType.OM, ServerInfo.getDefault, ServerInfo.create)
@@ -60,23 +60,23 @@ class TimMessage extends $pb.GeneratedMessage {
     ..hasRequiredFields = false
   ;
 
-  TimMessage() : super();
-  TimMessage.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
-  TimMessage.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
-  TimMessage clone() => TimMessage()..mergeFromMessage(this);
-  TimMessage copyWith(void Function(TimMessage) updates) => super.copyWith((message) => updates(message as TimMessage));
+  RavenMessage() : super();
+  RavenMessage.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromBuffer(i, r);
+  RavenMessage.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) : super.fromJson(i, r);
+  RavenMessage clone() => RavenMessage()..mergeFromMessage(this);
+  RavenMessage copyWith(void Function(RavenMessage) updates) => super.copyWith((message) => updates(message as RavenMessage));
   $pb.BuilderInfo get info_ => _i;
-  static TimMessage create() => TimMessage();
-  TimMessage createEmptyInstance() => create();
-  static $pb.PbList<TimMessage> createRepeated() => $pb.PbList<TimMessage>();
-  static TimMessage getDefault() => _defaultInstance ??= create()..freeze();
-  static TimMessage _defaultInstance;
+  static RavenMessage create() => RavenMessage();
+  RavenMessage createEmptyInstance() => create();
+  static $pb.PbList<RavenMessage> createRepeated() => $pb.PbList<RavenMessage>();
+  static RavenMessage getDefault() => _defaultInstance ??= create()..freeze();
+  static RavenMessage _defaultInstance;
 
-  TimMessage_Data whichData() => _TimMessage_DataByTag[$_whichOneof(0)];
+  RavenMessage_Data whichData() => _RavenMessage_DataByTag[$_whichOneof(0)];
   void clearData() => clearField($_whichOneof(0));
 
-  TimMessage_Type get type => $_getN(0);
-  set type(TimMessage_Type v) { setField(1, v); }
+  RavenMessage_Type get type => $_getN(0);
+  set type(RavenMessage_Type v) { setField(1, v); }
   $core.bool hasType() => $_has(0);
   void clearType() => clearField(1);
 
@@ -137,7 +137,7 @@ class TimMessage extends $pb.GeneratedMessage {
 }
 
 class Login extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('Login', package: const $pb.PackageName('com.tim.common.protos'))
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('Login', package: const $pb.PackageName('com.raven.common.protos'))
     ..a<Int64>(1, 'id', $pb.PbFieldType.OU6, Int64.ZERO)
     ..aOS(2, 'uid')
     ..aOS(3, 'token')
@@ -173,7 +173,7 @@ class Login extends $pb.GeneratedMessage {
 }
 
 class LoginAck extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('LoginAck', package: const $pb.PackageName('com.tim.common.protos'))
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('LoginAck', package: const $pb.PackageName('com.raven.common.protos'))
     ..a<Int64>(1, 'id', $pb.PbFieldType.OU6, Int64.ZERO)
     ..e<Code>(2, 'code', $pb.PbFieldType.OE, Code.SUCCESS, Code.valueOf, Code.values)
     ..aOS(3, 'msg')
@@ -215,7 +215,7 @@ class LoginAck extends $pb.GeneratedMessage {
 }
 
 class ServerInfo extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ServerInfo', package: const $pb.PackageName('com.tim.common.protos'))
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ServerInfo', package: const $pb.PackageName('com.raven.common.protos'))
     ..a<Int64>(1, 'id', $pb.PbFieldType.OU6, Int64.ZERO)
     ..aOS(2, 'ip')
     ..a<$core.int>(3, 'port', $pb.PbFieldType.OU3)
@@ -251,7 +251,7 @@ class ServerInfo extends $pb.GeneratedMessage {
 }
 
 class UpDownMessage extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('UpDownMessage', package: const $pb.PackageName('com.tim.common.protos'))
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('UpDownMessage', package: const $pb.PackageName('com.raven.common.protos'))
     ..a<Int64>(1, 'id', $pb.PbFieldType.OU6, Int64.ZERO)
     ..a<Int64>(2, 'cid', $pb.PbFieldType.OU6, Int64.ZERO)
     ..aOS(3, 'fromUid')
@@ -317,7 +317,7 @@ class UpDownMessage extends $pb.GeneratedMessage {
 }
 
 class HeartBeat extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('HeartBeat', package: const $pb.PackageName('com.tim.common.protos'))
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('HeartBeat', package: const $pb.PackageName('com.raven.common.protos'))
     ..a<Int64>(1, 'id', $pb.PbFieldType.OU6, Int64.ZERO)
     ..e<HeartBeatType>(2, 'heartBeatType', $pb.PbFieldType.OE, HeartBeatType.PING, HeartBeatType.valueOf, HeartBeatType.values)
     ..hasRequiredFields = false
@@ -347,7 +347,7 @@ class HeartBeat extends $pb.GeneratedMessage {
 }
 
 class MessageAck extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('MessageAck', package: const $pb.PackageName('com.tim.common.protos'))
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('MessageAck', package: const $pb.PackageName('com.raven.common.protos'))
     ..a<Int64>(1, 'id', $pb.PbFieldType.OU6, Int64.ZERO)
     ..a<Int64>(2, 'cid', $pb.PbFieldType.OU6, Int64.ZERO)
     ..aOS(3, 'targetUid')
@@ -401,7 +401,7 @@ class MessageAck extends $pb.GeneratedMessage {
 }
 
 class MessageContent extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('MessageContent', package: const $pb.PackageName('com.tim.common.protos'))
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('MessageContent', package: const $pb.PackageName('com.raven.common.protos'))
     ..a<Int64>(1, 'id', $pb.PbFieldType.OU6, Int64.ZERO)
     ..aOS(2, 'uid')
     ..e<MessageType>(3, 'type', $pb.PbFieldType.OE, MessageType.TEXT, MessageType.valueOf, MessageType.values)
@@ -449,7 +449,7 @@ class MessageContent extends $pb.GeneratedMessage {
 }
 
 class HisMessagesReq extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('HisMessagesReq', package: const $pb.PackageName('com.tim.common.protos'))
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('HisMessagesReq', package: const $pb.PackageName('com.raven.common.protos'))
     ..a<Int64>(1, 'id', $pb.PbFieldType.OU6, Int64.ZERO)
     ..aOS(2, 'converId')
     ..a<Int64>(3, 'beaginTime', $pb.PbFieldType.OU6, Int64.ZERO)
@@ -485,7 +485,7 @@ class HisMessagesReq extends $pb.GeneratedMessage {
 }
 
 class HisMessagesAck extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('HisMessagesAck', package: const $pb.PackageName('com.tim.common.protos'))
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('HisMessagesAck', package: const $pb.PackageName('com.raven.common.protos'))
     ..a<Int64>(1, 'id', $pb.PbFieldType.OU6, Int64.ZERO)
     ..aOS(2, 'converId')
     ..pc<MessageContent>(4, 'messageList', $pb.PbFieldType.PM,MessageContent.create)
@@ -518,7 +518,7 @@ class HisMessagesAck extends $pb.GeneratedMessage {
 }
 
 class ConverReq extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ConverReq', package: const $pb.PackageName('com.tim.common.protos'))
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ConverReq', package: const $pb.PackageName('com.raven.common.protos'))
     ..a<Int64>(1, 'id', $pb.PbFieldType.OU6, Int64.ZERO)
     ..e<OperationType>(2, 'type', $pb.PbFieldType.OE, OperationType.DETAIL, OperationType.valueOf, OperationType.values)
     ..aOS(3, 'conversationId')
@@ -554,7 +554,7 @@ class ConverReq extends $pb.GeneratedMessage {
 }
 
 class ConverAck extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ConverAck', package: const $pb.PackageName('com.tim.common.protos'))
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ConverAck', package: const $pb.PackageName('com.raven.common.protos'))
     ..a<Int64>(1, 'id', $pb.PbFieldType.OU6, Int64.ZERO)
     ..e<Code>(3, 'code', $pb.PbFieldType.OE, Code.SUCCESS, Code.valueOf, Code.values)
     ..a<Int64>(4, 'time', $pb.PbFieldType.OU6, Int64.ZERO)
@@ -599,7 +599,7 @@ class ConverAck extends $pb.GeneratedMessage {
 }
 
 class ConverInfo extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ConverInfo', package: const $pb.PackageName('com.tim.common.protos'))
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('ConverInfo', package: const $pb.PackageName('com.raven.common.protos'))
     ..aOS(1, 'converId')
     ..e<ConverType>(2, 'type', $pb.PbFieldType.OE, ConverType.SINGLE, ConverType.valueOf, ConverType.values)
     ..pPS(3, 'uidList')
@@ -650,7 +650,7 @@ class ConverInfo extends $pb.GeneratedMessage {
 }
 
 class NotifyMessage extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('NotifyMessage', package: const $pb.PackageName('com.tim.common.protos'))
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('NotifyMessage', package: const $pb.PackageName('com.raven.common.protos'))
     ..a<Int64>(1, 'id', $pb.PbFieldType.OU6, Int64.ZERO)
     ..aOS(2, 'type')
     ..aOS(3, 'targetUid')

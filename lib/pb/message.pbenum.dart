@@ -87,20 +87,20 @@ class OperationType extends $pb.ProtobufEnum {
   const OperationType._($core.int v, $core.String n) : super(v, n);
 }
 
-class TimMessage_Type extends $pb.ProtobufEnum {
-  static const TimMessage_Type Login = TimMessage_Type._(0, 'Login');
-  static const TimMessage_Type LoginAck = TimMessage_Type._(1, 'LoginAck');
-  static const TimMessage_Type ServerInfo = TimMessage_Type._(2, 'ServerInfo');
-  static const TimMessage_Type UpDownMessage = TimMessage_Type._(3, 'UpDownMessage');
-  static const TimMessage_Type HeartBeat = TimMessage_Type._(4, 'HeartBeat');
-  static const TimMessage_Type MessageAck = TimMessage_Type._(5, 'MessageAck');
-  static const TimMessage_Type HisMessagesReq = TimMessage_Type._(6, 'HisMessagesReq');
-  static const TimMessage_Type HisMessagesAck = TimMessage_Type._(7, 'HisMessagesAck');
-  static const TimMessage_Type NotifyMessage = TimMessage_Type._(8, 'NotifyMessage');
-  static const TimMessage_Type ConverReq = TimMessage_Type._(11, 'ConverReq');
-  static const TimMessage_Type ConverAck = TimMessage_Type._(10, 'ConverAck');
+class RavenMessage_Type extends $pb.ProtobufEnum {
+  static const RavenMessage_Type Login = RavenMessage_Type._(0, 'Login');
+  static const RavenMessage_Type LoginAck = RavenMessage_Type._(1, 'LoginAck');
+  static const RavenMessage_Type ServerInfo = RavenMessage_Type._(2, 'ServerInfo');
+  static const RavenMessage_Type UpDownMessage = RavenMessage_Type._(3, 'UpDownMessage');
+  static const RavenMessage_Type HeartBeat = RavenMessage_Type._(4, 'HeartBeat');
+  static const RavenMessage_Type MessageAck = RavenMessage_Type._(5, 'MessageAck');
+  static const RavenMessage_Type HisMessagesReq = RavenMessage_Type._(6, 'HisMessagesReq');
+  static const RavenMessage_Type HisMessagesAck = RavenMessage_Type._(7, 'HisMessagesAck');
+  static const RavenMessage_Type NotifyMessage = RavenMessage_Type._(8, 'NotifyMessage');
+  static const RavenMessage_Type ConverReq = RavenMessage_Type._(11, 'ConverReq');
+  static const RavenMessage_Type ConverAck = RavenMessage_Type._(10, 'ConverAck');
 
-  static const $core.List<TimMessage_Type> values = <TimMessage_Type> [
+  static const $core.List<RavenMessage_Type> values = <RavenMessage_Type> [
     Login,
     LoginAck,
     ServerInfo,
@@ -114,9 +114,9 @@ class TimMessage_Type extends $pb.ProtobufEnum {
     ConverAck,
   ];
 
-  static final $core.Map<$core.int, TimMessage_Type> _byValue = $pb.ProtobufEnum.initByValue(values);
-  static TimMessage_Type valueOf($core.int value) => _byValue[value];
+  static final $core.Map<$core.int, RavenMessage_Type> _byValue = $pb.ProtobufEnum.initByValue(values);
+  static RavenMessage_Type valueOf($core.int value) => _byValue[value];
 
-  const TimMessage_Type._($core.int v, $core.String n) : super(v, n);
+  const RavenMessage_Type._($core.int v, $core.String n) : super(v, n);
 }
 

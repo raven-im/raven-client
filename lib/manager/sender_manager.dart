@@ -19,10 +19,10 @@ class SenderMngr {
   static init(callback(Object data)) async {
     Socket socket = await SocketMngr.getSocket();
     socket.listen((data) {
-      TimMessage message = TimMessage.fromBuffer(data);
+      RavenMessage message = RavenMessage.fromBuffer(data);
       print(message.type);
       switch (message.type) {
-        case TimMessage_Type.LoginAck:
+        case RavenMessage_Type.LoginAck:
           if (_msgMap.containsKey(message.loginAck.id)) {
             _msgMap.remove(message.loginAck.id);
           } else {
@@ -35,7 +35,7 @@ class SenderMngr {
             print("error: login ack: $message.loginAck.code ");
           }
           break;
-        case TimMessage_Type.MessageAck:
+        case RavenMessage_Type.MessageAck:
           if (_msgMap.containsKey(message.messageAck.cid)) {
             _msgMap.remove(message.messageAck.cid);
           } else {
@@ -47,7 +47,7 @@ class SenderMngr {
             print("error: message ack: $message.messageAck.code ");
           }
           break;
-        case TimMessage_Type.ConverAck:
+        case RavenMessage_Type.ConverAck:
           if (_msgMap.containsKey(message.converAck.id)) {
             _msgMap.remove(message.converAck.id);
           } else {
@@ -59,10 +59,10 @@ class SenderMngr {
             print("error: conversation ack: $message.converAck.code ");
           }
           break;
-        case TimMessage_Type.HeartBeat:
+        case RavenMessage_Type.HeartBeat:
           _sendPong(message.heartBeat.id);
           break;
-        case TimMessage_Type.HisMessagesAck:
+        case RavenMessage_Type.HisMessagesAck:
           if (_msgMap.containsKey(message.hisMessagesAck.id)) {
             _msgMap.remove(message.hisMessagesAck.id);
             callback(data);
@@ -70,7 +70,7 @@ class SenderMngr {
             print("error: ${message.hisMessagesAck.id} contains? ${_msgMap.containsKey(message.hisMessagesAck.id)}");
           }
           break;
-        case TimMessage_Type.UpDownMessage:
+        case RavenMessage_Type.UpDownMessage:
           print(" receive messages.");
           callback(data);
       }

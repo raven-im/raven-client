@@ -2,7 +2,7 @@
 
 A new Flutter project for Raven IM server.
 
-https://github.com/IamNotShady/tim
+https://github.com/IamNotShady/raven
 
 ## Getting Started
 

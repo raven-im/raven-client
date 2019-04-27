@@ -21,8 +21,8 @@ class MessageBuilder {
   // }
 
   static Uint8List login(int id, String uid, String token){
-    var message = new TimMessage();
-    message.type = TimMessage_Type.Login;
+    var message = new RavenMessage();
+    message.type = RavenMessage_Type.Login;
     var data = Login();
     data.id = Int64(id);
     data.uid = uid;
@@ -32,8 +32,8 @@ class MessageBuilder {
   }
 
   static List<int> getAllConversationList(int id) {
-    var message = new TimMessage();
-    message.type = TimMessage_Type.ConverReq;
+    var message = new RavenMessage();
+    message.type = RavenMessage_Type.ConverReq;
     var data = ConverReq();
     data.id = Int64(id);
     data.type = OperationType.ALL;
@@ -42,8 +42,8 @@ class MessageBuilder {
   }
 
   static List<int> getDetailConversationList(int id, String cid) {
-    var message = new TimMessage();
-    message.type = TimMessage_Type.ConverReq;
+    var message = new RavenMessage();
+    message.type = RavenMessage_Type.ConverReq;
     var data = ConverReq();
     data.id = Int64(id);
     data.type = OperationType.DETAIL;
@@ -54,8 +54,8 @@ class MessageBuilder {
 
   static List<int> sendSingleMessage(int id, String fromId, String targetId, MessageType type, 
       String content, {String converId}) {
-    var message = new TimMessage();
-    message.type = TimMessage_Type.UpDownMessage;
+    var message = new RavenMessage();
+    message.type = RavenMessage_Type.UpDownMessage;
     var data = UpDownMessage();
     // data.id = Int64(id);  server set
     data.cid = Int64(id);
@@ -72,8 +72,8 @@ class MessageBuilder {
 
   static List<int> sendGroupMessage(int id, String fromId, String targetId, MessageType type, 
       String content, String groupId, {String converId}) {
-    var message = new TimMessage();
-    message.type = TimMessage_Type.UpDownMessage;
+    var message = new RavenMessage();
+    message.type = RavenMessage_Type.UpDownMessage;
     var data = UpDownMessage();
     // data.id = Int64(id);  server set
     data.cid = Int64(id);
@@ -100,8 +100,8 @@ class MessageBuilder {
   }
 
   static List<int> sendHeartBeat(Int64 id, HeartBeatType type) {
-    var message = new TimMessage();
-    message.type = TimMessage_Type.HeartBeat;
+    var message = new RavenMessage();
+    message.type = RavenMessage_Type.HeartBeat;
     var data = HeartBeat();
     data.id = id;
     data.heartBeatType = type;
@@ -110,8 +110,8 @@ class MessageBuilder {
   }
 
   static List<int> getMessageList(int id, String convId, int beginTime) {
-    var message = new TimMessage();
-    message.type = TimMessage_Type.HisMessagesReq;
+    var message = new RavenMessage();
+    message.type = RavenMessage_Type.HisMessagesReq;
     var data = HisMessagesReq();
     data.id = Int64(id);
     data.converId = convId;
