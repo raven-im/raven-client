@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/base/base_state.dart';
-import 'package:myapp/database/contacts_db.dart';
+import 'package:myapp/database/db_api.dart';
 import 'package:myapp/entity/conversation_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/page/message_page.dart';
@@ -176,7 +176,7 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
           isShowNoPage = false;
         });
 
-        ContactsDataBase.get().getAllContactsEntities().then((contacts){
+        DataBaseApi.get().getAllContactsEntities().then((contacts){
           entities.forEach((entity) {
               contacts.forEach((contact) {
                 if (contact.userId == entity.targetUid) {

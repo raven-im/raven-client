@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/database/contacts_db.dart';
+import 'package:myapp/database/db_api.dart';
 import 'package:myapp/page/login_page.dart';
 import 'package:myapp/page/main_page.dart';
 import 'package:myapp/utils/sp_util.dart';
@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SPUtil.getInstance();
-    ContactsDataBase.get().getAllContactsEntities();
+    DataBaseApi.get().getAllContactsEntities();
     bool isLogin = false; //TODO load from sp.
     return MaterialApp(
       home: !isLogin ? new LoginPage() : new MainPage(),

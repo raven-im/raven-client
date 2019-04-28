@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:myapp/base/base_state.dart';
-import 'package:myapp/database/contacts_db.dart';
+import 'package:myapp/database/db_api.dart';
 import 'package:myapp/entity/conversation_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/message_manager.dart';
@@ -377,7 +377,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
   @override
   void updateData(List<MessageEntity> entities) {
 
-    ContactsDataBase.get().getAllContactsEntities().then((contacts) {
+    DataBaseApi.get().getAllContactsEntities().then((contacts) {
       entities.forEach((entity) {
         if (entity.contentType == Constants.MESSAGE_TYPE_CHAT && 
           myUid==entity.targetUid) {

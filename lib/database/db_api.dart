@@ -1,21 +1,19 @@
 import 'dart:io';
-
-
-import 'package:myapp/database/contacts_db_cfg.dart';
+import 'package:myapp/database/db_config.dart';
 import 'package:myapp/entity/contact_entity.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 
-class ContactsDataBase {
-  static final ContactsDataBase _messageDataBase = new ContactsDataBase._internal();
+class DataBaseApi {
+  static final DataBaseApi _messageDataBase = new DataBaseApi._internal();
 
-  static ContactsDataBase get() {
+  static DataBaseApi get() {
     return _messageDataBase;
   }
 
-  ContactsDataBase._internal();
+  DataBaseApi._internal();
 
   Future<Database> _init() async {
     // Get a location using path_provider
