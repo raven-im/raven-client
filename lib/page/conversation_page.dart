@@ -10,6 +10,7 @@ import 'package:myapp/page/message_page.dart';
 import 'package:myapp/page/more_widgets.dart';
 import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/date_util.dart';
+import 'package:myapp/utils/interact_vative.dart';
 
 class ConversationPage extends StatefulWidget {
   ConversationPage({Key key, this.rootContext}) : super(key: key);
@@ -144,51 +145,32 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
   bool get wantKeepAlive => true;
 
   @override
-  void updateData(List<MessageEntity> entity) {
-    // if (null != entity) {
-    //   if (entity.contentType == Constants.MESSAGE_TYPE_CHAT) {
+  void updateData(MessageEntity entity) {
 
-    //     if (list.contains(entity.titleName)) {
-    //       //如果已经存在
-    //       list.remove(entity.titleName);
-    //       map.remove(entity.titleName);
-    //     }
-    //     list.insert(0, entity.titleName);
-    //     map[entity.titleName] = entity;
-    //     setState(() {
-    //       isShowNoPage = list.length <= 0;
-    //     });
-    //   }
-    // }
   }
-
+  
   @override
-  Future updateConversation(List<ConversationEntity> entities) {
-    if (0 < entities.length) {
-        list.clear();
-        map.clear();
+  void notify(Object type) {
+    if (type == InteractNative.PULL_CONVERSATION) {
+      list.clear();
+      map.clear();
 
-        entities.forEach((entity) {
-              list.insert(0, entity.targetUid);//TODO  group?
-              map[entity.targetUid] = entity;
-        });
-        setState(() {
-          isShowNoPage = false;
-        });
-
-        DataBaseApi.get().getAllContactsEntities().then((contacts){
-          entities.forEach((entity) {
-              contacts.forEach((contact) {
-                if (contact.userId == entity.targetUid) {
-                  entity.name = contact.userName;
-                }
-              });
-              map[entity.targetUid] = entity;
+      DataBaseApi.get().getConversationEntities().then((conversations) => {
+        DataBaseApi.get().getAllContactsEntities().then((contacts) {
+          var contactsMap = new Map();
+          contacts.forEach((contact) => contactsMap[contact.userId] = contact.userName);
+          conversations.forEach((entity) {
+            if (contactsMap.containsKey(entity.targetUid)) {
+              entity.name = contactsMap[entity.targetUid];
+            }
+            list.insert(0, entity.targetUid);//TODO  group?
+            map[entity.targetUid] = entity;
           });
           setState(() {
+            isShowNoPage = conversations.length <= 0;
           });
-        });
-        
+      })
+      });  
     }
   }
 }

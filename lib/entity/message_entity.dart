@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 
 class MessageEntity {
+  static const String DB_ID = "db_id";
   static const String MSG_ID = "id";
   static const String CONVERSATION_TYPE = "conversation_type"; //消息类型，不可以为空
   static const String IS_UNREAD = "is_unread"; //0未读,1已读
@@ -46,7 +47,7 @@ class MessageEntity {
 
   MessageEntity.fromMap(Map<String, dynamic> map)
       : this(
-          msgId: map[MSG_ID],
+          msgId: int.parse(map[MSG_ID]),
           convId: map[CONVERSATION_ID],
           convType: map[CONVERSATION_TYPE],
           fromUid: map[FROM_UID],

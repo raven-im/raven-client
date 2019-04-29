@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 * 消息列表类实体
 */
 class ConversationEntity {
+  static const String DB_ID = "db_id";
   static const String CON_ID = "id";
   static const String TARGET_UID = "targetUid";
   static const String LAST_MESSAGE = "last_message";
@@ -35,7 +36,7 @@ class ConversationEntity {
           targetUid: map[TARGET_UID],
           isUnreadCount: map[IS_UNREAD_COUNT],
           id: map[CON_ID],
-          timestamp: map[LAST_MESSAGE_TIME],
+          timestamp: int.parse(map[LAST_MESSAGE_TIME]),
           lastMessage: map[LAST_MESSAGE],
           conversationType: map[CONVERATION_TYPE],
         );

@@ -81,18 +81,18 @@ class _MyHomePageState extends State<MyHomePage> {
         ConversaionManager.get().requestConverEntities();
         break;
       case RavenMessage_Type.ConverAck:
-        // notify.
-        InteractNative.getConversationEventSink().add(
-            ObjectUtil.getConvEntities(myUid, message.converAck.converList));
+        DataBaseApi.get()
+            .updateConversationEntities(
+              ObjectUtil.getConvEntities(myUid, message.converAck.converList));
         break;
       case RavenMessage_Type.HisMessagesAck:
-        // notify.
-        InteractNative.getMessageEventSink().add(
+        //DB insert
+        DataBaseApi.get().updateMessageEntities(message.hisMessagesAck.converId, 
             ObjectUtil.getMsgEntities(myUid, message.hisMessagesAck.messageList));
         break;
       case RavenMessage_Type.UpDownMessage:
-        // notify.
-        InteractNative.getMessageEventSink().add(
+        //DB insert
+        DataBaseApi.get().updateMessageEntity(message.upDownMessage.converId, 
             ObjectUtil.getMsgEntity(myUid, message.upDownMessage));
         break;
     }

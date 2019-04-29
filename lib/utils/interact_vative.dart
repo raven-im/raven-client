@@ -1,71 +1,71 @@
 import 'dart:async';
-import 'package:myapp/entity/conversation_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:rxdart/rxdart.dart';
 
 class InteractNative {
 
-  static BehaviorSubject<List<MessageEntity>> _messageEvent =
-      BehaviorSubject<List<MessageEntity>>();
+  static BehaviorSubject<Object> _appEvent = BehaviorSubject<Object>();
 
-  static BehaviorSubject<List<ConversationEntity>> _converEvent =
-      BehaviorSubject<List<ConversationEntity>>();
+  static BehaviorSubject<MessageEntity> _messageEvent =
+      BehaviorSubject<MessageEntity>();
 
-  static const int CHANGE_PAGE_TO_MAIN = 2;
-  static const int CHANGE_PAGE_TO_LOGIN = 3;
+  static const int PULL_MESSAGE = 1;
+  static const int PULL_CONVERSATION = 2;
   
-
   /*
   * 自定义通信
   */
-  static BehaviorSubject<List<MessageEntity>> initMessageEvent() {
+  static BehaviorSubject<MessageEntity> initMessageEvent() {
     if (null == _messageEvent || _messageEvent.isClosed) {
-      _messageEvent = BehaviorSubject<List<MessageEntity>>();
+      _messageEvent = BehaviorSubject<MessageEntity>();
     }
     return _messageEvent;
   }
 
   /*发送*/
-  static Sink<List<MessageEntity>> getMessageEventSink() {
+  static Sink<MessageEntity> getMessageEventSink() {
     initMessageEvent();
     return _messageEvent.sink;
   }
 
-
   /*接收*/
-  static Stream<List<MessageEntity>> getMessageEventStream() {
+  static Stream<MessageEntity> getMessageEventStream() {
     initMessageEvent();
     return _messageEvent.stream;
   }
 
-  static BehaviorSubject<List<ConversationEntity>> initConversationEvent() {
-    if (null == _converEvent || _converEvent.isClosed) {
-      _converEvent = BehaviorSubject<List<ConversationEntity>>();
+  /*
+  * 自定义通信
+  */
+  static BehaviorSubject<Object> initAppEvent() {
+    if (null == _appEvent || _appEvent.isClosed) {
+      _appEvent = BehaviorSubject<Object>();
     }
-    return _converEvent;
+    return _appEvent;
   }
 
   /*发送*/
-  static Sink<List<ConversationEntity>> getConversationEventSink() {
-    initConversationEvent();
-    return _converEvent.sink;
+  static Sink<Object> getAppEventSink() {
+    initAppEvent();
+    return _appEvent.sink;
   }
-
 
   /*接收*/
-  static Stream<List<ConversationEntity>> getConversationEventStream() {
-    initConversationEvent();
-    return _converEvent.stream;
+  static Stream<Object> getAppEventStream() {
+    initAppEvent();
+    return _appEvent.stream;
   }
+
+  
   /*
   *  退出登录时，需要关闭
   */
-  static void closeMessageStream() {
+  static void closeStream() {
     if (null != _messageEvent) {
       _messageEvent.close();
     }
-    if (null != _converEvent) {
-      _converEvent.close();
+    if (null != _appEvent) {
+      _appEvent.close();
     }
   }
 }

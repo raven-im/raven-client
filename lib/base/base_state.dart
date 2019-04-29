@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/entity/conversation_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/utils/interact_vative.dart';
 
@@ -15,15 +14,15 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
     InteractNative.getMessageEventStream().listen((value) {
       updateData(value);
     });
-    InteractNative.initConversationEvent();
-    InteractNative.getConversationEventStream().listen((value) {
-      updateConversation(value);
+    InteractNative.initAppEvent();
+    InteractNative.getAppEventStream().listen((value) {
+      notify(value);
     });
   }
 
   @protected
-  void updateData(List<MessageEntity> entity);
+  void updateData(MessageEntity entity);
 
   @protected
-  void updateConversation(List<ConversationEntity> entity);
+  void notify(Object o);
 }

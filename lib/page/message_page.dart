@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:myapp/base/base_state.dart';
 import 'package:myapp/database/db_api.dart';
-import 'package:myapp/entity/conversation_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/message_manager.dart';
 import 'package:myapp/manager/sender_manager.dart';
@@ -12,6 +11,7 @@ import 'package:myapp/page/message_item_widgets.dart';
 import 'package:myapp/page/more_widgets.dart';
 import 'package:myapp/pb/message.pbenum.dart';
 import 'package:myapp/utils/constants.dart';
+import 'package:myapp/utils/interact_vative.dart';
 import 'package:myapp/utils/sp_util.dart';
 
 /*
@@ -53,15 +53,8 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
   }
 
   _getLocalMessage() async {
-    // await MessageDataBase.get()
-    //     .getMessageEntityInTypeLimit(widget.senderAccount,
-    //         offset: _messageList.length, count: 20)
+    // await DataBaseApi.get().getMessagesEntities(widget.convId)
     //     .then((listEntity) async {
-    //   if (null == listEntity || listEntity.length < 1) {
-    //     _isLoadAll = true;
-    //   } else {
-    //     _isLoadAll = false;
-    //   }
     //   for (MessageEntity entity in listEntity) {
     //     //最新的一条消息，在list的index=0
     //     _messageList.add(entity);
@@ -86,6 +79,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
         _onRefresh();
       }
     });
+    //TODO  read from DB.
     MessageManager.get().requestMessageEntities(widget.convId);
   }
 
@@ -337,35 +331,6 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
     }
     SenderMngr.sendSingleMessageReq(messageEntity.fromUid, messageEntity.targetUid, 
       MessageType.TEXT, messageEntity.content);
-    // InteractNative.goNativeWithValue(InteractNative.methodNames['sendMessage'],
-    //         ObjectUtil.buildMessage(messageEntity))
-    //     .then((success) {
-    //   if (success == true) {
-    //     setState(() {
-    //       messageEntity.status = '0';
-    //     });
-    //   } else {
-    //     //一般黑名单的情况就发送失败
-    //     DialogUtil.buildToast('发送失败');
-    //     setState(() {
-    //       messageEntity.status = '1';
-    //     });
-    //   }
-    //   //插入数据库
-    //   MessageDataBase.get()
-    //       .insertMessageEntity(messageEntity.titleName, messageEntity)
-    //       .then((res) {
-    //     MessageDataBase.get()
-    //         .getOneMessageUnreadCount(messageEntity.titleName)
-    //         .then((onValue) {
-    //       MessageTypeEntity messageTypeEntity = new MessageTypeEntity(
-    //           senderAccount: messageEntity.titleName, isUnreadCount: onValue);
-    //       MessageDataBase.get().insertMessageTypeEntity(messageTypeEntity);
-    //       //刷新消息页面
-    //       InteractNative.getMessageEventSink().add(messageEntity);
-    //     });
-    //   });
-    // });
   }
   @override
   void dispose() {
@@ -375,11 +340,11 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
   }
 
   @override
-  void updateData(List<MessageEntity> entities) {
+  void updateData(MessageEntity entity) {
 
     DataBaseApi.get().getAllContactsEntities().then((contacts) {
-      entities.forEach((entity) {
-        if (entity.contentType == Constants.MESSAGE_TYPE_CHAT && 
+      
+      if (entity.contentType == Constants.MESSAGE_TYPE_CHAT && 
           myUid==entity.targetUid) {
             // for me.
             contacts.forEach((contact) {
@@ -390,15 +355,37 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
             _messageList.insert(0, entity);
           }
       });
-      setState((){
-        //Your state change code goes here
-      });
-    }); 
+      if (this.mounted) {
+        setState((){
+          //Your state change code goes here
+        });
+      }
   }
 
   @override
-  void updateConversation(List<ConversationEntity> entities) {
-    
-  
+  void notify(Object type) {
+    if (type == InteractNative.PULL_MESSAGE) {
+      DataBaseApi.get().getMessagesEntities(widget.convId).then((messages) => {
+        DataBaseApi.get().getAllContactsEntities().then((contacts) {
+          messages.forEach((messge) {
+            if (messge.contentType == Constants.MESSAGE_TYPE_CHAT && 
+              myUid == messge.targetUid) {
+                // for me.
+                contacts.forEach((contact) {
+                    if (contact.userId == messge.fromUid) {
+                      messge.senderName = contact.userName;
+                    }
+                  });
+                _messageList.insert(0, messge);
+              }
+          });
+          if (this.mounted) {
+            setState(() {
+              
+            });
+          }
+      })
+      });
+    }
   }
 }

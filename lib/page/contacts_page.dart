@@ -44,17 +44,23 @@ class Contacts extends State<ContactsPage> with AutomaticKeepAliveClientMixin {
       if (entities.length > 0) {
         setState(() {
           _list.clear();
-          _map.clear();
-
+          
           entities.forEach((entity) {
             if (entity.userId != myUid) {
               _list.insert(0, entity);
-              _map[entity.userId] = entity;
+              DataBaseApi.get().getConversationIdByUserid(entity.userId).then(
+                (convId) {
+                  if (convId != " ") {
+                    _map[entity.userId] = convId;
+                  }
+                }
+              );
             }
           });
         });
       }
     });
+    
   }
 
   Widget layout(BuildContext context) {
@@ -78,7 +84,7 @@ class Contacts extends State<ContactsPage> with AutomaticKeepAliveClientMixin {
                 builder: (ctx) => MessagePage(
                       title: _list[index].userName,
                       targetUid: _list[index].userId,
-                      convId: "TODO", //TODO  get convId from My & Target.
+                      convId: _map[_list[index].userId],
                     )));
       },
       

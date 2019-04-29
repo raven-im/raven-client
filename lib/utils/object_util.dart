@@ -62,7 +62,7 @@ class ObjectUtil {
     return list;
   }
 
-  static List<MessageEntity> getMsgEntity(String myUid, UpDownMessage msg) {
+  static MessageEntity getMsgEntity(String myUid, UpDownMessage msg) {
 
     MessageEntity entity = new MessageEntity(
       msgId: msg.id.toInt(),
@@ -75,25 +75,8 @@ class ObjectUtil {
       status: 0,
       messageOwner: myUid == msg.fromUid ? 0 : 1,
     );
-    List<MessageEntity> entities = new List();
-    entities.add(entity);
-    return entities;
+    return entity;
   }
-  // static MessageEntity getDefaultData(String type, String senderAccount) {
-  //   return new MessageEntity(
-  //           convType: 1,
-  //     @required this.fromUid,
-  //     @required this.targetUid,
-  //     @required this.contentType,
-  //     @required this.titleName,
-  //     @required this.content,
-  //     @required this.time,
-  //       type: type,
-  //       senderAccount: senderAccount,
-  //       titleName: senderAccount,
-  //       content: null,
-  //       time: null);
-  // }
 
   static bool isNetUri(String uri) {
     if (uri.isNotEmpty &&
