@@ -33,6 +33,7 @@ dependencies:
   dio: 2.1.2  #latest version
   sqflite: ^1.1.1 #数据库
   path_provider: ^0.5.0+1
+  flutter_launcher_icons: "^0.7.0"
 
 dev_dependencies:
   flutter_test:
@@ -51,6 +52,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/icon/
     - assets/images/splash/
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -82,3 +84,8 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.io/custom-fonts/#from-packages
+
+flutter_icons:
+  android: true 
+  ios: true
+  image_path: "assets/icon/icon.jpg"
