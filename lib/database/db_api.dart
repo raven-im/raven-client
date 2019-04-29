@@ -142,6 +142,19 @@ class DataBaseApi {
     return res;
   }
 
+  // get all messages that belongs to that conversation.
+  Future<int> getLatestMessageTime(String convId) async {
+    var db = await _init();
+    var result =
+        await db.rawQuery('SELECT ${MessageEntity.TIME} FROM ${DataBaseConfig.MESSAGES_TABLE} '
+        ' order by ${MessageEntity.TIME} desc');
+    List<int> res = [];
+    for (Map<String, dynamic> item in result) {
+      res.add(int.parse(item[MessageEntity.TIME]));
+    }
+    return res.first;
+  }
+
   Future updateMessageEntities(String convId, List<MessageEntity> entities) async {
     getMessagesEntities(convId).then((list) {
       var msgList = list.map((f) => f.msgId).toList();
@@ -149,7 +162,7 @@ class DataBaseApi {
       for (MessageEntity item in entities) {
         if (!msgList.contains(item.msgId)) {
           item.convId = convId;
-          _updateMessagesEntity(item);
+          _updateMessagesEntity(item);// ?? TODO async.
         }
       }
       InteractNative.getAppEventSink().add(InteractNative.PULL_MESSAGE);
@@ -158,9 +171,9 @@ class DataBaseApi {
   }
 
   Future updateMessageEntity(String convId, MessageEntity entity, bool notify) async {
-    getMessagesEntities(convId).then((list) {
-      entity.convId = convId;
-      _updateMessagesEntity(entity);
+    
+    entity.convId = convId;
+    _updateMessagesEntity(entity).then((_) {
       if (notify) {
         InteractNative.getMessageEventSink().add(entity);
       }
@@ -175,8 +188,6 @@ class DataBaseApi {
         ConversationManager.get().requestConverEntity(convId);
       }
     });
-    
-    return null;
   }
 
   Future _updateMessagesEntity(MessageEntity entity) async {

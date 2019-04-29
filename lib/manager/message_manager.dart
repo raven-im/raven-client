@@ -12,7 +12,7 @@ class MessageManager {
   /*
   *  查询消息列表
   */
-  void requestMessageEntities(String convId) async {
-    SenderMngr.sendMessageEntityReq(convId);
+  void requestMessageEntities(String convId, int beginTime) async {
+    SenderMngr.sendMessageEntityReq(convId, beginTime);
   }
 }

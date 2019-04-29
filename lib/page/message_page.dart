@@ -79,10 +79,43 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
         _onRefresh();
       }
     });
-    //TODO  read from DB.
-    MessageManager.get().requestMessageEntities(widget.convId);
+    _pullMsgAndDisplay();
+
+    //according to the db, pull new messages.
+    DataBaseApi.get().getMessagesEntities(widget.convId).then((messages) {
+      if (messages.length > 0) {
+        DataBaseApi.get().getLatestMessageTime(widget.convId).then((time) {
+          MessageManager.get().requestMessageEntities(widget.convId, time);
+        });
+      } else {
+        MessageManager.get().requestMessageEntities(widget.convId, 0);
+      }
+    });
   }
 
+  void _pullMsgAndDisplay() {
+    DataBaseApi.get().getMessagesEntities(widget.convId).then((messages) => {
+      DataBaseApi.get().getAllContactsEntities().then((contacts) {
+        messages.forEach((messge) {
+          if (messge.contentType == Constants.MESSAGE_TYPE_CHAT && 
+            myUid == messge.targetUid) {
+              // for me.
+              contacts.forEach((contact) {
+                  if (contact.userId == messge.fromUid) {
+                    messge.senderName = contact.userName;
+                  }
+                });
+              _messageList.insert(0, messge);
+            }
+        });
+        if (this.mounted) {
+          setState(() {
+            
+          });
+        }
+    })
+    });
+  }
   @override
   Widget build(BuildContext context) {
     Widget widgets = MaterialApp(
@@ -366,27 +399,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
   @override
   void notify(Object type) {
     if (type == InteractNative.PULL_MESSAGE) {
-      DataBaseApi.get().getMessagesEntities(widget.convId).then((messages) => {
-        DataBaseApi.get().getAllContactsEntities().then((contacts) {
-          messages.forEach((messge) {
-            if (messge.contentType == Constants.MESSAGE_TYPE_CHAT && 
-              myUid == messge.targetUid) {
-                // for me.
-                contacts.forEach((contact) {
-                    if (contact.userId == messge.fromUid) {
-                      messge.senderName = contact.userName;
-                    }
-                  });
-                _messageList.insert(0, messge);
-              }
-          });
-          if (this.mounted) {
-            setState(() {
-              
-            });
-          }
-      })
-      });
+      _pullMsgAndDisplay();
     }
   }
 }

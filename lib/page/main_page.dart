@@ -8,7 +8,6 @@ import 'package:myapp/page/contacts_page.dart';
 import 'package:myapp/page/conversation_page.dart';
 import 'package:myapp/pb/message.pb.dart';
 import 'package:myapp/utils/constants.dart';
-import 'package:myapp/utils/interact_vative.dart';
 import 'package:myapp/utils/object_util.dart';
 import 'package:myapp/utils/sp_util.dart';
 

@@ -152,8 +152,8 @@ class SenderMngr {
     _sendMsg(list);
   }
 
-  static void sendMessageEntityReq(String convId) {
-    List<int> list = MessageBuilder.getMessageList(_msgId, convId, 0); //TODO begin time?
+  static void sendMessageEntityReq(String convId, int beginTime) {
+    List<int> list = MessageBuilder.getMessageList(_msgId, convId, beginTime);
     _sendMsg(list);
   }
 }
