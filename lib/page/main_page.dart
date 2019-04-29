@@ -73,17 +73,23 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _callback(Object data) {
-    RavenMessage message = RavenMessage.fromBuffer(data);
+  void _callback(Object incomingData, List<int> oriData) {
+    RavenMessage message = RavenMessage.fromBuffer(incomingData);
     switch (message.type) {
       case RavenMessage_Type.LoginAck:
         print("IM Login success");
-        ConversaionManager.get().requestConverEntities();
+        ConversationManager.get().requestConverEntities();
         break;
       case RavenMessage_Type.ConverAck:
-        DataBaseApi.get()
-            .updateConversationEntities(
-              ObjectUtil.getConvEntities(myUid, message.converAck.converList));
+        if (message.converAck.converList != null) {
+          DataBaseApi.get()
+              .updateConversationEntities(
+                ObjectUtil.getConvEntities(myUid, message.converAck.converList));
+        } else if (message.converAck.converInfo != null) {
+          DataBaseApi.get()
+              .updateConversationEntities(
+                ObjectUtil.getConvEntity(myUid, message.converAck.converInfo));
+        }
         break;
       case RavenMessage_Type.HisMessagesAck:
         //DB insert
@@ -93,7 +99,12 @@ class _MyHomePageState extends State<MyHomePage> {
       case RavenMessage_Type.UpDownMessage:
         //DB insert
         DataBaseApi.get().updateMessageEntity(message.upDownMessage.converId, 
-            ObjectUtil.getMsgEntity(myUid, message.upDownMessage));
+            ObjectUtil.getMsgEntity(myUid, message.upDownMessage), true);
+        break;
+      case RavenMessage_Type.MessageAck:
+        RavenMessage originalMsg = RavenMessage.fromBuffer(oriData);
+        DataBaseApi.get().updateMessageEntity(message.messageAck.converId, 
+            ObjectUtil.getMsgEntity(myUid, originalMsg.upDownMessage), false);
         break;
     }
   }

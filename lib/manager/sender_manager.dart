@@ -16,7 +16,8 @@ class SenderMngr {
   // client message list.
   static Map<int, List<int>> _msgMap = new Map<int, List<int>>();
   
-  static init(callback(Object data)) async {
+  static init(callback(Object data, List<int> oriData)) async {
+    List<int> original;
     Socket socket = await SocketMngr.getSocket();
     socket.listen((data) {
       RavenMessage message = RavenMessage.fromBuffer(data);
@@ -24,37 +25,37 @@ class SenderMngr {
       switch (message.type) {
         case RavenMessage_Type.LoginAck:
           if (_msgMap.containsKey(message.loginAck.id)) {
-            _msgMap.remove(message.loginAck.id);
+            original = _msgMap.remove(message.loginAck.id);
           } else {
             print("error: ${message.loginAck.id} contains? ${_msgMap.containsKey(message.loginAck.id)}");
           } 
           if (message.loginAck.code == Code.SUCCESS) {
             isLogined = true;
-            callback(data); 
+            callback(data, original); 
           } else {
             print("error: login ack: $message.loginAck.code ");
           }
           break;
         case RavenMessage_Type.MessageAck:
           if (_msgMap.containsKey(message.messageAck.cid)) {
-            _msgMap.remove(message.messageAck.cid);
+            original = _msgMap.remove(message.messageAck.cid);
           } else {
             print("error: ${message.messageAck.cid} contains? ${_msgMap.containsKey(message.messageAck.cid)}");
           } 
           if (message.messageAck.code == Code.SUCCESS) {
-            callback(data); 
+            callback(data, original); 
           } else {
             print("error: message ack: $message.messageAck.code ");
           }
           break;
         case RavenMessage_Type.ConverAck:
           if (_msgMap.containsKey(message.converAck.id)) {
-            _msgMap.remove(message.converAck.id);
+            original = _msgMap.remove(message.converAck.id);
           } else {
             print("error: ${message.converAck.id} contains? ${_msgMap.containsKey(message.converAck.id)}");
           } 
           if (message.converAck.code == Code.SUCCESS) {
-            callback(data); 
+            callback(data, original); 
           } else {
             print("error: conversation ack: $message.converAck.code ");
           }
@@ -64,15 +65,28 @@ class SenderMngr {
           break;
         case RavenMessage_Type.HisMessagesAck:
           if (_msgMap.containsKey(message.hisMessagesAck.id)) {
-            _msgMap.remove(message.hisMessagesAck.id);
-            callback(data);
+            original = _msgMap.remove(message.hisMessagesAck.id);
+            callback(data, original);
           } else {
             print("error: ${message.hisMessagesAck.id} contains? ${_msgMap.containsKey(message.hisMessagesAck.id)}");
           }
           break;
         case RavenMessage_Type.UpDownMessage:
           print(" receive messages.");
-          callback(data);
+          callback(data, null);
+          break;
+        case RavenMessage_Type.MessageAck:
+          if (_msgMap.containsKey(message.messageAck.id)) {
+            original = _msgMap.remove(message.messageAck.id);
+          } else {
+            print("error: ${message.messageAck.id} contains? ${_msgMap.containsKey(message.messageAck.id)}");
+          } 
+          if (message.messageAck.code == Code.SUCCESS) {
+            callback(data, original); 
+          } else {
+            print("error: message ack: $message.messageAck.code ");
+          }
+          break;
       }
     });
     // socket connected, login.

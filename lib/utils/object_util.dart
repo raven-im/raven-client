@@ -43,6 +43,24 @@ class ObjectUtil {
     return list;
   }
 
+  static List<ConversationEntity> getConvEntity(String myUid, ConverInfo info) {
+    List<ConversationEntity> list = new List();
+    String targetId;
+    info.uidList.forEach((id){
+      if (id != myUid) {
+        targetId = id;
+      }
+    });
+    ConversationEntity entity = new ConversationEntity(
+      id: info.converId,
+      targetUid: targetId,
+      isUnreadCount: 0, //TODO
+      lastMessage: info.lastContent.content,
+      timestamp: info.lastContent.time.toInt(),
+      conversationType: Constants.CONVERSATION_SINGLE); //TODO group
+    list.add(entity);
+    return list;
+  }
   static List<MessageEntity> getMsgEntities(String myUid, List<MessageContent> msgList) {
     List<MessageEntity> list = new List();
     msgList.forEach((msg) {

@@ -3,6 +3,7 @@ import 'package:myapp/database/db_config.dart';
 import 'package:myapp/entity/contact_entity.dart';
 import 'package:myapp/entity/conversation_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
+import 'package:myapp/manager/conversation_manager.dart';
 import 'package:myapp/utils/interact_vative.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -156,12 +157,25 @@ class DataBaseApi {
     return null;
   }
 
-  Future updateMessageEntity(String convId, MessageEntity entity) async {
+  Future updateMessageEntity(String convId, MessageEntity entity, bool notify) async {
     getMessagesEntities(convId).then((list) {
       entity.convId = convId;
       _updateMessagesEntity(entity);
-      InteractNative.getMessageEventSink().add(entity);
+      if (notify) {
+        InteractNative.getMessageEventSink().add(entity);
+      }
     });
+
+    isConversationIdExist(convId).then((isExist) {
+      if (isExist) {
+        // otherwise update the conversation.
+        updateConversationEntity(convId, entity);
+      } else {
+        //if conversation id not exsists,  request the conversation from server.
+        ConversationManager.get().requestConverEntity(convId);
+      }
+    });
+    
     return null;
   }
 
@@ -220,6 +234,24 @@ class DataBaseApi {
     return res.length > 0 ? res.first : " ";
   }
 
+  Future<bool> isConversationIdExist(String convId) async {
+    var db = await _init();
+    var result =
+        await db.rawQuery('SELECT id FROM ${DataBaseConfig.CONVERSATIONS_TABLE} '
+          'where ${ConversationEntity.CON_ID} = "$convId"');
+    List<String> res = [];
+    for (Map<String, dynamic> item in result) {
+      res.add(item[ConversationEntity.CON_ID]);
+    }
+    return res.length > 0;
+  }
+
+  Future updateConversationEntity(String convId, MessageEntity entity) async {
+    await _updateConversationEntity(convId, entity);
+    InteractNative.getAppEventSink().add(InteractNative.PULL_CONVERSATION);
+    return null;
+  }
+
   Future updateConversationEntities(List<ConversationEntity> entities) async {
     getConversationEntities().then((list) {
       var convList = list.map((f) => f.id).toList();
@@ -232,6 +264,15 @@ class DataBaseApi {
       InteractNative.getAppEventSink().add(InteractNative.PULL_CONVERSATION);
     });
     return null;
+  }
+
+  Future _updateConversationEntity(String convId, MessageEntity entity) async {
+    var db = await _init();
+    await db.rawUpdate(
+        'UPDATE ${DataBaseConfig.CONVERSATIONS_TABLE} SET '
+        ' ${ConversationEntity.LAST_MESSAGE} = "${entity.content}", '
+        ' ${ConversationEntity.LAST_MESSAGE_TIME} = "${entity.time}" '
+        'where ${ConversationEntity.CON_ID} = "$convId"');
   }
 
   Future _updateConversationsEntity(ConversationEntity entity) async {

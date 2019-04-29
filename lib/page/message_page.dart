@@ -312,6 +312,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
         targetUid: widget.targetUid,
         convType: Constants.CONVERSATION_SINGLE,
         content: content,
+        convId: widget.convId,
         time: new DateTime.now().millisecondsSinceEpoch.toString());
     messageEntity.messageOwner = 0;
     messageEntity.status = 0;
@@ -330,7 +331,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
       });
     }
     SenderMngr.sendSingleMessageReq(messageEntity.fromUid, messageEntity.targetUid, 
-      MessageType.TEXT, messageEntity.content);
+      MessageType.TEXT, messageEntity.content, convId:messageEntity.convId);
   }
   @override
   void dispose() {
