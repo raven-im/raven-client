@@ -1,44 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/database/db_api.dart';
-import 'package:myapp/manager/contacts_manager.dart';
-import 'package:myapp/manager/conversation_manager.dart';
-import 'package:myapp/manager/sender_manager.dart';
+import 'package:myapp/base/base_state.dart';
+import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/socket_manager.dart';
 import 'package:myapp/page/contacts_page.dart';
 import 'package:myapp/page/conversation_page.dart';
-import 'package:myapp/pb/message.pb.dart';
+import 'package:myapp/page/login_page.dart';
 import 'package:myapp/utils/constants.dart';
-import 'package:myapp/utils/object_util.dart';
-import 'package:myapp/utils/sp_util.dart';
-
+import 'package:myapp/utils/interact_vative.dart';
 
 /*
 *  主页
 */
 class MainPage extends StatelessWidget {
 
+  final bool isShowLogin;
+  MainPage({Key key, this.isShowLogin}) : super(key: key);
 
-  MainPage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MyHomePage();
+    return MyHomePage(isShowLogin: isShowLogin);
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key}) : super(key: key);
+  final bool isShowLogin;
+  MyHomePage({Key key, this.isShowLogin}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends BaseState<MyHomePage> {
   var _pageController = new PageController(initialPage: 0);
   int _tabIndex = 0;
   var appBarTitles = ['Messages', 'Contacts'];
   List _pageList;
-  String myUid;
+  bool _isShowLogin;
 
   /*
    * 获取bottomTab的颜色和文字
@@ -61,57 +59,13 @@ class _MyHomePageState extends State<MyHomePage> {
       new ConversationPage(rootContext: context),
       new ContactsPage(rootContext: context),
     ];
-    myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
-    SenderMngr.init(_callback);
-
-    // request Contacts.
-    ContactManager.get().getContactsEntity(myUid).then((entities) {
-      entities.forEach((entity) {
-        DataBaseApi.get().updateContactsEntity(entity);
-      });
-    });
-  }
-
-  void _callback(Object incomingData, List<int> oriData) {
-    RavenMessage message = RavenMessage.fromBuffer(incomingData);
-    switch (message.type) {
-      case RavenMessage_Type.LoginAck:
-        print("IM Login success");
-        ConversationManager.get().requestConverEntities();
-        break;
-      case RavenMessage_Type.ConverAck:
-        if (message.converAck.converList != null) {
-          DataBaseApi.get()
-              .updateConversationEntities(
-                ObjectUtil.getConvEntities(myUid, message.converAck.converList));
-        } else if (message.converAck.converInfo != null) {
-          DataBaseApi.get()
-              .updateConversationEntities(
-                ObjectUtil.getConvEntity(myUid, message.converAck.converInfo));
-        }
-        break;
-      case RavenMessage_Type.HisMessagesAck:
-        //DB insert
-        DataBaseApi.get().updateMessageEntities(message.hisMessagesAck.converId, 
-            ObjectUtil.getMsgEntities(myUid, message.hisMessagesAck.messageList));
-        break;
-      case RavenMessage_Type.UpDownMessage:
-        //DB insert
-        DataBaseApi.get().updateMessageEntity(message.upDownMessage.converId, 
-            ObjectUtil.getMsgEntity(myUid, message.upDownMessage), true);
-        break;
-      case RavenMessage_Type.MessageAck:
-        RavenMessage originalMsg = RavenMessage.fromBuffer(oriData);
-        DataBaseApi.get().updateMessageEntity(message.messageAck.converId, 
-            ObjectUtil.getMsgEntity(myUid, originalMsg.upDownMessage), false);
-        break;
-    }
   }
 
   @override
   void initState() {
     super.initState();
     initData();
+    _isShowLogin = widget.isShowLogin;
   }
 
   @override
@@ -129,7 +83,12 @@ class _MyHomePageState extends State<MyHomePage> {
             // primarySwatch: primarySwatch,
             platform: TargetPlatform.android),
         
-        home: new Scaffold(
+        
+        home: Stack(children: <Widget>[
+          Offstage(offstage: !_isShowLogin, child: LoginPage()),
+          Offstage(
+              offstage: _isShowLogin,
+              child: new Scaffold(
                 body: new PageView.builder(
                   onPageChanged: _pageChange,
                   controller: _pageController,
@@ -163,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                 )
               ),
-          );
+          )]));
   }
 
   void _pageChange(int index) {
@@ -177,5 +136,29 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _backPress() {
     // TODO
+  }
+
+  @override
+  void notify(Object type) {
+  if (type == InteractNative.CHANGE_PAGE_TO_MAIN) {
+    setState(() {
+      if (null != _pageList) {
+        _pageList.clear();
+        initData();
+      } else {
+        initData();
+      }
+      _isShowLogin = false;
+    });
+  } else if (type == InteractNative.CHANGE_PAGE_TO_LOGIN) {
+      setState(() {
+        _isShowLogin = true;
+      });
+    }
+  }
+
+  @override
+  void updateData(MessageEntity entity) {
+    
   }
 }

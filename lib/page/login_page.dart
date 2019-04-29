@@ -1,9 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:myapp/database/db_api.dart';
+import 'package:myapp/manager/contacts_manager.dart';
+import 'package:myapp/manager/conversation_manager.dart';
 import 'package:myapp/manager/restful_manager.dart';
+import 'package:myapp/manager/sender_manager.dart';
+import 'package:myapp/pb/message.pb.dart';
 import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/dialog_util.dart';
+import 'package:myapp/utils/interact_vative.dart';
+import 'package:myapp/utils/object_util.dart';
 import 'package:myapp/utils/sp_util.dart';
 
 class LoginPage extends StatelessWidget {
@@ -192,11 +199,62 @@ class _LoginState extends State<Login> {
                 SPUtil.putString(Constants.KEY_LOGIN_TOKEN, firstEntity.data["token"]);
                 SPUtil.putString(Constants.KEY_ACCESS_NODE_IP, accessIp);
                 SPUtil.putInt(Constants.KEY_ACCESS_NODE_PORT, port);
-                Navigator.of(context).pushReplacementNamed('/MainPage');
+                // Navigator.of(context).pushReplacementNamed('/MainPage');
+                _initServerConnect();
+                InteractNative.getAppEventSink().add(InteractNative.CHANGE_PAGE_TO_MAIN);
               }
             });
 
           }
         });
+  }
+
+  void _callback(Object incomingData, List<int> oriData) {
+    String myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
+    RavenMessage message = RavenMessage.fromBuffer(incomingData);
+    switch (message.type) {
+      case RavenMessage_Type.LoginAck:
+        print("IM Login success");
+        ConversationManager.get().requestConverEntities();
+        break;
+      case RavenMessage_Type.ConverAck:
+        if (message.converAck.converList != null) {
+          DataBaseApi.get()
+              .updateConversationEntities(
+                ObjectUtil.getConvEntities(myUid, message.converAck.converList));
+        } else if (message.converAck.converInfo != null) {
+          DataBaseApi.get()
+              .updateConversationEntities(
+                ObjectUtil.getConvEntity(myUid, message.converAck.converInfo));
+        }
+        break;
+      case RavenMessage_Type.HisMessagesAck:
+        //DB insert
+        DataBaseApi.get().updateMessageEntities(message.hisMessagesAck.converId, 
+            ObjectUtil.getMsgEntities(myUid, message.hisMessagesAck.messageList));
+        break;
+      case RavenMessage_Type.UpDownMessage:
+        //DB insert
+        DataBaseApi.get().updateMessageEntity(message.upDownMessage.converId, 
+            ObjectUtil.getMsgEntity(myUid, message.upDownMessage), true);
+        break;
+      case RavenMessage_Type.MessageAck:
+        RavenMessage originalMsg = RavenMessage.fromBuffer(oriData);
+        DataBaseApi.get().updateMessageEntity(message.messageAck.converId, 
+            ObjectUtil.getMsgEntity(myUid, originalMsg.upDownMessage), false);
+        break;
+    }
+  }
+  
+  void _initServerConnect() {
+    String myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
+    SenderMngr.init(_callback);
+
+    // request Contacts.
+    ContactManager.get().getContactsEntity(myUid).then((entities) {
+      entities.forEach((entity) {
+        DataBaseApi.get().updateContactsEntity(entity);
+      });
+    });
   }
 }

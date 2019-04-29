@@ -11,6 +11,8 @@ class InteractNative {
 
   static const int PULL_MESSAGE = 1;
   static const int PULL_CONVERSATION = 2;
+  static const int CHANGE_PAGE_TO_MAIN = 3;
+  static const int CHANGE_PAGE_TO_LOGIN = 4;
   
   /*
   * 自定义通信
