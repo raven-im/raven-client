@@ -1,11 +1,12 @@
 
-import 'dart:io';
-
 import 'package:fixnum/fixnum.dart';
-import 'package:myapp/manager/socket_manager.dart';
+import 'dart:io';
+import 'package:myapp/database/db_api.dart';
+import 'package:myapp/manager/conversation_manager.dart';
 import 'package:myapp/manager/message_builder.dart';
 import 'package:myapp/pb/message.pb.dart';
 import 'package:myapp/utils/constants.dart';
+import 'package:myapp/utils/object_util.dart';
 import 'package:myapp/utils/sp_util.dart';
 
 class SenderMngr {
@@ -15,11 +16,28 @@ class SenderMngr {
   static int _msgId = 1;
   // client message list.
   static Map<int, List<int>> _msgMap = new Map<int, List<int>>();
+  static Socket _socket;
   
-  static init(callback(Object data, List<int> oriData)) async {
+  static init() async {
+    if (_socket != null) {
+      print("socket already connected.");
+      return;
+    }
+
     List<int> original;
-    Socket socket = await SocketMngr.getSocket();
-    socket.listen((data) {
+    String myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
+    String ip = SPUtil.getString(Constants.KEY_ACCESS_NODE_IP)?? null;
+    int port = SPUtil.getInt(Constants.KEY_ACCESS_NODE_PORT) ?? 0;
+    if (ip == null && port == 0) {
+      print("socket ip&port not set yet.");
+      return;
+    }
+
+    // normal case,  socket connect.
+    print("socket connect to $ip:$port");
+    _socket = await Socket.connect(ip, port);
+
+    _socket.listen((data) {
       RavenMessage message = RavenMessage.fromBuffer(data);
       print(message.type);
       switch (message.type) {
@@ -31,7 +49,8 @@ class SenderMngr {
           } 
           if (message.loginAck.code == Code.SUCCESS) {
             isLogined = true;
-            callback(data, original); 
+            print("IM Login success");
+            ConversationManager.get().requestConverEntities(); 
           } else {
             print("error: login ack: $message.loginAck.code ");
           }
@@ -43,7 +62,9 @@ class SenderMngr {
             print("error: ${message.messageAck.cid} contains? ${_msgMap.containsKey(message.messageAck.cid)}");
           } 
           if (message.messageAck.code == Code.SUCCESS) {
-            callback(data, original); 
+            RavenMessage originalMsg = RavenMessage.fromBuffer(original);
+            DataBaseApi.get().updateMessageEntity(message.messageAck.converId, 
+                ObjectUtil.getMsgEntity(myUid, originalMsg.upDownMessage), false);
           } else {
             print("error: message ack: $message.messageAck.code ");
           }
@@ -55,7 +76,15 @@ class SenderMngr {
             print("error: ${message.converAck.id} contains? ${_msgMap.containsKey(message.converAck.id)}");
           } 
           if (message.converAck.code == Code.SUCCESS) {
-            callback(data, original); 
+            if (message.converAck.converList != null) {
+              DataBaseApi.get()
+                  .updateConversationEntities(
+                    ObjectUtil.getConvEntities(myUid, message.converAck.converList));
+            } else if (message.converAck.converInfo != null) {
+              DataBaseApi.get()
+                  .updateConversationEntities(
+                    ObjectUtil.getConvEntity(myUid, message.converAck.converInfo));
+            }
           } else {
             print("error: conversation ack: $message.converAck.code ");
           }
@@ -66,55 +95,46 @@ class SenderMngr {
         case RavenMessage_Type.HisMessagesAck:
           if (_msgMap.containsKey(message.hisMessagesAck.id)) {
             original = _msgMap.remove(message.hisMessagesAck.id);
-            callback(data, original);
+            //DB insert
+            DataBaseApi.get().updateMessageEntities(message.hisMessagesAck.converId, 
+                ObjectUtil.getMsgEntities(myUid, message.hisMessagesAck.messageList));
           } else {
             print("error: ${message.hisMessagesAck.id} contains? ${_msgMap.containsKey(message.hisMessagesAck.id)}");
           }
           break;
         case RavenMessage_Type.UpDownMessage:
           print(" receive messages.");
-          callback(data, null);
-          break;
-        case RavenMessage_Type.MessageAck:
-          if (_msgMap.containsKey(message.messageAck.id)) {
-            original = _msgMap.remove(message.messageAck.id);
-          } else {
-            print("error: ${message.messageAck.id} contains? ${_msgMap.containsKey(message.messageAck.id)}");
-          } 
-          if (message.messageAck.code == Code.SUCCESS) {
-            callback(data, original); 
-          } else {
-            print("error: message ack: $message.messageAck.code ");
-          }
+          //DB insert
+          DataBaseApi.get().updateMessageEntity(message.upDownMessage.converId, 
+              ObjectUtil.getMsgEntity(myUid, message.upDownMessage), true);
           break;
       }
     });
-    // socket connected, login.
-    _loginReq();
+      // socket connected, login.
+      _loginReq();
   }
 
   static void _sendMsg(List<int> msg) async {
-    if (isLogined) {
+    if (isLogined && _socket != null) {
       print("sending message.  $_msgId");
-      SocketMngr.write(msg);
+      _socket.add(msg);
       _msgMap.putIfAbsent(_msgId, () => msg);
       _msgId++;
     } else {
-      print(" not login , can't send message.");
+      print(" can't send message. Login($isLogined), Socket Connected($_socket)");
     }
   }
 
-  static void _loginReq() async {
-    if (!isLogined) {
+  static void _loginReq() {
+    if (_socket != null && !isLogined) {
       String uid = SPUtil.getString(Constants.KEY_LOGIN_UID);
       String token = SPUtil.getString(Constants.KEY_LOGIN_TOKEN);
       List<int> list = MessageBuilder.login(_msgId, uid, token);
-
-      SocketMngr.write(list);
+      _socket.add(list);
       _msgMap.putIfAbsent(_msgId, () => list);
       _msgId++;
     } else {
-      print("already logined.");
+      print("can't login. Login($isLogined), Socket Connected($_socket)");
     }
   }
 
@@ -141,9 +161,9 @@ class SenderMngr {
   static void _sendPong(Int64 id) {
     if (isLogined) {
       List<int> msg = MessageBuilder.sendHeartBeat(id, HeartBeatType.PONG);
-      SocketMngr.write(msg);
+      _socket.add(msg);
     } else {
-      print(" not login , can't send message.");
+      print(" can't send pong. Login($isLogined), Socket Connected($_socket)");
     }
   }
 
@@ -155,5 +175,9 @@ class SenderMngr {
   static void sendMessageEntityReq(String convId, int beginTime) {
     List<int> list = MessageBuilder.getMessageList(_msgId, convId, beginTime);
     _sendMsg(list);
+  }
+
+  static void release() {
+    _socket?.close();
   }
 }

@@ -33,7 +33,7 @@ dependencies:
   dio: 2.1.2  #latest version
   sqflite: ^1.1.1 #数据库
   path_provider: ^0.5.0+1
-  flutter_launcher_icons: "^0.7.0"
+  flutter_launcher_icons: ^0.7.0
 
 dev_dependencies:
   flutter_test:

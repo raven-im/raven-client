@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/base/base_state.dart';
+import 'package:myapp/database/db_api.dart';
 import 'package:myapp/entity/message_entity.dart';
-import 'package:myapp/manager/socket_manager.dart';
+import 'package:myapp/manager/contacts_manager.dart';
+import 'package:myapp/manager/sender_manager.dart';
 import 'package:myapp/page/contacts_page.dart';
 import 'package:myapp/page/conversation_page.dart';
 import 'package:myapp/page/login_page.dart';
 import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/interact_vative.dart';
+import 'package:myapp/utils/sp_util.dart';
 
 /*
 *  主页
@@ -59,6 +62,18 @@ class _MyHomePageState extends BaseState<MyHomePage> {
       new ConversationPage(rootContext: context),
       new ContactsPage(rootContext: context),
     ];
+
+    String myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
+    SenderMngr.init();
+
+    // request Contacts.
+    if (myUid != null) {
+      ContactManager.get().getContactsEntity(myUid).then((entities) {
+        entities.forEach((entity) {
+          DataBaseApi.get().updateContactsEntity(entity);
+        });
+      });
+    }
   }
 
   @override
@@ -71,7 +86,7 @@ class _MyHomePageState extends BaseState<MyHomePage> {
   @override
   void dispose() {
     _pageController.dispose();
-    SocketMngr.release();
+    SenderMngr.release();
     super.dispose();
   }
 
