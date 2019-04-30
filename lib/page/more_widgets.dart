@@ -9,7 +9,7 @@ class MoreWidgets {
   */
   static Widget buildAppBar(BuildContext context, String text,
       {
-        double fontSize: 18.0,
+      double fontSize: 20.0,
       double height: 50.0,
       double elevation: 0.5,
       Widget leading,
@@ -420,7 +420,7 @@ class MoreWidgets {
                             : InkWell(
                                 onTap: () {
                                   DialogUtil.showBaseDialog(context, note,
-                                      title: '', left: '', right: '');
+                                      left: '', right: '');
                                 },
                                 child: Text(note,
                                     maxLines: 1,
@@ -603,19 +603,12 @@ class MoreWidgets {
           new PopupMenuItem<String>(
             value: 'one',
             child: Text(texts[0],
-                style: new TextStyle(fontSize: 16.0, color: Colors.red)),
+                style: new TextStyle(fontSize: 16.0, color: Colors.black)),
           ),
           new PopupMenuItem<String>(
             value: 'two',
             child: Text(texts[1],
-                style: new TextStyle(fontSize: 16.0, color: Colors.yellow)),
-          ),
-          new PopupMenuItem<String>(
-            value: 'three',
-            child: Text(texts[2],
-                maxLines: 1,
-                style: new TextStyle(
-                    fontSize: 16.0, color: Colors.green)),
+                style: new TextStyle(fontSize: 16.0, color: Colors.black)),
           ),
         ]).then((res) {
       if (null != onItemClick) {

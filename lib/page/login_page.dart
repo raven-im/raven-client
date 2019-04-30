@@ -6,6 +6,7 @@ import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/dialog_util.dart';
 import 'package:myapp/utils/interact_vative.dart';
 import 'package:myapp/utils/sp_util.dart';
+import 'package:flutter/services.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -193,8 +194,9 @@ class _LoginState extends State<Login> {
                 SPUtil.putString(Constants.KEY_LOGIN_TOKEN, firstEntity.data["token"]);
                 SPUtil.putString(Constants.KEY_ACCESS_NODE_IP, accessIp);
                 SPUtil.putInt(Constants.KEY_ACCESS_NODE_PORT, port);
-                // Navigator.of(context).pushReplacementNamed('/MainPage');
-                // _initServerConnect();
+                SystemChannels.textInput.invokeMethod('TextInput.hide');
+                _usernameController.text = "";
+                _passwordController.text = "";
                 InteractNative.getAppEventSink().add(InteractNative.CHANGE_PAGE_TO_MAIN);
               }
             });

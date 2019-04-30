@@ -37,7 +37,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends BaseState<MyHomePage> {
   var _pageController = new PageController(initialPage: 0);
   int _tabIndex = 0;
-  var appBarTitles = ['Messages', 'Contacts'];
+  var appBarTitles = ['Conversations', 'Contacts'];
   List _pageList;
   bool _isShowLogin;
 

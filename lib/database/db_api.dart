@@ -70,6 +70,14 @@ class DataBaseApi {
     return db = null;
   }
 
+  Future clearDB() async {
+    var db = await _init();
+    await db.execute(
+        "DELETE FROM  ${DataBaseConfig.CONTACTS_TABLE}; "
+        "DELETE FROM  ${DataBaseConfig.MESSAGES_TABLE}; "
+        "DELETE FROM  ${DataBaseConfig.CONVERSATIONS_TABLE}; ");
+  }
+
   /**
    * Contacts.
    */

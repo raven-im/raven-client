@@ -1,8 +1,13 @@
 
+import 'package:flutter/material.dart';
+import 'package:myapp/database/db_api.dart';
 import 'package:myapp/entity/conversation_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
+import 'package:myapp/manager/sender_manager.dart';
 import 'package:myapp/pb/message.pb.dart';
 import 'package:myapp/utils/constants.dart';
+import 'package:myapp/utils/interact_vative.dart';
+import 'package:myapp/utils/sp_util.dart';
 
 class ObjectUtil {
   
@@ -102,5 +107,21 @@ class ObjectUtil {
       return true;
     }
     return false;
+  }
+
+  static void doExit(BuildContext context) {
+    //SP delete.
+    SPUtil.putBool(Constants.KEY_LOGIN, false);
+    SPUtil.remove(Constants.KEY_LOGIN_ACCOUNT);
+    SPUtil.remove(Constants.KEY_LOGIN_UID);
+    SPUtil.remove(Constants.KEY_LOGIN_TOKEN);
+    SPUtil.remove(Constants.KEY_ACCESS_NODE_IP);
+    SPUtil.remove(Constants.KEY_ACCESS_NODE_PORT);
+    //DB delete.
+    DataBaseApi.get().clearDB().then((_) => DataBaseApi.get().close());
+    //socket disconnect.
+    SenderMngr.release();
+    //notify UI switch.
+    InteractNative.getAppEventSink().add(InteractNative.CHANGE_PAGE_TO_LOGIN);
   }
 }

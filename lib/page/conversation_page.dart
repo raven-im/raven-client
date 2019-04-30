@@ -6,11 +6,14 @@ import 'package:myapp/base/base_state.dart';
 import 'package:myapp/database/db_api.dart';
 import 'package:myapp/entity/conversation_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
+import 'package:myapp/manager/sender_manager.dart';
 import 'package:myapp/page/message_page.dart';
 import 'package:myapp/page/more_widgets.dart';
 import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/date_util.dart';
+import 'package:myapp/utils/dialog_util.dart';
 import 'package:myapp/utils/interact_vative.dart';
+import 'package:myapp/utils/object_util.dart';
 
 class ConversationPage extends StatefulWidget {
   ConversationPage({Key key, this.rootContext}) : super(key: key);
@@ -25,6 +28,7 @@ class ConversationPage extends StatefulWidget {
 class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserver {
   var map = Map();
   var list = new List();
+  var _popString = List<String>();
   bool isShowNoPage = false;
   Timer _refreshTimer;
   AppLifecycleState currentState = AppLifecycleState.resumed;
@@ -36,6 +40,8 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
     WidgetsBinding.instance.addObserver(this);
     _getData();
     _startRefresh();
+    _popString.add('Reconnect');
+    _popString.add('Logout');
   }
 
   @override
@@ -46,7 +52,7 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
   Widget layout(BuildContext context) {
     return new Scaffold(
         key: _key,
-        appBar: MoreWidgets.buildAppBar(context, 'Messages'),
+        appBar: _appBar(),
         body: new Stack(
           children: <Widget>[
             new Offstage(
@@ -63,6 +69,43 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
             )
           ],
         ));
+  }
+
+  _appBar() {
+    return MoreWidgets.buildAppBar(
+      context,
+      'Conversations',
+      elevation: 2.0,
+      actions: <Widget>[
+        InkWell(
+            child: Container(
+                padding: EdgeInsets.only(right: 15, left: 15),
+                child: Icon(
+                  Icons.more_horiz,
+                  size: 22,
+                )),
+            onTap: () {
+              MoreWidgets.buildDefaultMessagePop(context, _popString,
+                  onItemClick: (res) {
+                  switch (res) {
+                    case 'one':
+                      // socket reconnect.
+                      DialogUtil.buildToast('Try Reconnect Done.');
+                      SenderMngr.init();
+                      break;
+                    case 'two':
+                      DialogUtil.showBaseDialog(context, 'Confirm to logout?',
+                          leftClick: (res) {
+                        print("press OK.");
+                        DialogUtil.buildToast('Logout Done.');
+                        ObjectUtil.doExit(widget.rootContext);
+                      });
+                      break;
+                }
+              });
+            })
+      ],
+    );
   }
 
   Widget _itemWidget(int index) {
@@ -166,9 +209,11 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
             list.insert(0, entity.targetUid);//TODO  group?
             map[entity.targetUid] = entity;
           });
-          setState(() {
-            isShowNoPage = conversations.length <= 0;
-          });
+          if (this.mounted) {
+            setState(() {
+              isShowNoPage = conversations.length <= 0;
+            });
+          }
       })
       });  
     }

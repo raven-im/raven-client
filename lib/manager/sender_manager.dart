@@ -179,5 +179,7 @@ class SenderMngr {
 
   static void release() {
     _socket?.close();
+    _socket = null;
+    isLogined = false;
   }
 }

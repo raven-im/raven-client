@@ -66,12 +66,32 @@ class Contacts extends State<ContactsPage> with AutomaticKeepAliveClientMixin {
   Widget layout(BuildContext context) {
     return new Scaffold(
       key: _key,
-      appBar: MoreWidgets.buildAppBar(context, 'Contacts'),
+      appBar: _appBar(),
       body: ListView.builder(
           itemBuilder: (BuildContext context, int index) {
             return _itemWidget(index);
           },
           itemCount: _list.length),
+    );
+  }
+
+  _appBar() {
+    return MoreWidgets.buildAppBar(
+      context,
+      'Contacts',
+      elevation: 2.0,
+      actions: <Widget>[
+        InkWell(
+            child: Container(
+                padding: EdgeInsets.only(right: 15, left: 15),
+                child: Icon(
+                  Icons.more_horiz,
+                  size: 22,
+                )),
+            onTap: () {
+              
+            })
+      ],
     );
   }
 
