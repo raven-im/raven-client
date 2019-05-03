@@ -6,6 +6,7 @@ import 'package:myapp/manager/conversation_manager.dart';
 import 'package:myapp/manager/message_builder.dart';
 import 'package:myapp/pb/message.pb.dart';
 import 'package:myapp/utils/constants.dart';
+import 'package:myapp/utils/message_decoder.dart';
 import 'package:myapp/utils/object_util.dart';
 import 'package:myapp/utils/sp_util.dart';
 
@@ -38,7 +39,15 @@ class SenderMngr {
     _socket = await Socket.connect(ip, port);
 
     _socket.listen((data) {
-      RavenMessage message = RavenMessage.fromBuffer(data);
+      //data => data.sublist(1) , skip the first length tag.  
+      // protobuf,  length + bytes
+      List<int> decodeMsg = _decodeMessage(data);
+      if (decodeMsg == null) {
+        print("decode error.");
+        return;
+      }
+
+      RavenMessage message = RavenMessage.fromBuffer(decodeMsg);
       print(message.type);
       switch (message.type) {
         case RavenMessage_Type.LoginAck:
@@ -62,7 +71,7 @@ class SenderMngr {
             print("error: ${message.messageAck.cid} contains? ${_msgMap.containsKey(message.messageAck.cid)}");
           } 
           if (message.messageAck.code == Code.SUCCESS) {
-            RavenMessage originalMsg = RavenMessage.fromBuffer(original);
+            RavenMessage originalMsg = RavenMessage.fromBuffer(_decodeMessage(original));
             DataBaseApi.get().updateMessageEntity(message.messageAck.converId, 
                 ObjectUtil.getMsgEntity(myUid, originalMsg.upDownMessage), false);
           } else {
@@ -181,5 +190,22 @@ class SenderMngr {
     _socket?.close();
     _socket = null;
     isLogined = false;
+  }
+
+  static List<int> _decodeMessage(List<int> message) {
+    MessageDecoder _state = new MessageDecoder();
+    List<int> decodeMsg;
+    int i = 0;
+    while (decodeMsg == null || i < message.length) {
+      var nextByte = message[i];
+      if (nextByte == -1) return null;
+      decodeMsg = _state.handleInput(nextByte);
+      i++;
+    }
+    if (i < message.length) {
+      print("decode error.");
+      return null;
+    }
+    return decodeMsg;
   }
 }
