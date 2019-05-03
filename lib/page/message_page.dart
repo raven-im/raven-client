@@ -136,11 +136,11 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
       widget.title,
       centerTitle: true,
       elevation: 2.0,
-      leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          }),
+      // leading: IconButton(
+      //     icon: Icon(Icons.arrow_back),
+      //     onPressed: () {
+      //       Navigator.pop(context);
+      //     }),
       actions: <Widget>[
         InkWell(
             child: Container(

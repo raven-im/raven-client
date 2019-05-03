@@ -134,6 +134,9 @@ class _MyHomePageState extends BaseState<MyHomePage> {
                   //点击事件
                   onTap: (index) {
                     _pageController.jumpToPage(index);
+                    if (_tabIndex == 0) {
+                      InteractNative.getAppEventSink().add(InteractNative.PULL_CONVERSATION);
+                    }
                   },
                 )
               ),
@@ -147,10 +150,6 @@ class _MyHomePageState extends BaseState<MyHomePage> {
         _tabIndex = index;
       }
     });
-  }
-
-  _backPress() {
-    // TODO
   }
 
   @override

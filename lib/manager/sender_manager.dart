@@ -6,6 +6,8 @@ import 'package:myapp/manager/conversation_manager.dart';
 import 'package:myapp/manager/message_builder.dart';
 import 'package:myapp/pb/message.pb.dart';
 import 'package:myapp/utils/constants.dart';
+import 'package:myapp/utils/dialog_util.dart';
+import 'package:myapp/utils/interact_vative.dart';
 import 'package:myapp/utils/message_decoder.dart';
 import 'package:myapp/utils/object_util.dart';
 import 'package:myapp/utils/sp_util.dart';
@@ -25,8 +27,6 @@ class SenderMngr {
       return;
     }
 
-    List<int> original;
-    String myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
     String ip = SPUtil.getString(Constants.KEY_ACCESS_NODE_IP)?? null;
     int port = SPUtil.getInt(Constants.KEY_ACCESS_NODE_PORT) ?? 0;
     if (ip == null && port == 0) {
@@ -36,91 +36,15 @@ class SenderMngr {
 
     // normal case,  socket connect.
     print("socket connect to $ip:$port");
-    _socket = await Socket.connect(ip, port);
-
-    _socket.listen((data) {
-      //data => data.sublist(1) , skip the first length tag.  
-      // protobuf,  length + bytes
-      List<int> decodeMsg = _decodeMessage(data);
-      if (decodeMsg == null) {
-        print("decode error.");
-        return;
-      }
-
-      RavenMessage message = RavenMessage.fromBuffer(decodeMsg);
-      print(message.type);
-      switch (message.type) {
-        case RavenMessage_Type.LoginAck:
-          if (_msgMap.containsKey(message.loginAck.id)) {
-            original = _msgMap.remove(message.loginAck.id);
-          } else {
-            print("error: ${message.loginAck.id} contains? ${_msgMap.containsKey(message.loginAck.id)}");
-          } 
-          if (message.loginAck.code == Code.SUCCESS) {
-            isLogined = true;
-            print("IM Login success");
-            ConversationManager.get().requestConverEntities(); 
-          } else {
-            print("error: login ack: $message.loginAck.code ");
-          }
-          break;
-        case RavenMessage_Type.MessageAck:
-          if (_msgMap.containsKey(message.messageAck.cid)) {
-            original = _msgMap.remove(message.messageAck.cid);
-          } else {
-            print("error: ${message.messageAck.cid} contains? ${_msgMap.containsKey(message.messageAck.cid)}");
-          } 
-          if (message.messageAck.code == Code.SUCCESS) {
-            RavenMessage originalMsg = RavenMessage.fromBuffer(_decodeMessage(original));
-            DataBaseApi.get().updateMessageEntity(message.messageAck.converId, 
-                ObjectUtil.getMsgEntity(myUid, originalMsg.upDownMessage), false);
-          } else {
-            print("error: message ack: $message.messageAck.code ");
-          }
-          break;
-        case RavenMessage_Type.ConverAck:
-          if (_msgMap.containsKey(message.converAck.id)) {
-            original = _msgMap.remove(message.converAck.id);
-          } else {
-            print("error: ${message.converAck.id} contains? ${_msgMap.containsKey(message.converAck.id)}");
-          } 
-          if (message.converAck.code == Code.SUCCESS) {
-            if (message.converAck.converList != null) {
-              DataBaseApi.get()
-                  .updateConversationEntities(
-                    ObjectUtil.getConvEntities(myUid, message.converAck.converList));
-            } else if (message.converAck.converInfo != null) {
-              DataBaseApi.get()
-                  .updateConversationEntities(
-                    ObjectUtil.getConvEntity(myUid, message.converAck.converInfo));
-            }
-          } else {
-            print("error: conversation ack: $message.converAck.code ");
-          }
-          break;
-        case RavenMessage_Type.HeartBeat:
-          _sendPong(message.heartBeat.id);
-          break;
-        case RavenMessage_Type.HisMessagesAck:
-          if (_msgMap.containsKey(message.hisMessagesAck.id)) {
-            original = _msgMap.remove(message.hisMessagesAck.id);
-            //DB insert
-            DataBaseApi.get().updateMessageEntities(message.hisMessagesAck.converId, 
-                ObjectUtil.getMsgEntities(myUid, message.hisMessagesAck.messageList));
-          } else {
-            print("error: ${message.hisMessagesAck.id} contains? ${_msgMap.containsKey(message.hisMessagesAck.id)}");
-          }
-          break;
-        case RavenMessage_Type.UpDownMessage:
-          print(" receive messages.");
-          //DB insert
-          DataBaseApi.get().updateMessageEntity(message.upDownMessage.converId, 
-              ObjectUtil.getMsgEntity(myUid, message.upDownMessage), true);
-          break;
-      }
-    });
+    Socket.connect(ip, port).then((Socket sock) {
+      _socket = sock;
+      _socket.listen(dataHandler, 
+          onError: errorHandler, 
+          onDone: doneHandler, 
+          cancelOnError: false);
       // socket connected, login.
       _loginReq();
+    });
   }
 
   static void _sendMsg(List<int> msg) async {
@@ -131,6 +55,7 @@ class SenderMngr {
       _msgId++;
     } else {
       print(" can't send message. Login($isLogined), Socket Connected($_socket)");
+      DialogUtil.buildToast("Socket lost, please reconnect.");
     }
   }
 
@@ -196,7 +121,7 @@ class SenderMngr {
     MessageDecoder _state = new MessageDecoder();
     List<int> decodeMsg;
     int i = 0;
-    while (decodeMsg == null || i < message.length) {
+    while (i < message.length) {
       var nextByte = message[i];
       if (nextByte == -1) return null;
       decodeMsg = _state.handleInput(nextByte);
@@ -207,5 +132,103 @@ class SenderMngr {
       return null;
     }
     return decodeMsg;
+  }
+
+  static void dataHandler(data) {
+    List<int> original;
+    String myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
+    //data => data.sublist(1) , skip the first length tag.  
+    // protobuf,  length + bytes
+    List<int> decodeMsg = _decodeMessage(data);
+    if (decodeMsg == null) {
+      print("decode error.");
+      return;
+    }
+
+    RavenMessage message = RavenMessage.fromBuffer(decodeMsg);
+    print(message.type);
+    switch (message.type) {
+      case RavenMessage_Type.LoginAck:
+        if (_msgMap.containsKey(message.loginAck.id)) {
+          original = _msgMap.remove(message.loginAck.id);
+        } else {
+          print("error: ${message.loginAck.id} contains? ${_msgMap.containsKey(message.loginAck.id)}");
+        } 
+        if (message.loginAck.code == Code.SUCCESS) {
+          isLogined = true;
+          print("IM Login success");
+          // pull conversation from DB.
+          InteractNative.getAppEventSink().add(InteractNative.PULL_CONVERSATION);
+          // request server to update db.
+          ConversationManager.get().requestConverEntities(); 
+        } else {
+          print("error: login ack: $message.loginAck.code ");
+        }
+        break;
+      case RavenMessage_Type.MessageAck:
+        if (_msgMap.containsKey(message.messageAck.cid)) {
+          original = _msgMap.remove(message.messageAck.cid);
+        } else {
+          print("error: ${message.messageAck.cid} contains? ${_msgMap.containsKey(message.messageAck.cid)}");
+        } 
+        if (message.messageAck.code == Code.SUCCESS) {
+          RavenMessage originalMsg = RavenMessage.fromBuffer(_decodeMessage(original));
+          DataBaseApi.get().updateMessageEntity(message.messageAck.converId, 
+              ObjectUtil.getMsgEntity(myUid, originalMsg.upDownMessage), false);
+        } else {
+          print("error: message ack: $message.messageAck.code ");
+        }
+        break;
+      case RavenMessage_Type.ConverAck:
+        if (_msgMap.containsKey(message.converAck.id)) {
+          original = _msgMap.remove(message.converAck.id);
+        } else {
+          print("error: ${message.converAck.id} contains? ${_msgMap.containsKey(message.converAck.id)}");
+        } 
+        if (message.converAck.code == Code.SUCCESS) {
+          if (message.converAck.converList != null) {
+            DataBaseApi.get()
+                .updateConversationEntities(
+                  ObjectUtil.getConvEntities(myUid, message.converAck.converList));
+          } else if (message.converAck.converInfo != null) {
+            DataBaseApi.get()
+                .updateConversationEntities(
+                  ObjectUtil.getConvEntity(myUid, message.converAck.converInfo));
+          }
+        } else {
+          print("error: conversation ack: $message.converAck.code ");
+        }
+        break;
+      case RavenMessage_Type.HeartBeat:
+        _sendPong(message.heartBeat.id);
+        break;
+      case RavenMessage_Type.HisMessagesAck:
+        if (_msgMap.containsKey(message.hisMessagesAck.id)) {
+          original = _msgMap.remove(message.hisMessagesAck.id);
+          //DB insert
+          DataBaseApi.get().updateMessageEntities(message.hisMessagesAck.converId, 
+              ObjectUtil.getMsgEntities(myUid, message.hisMessagesAck.messageList));
+        } else {
+          print("error: ${message.hisMessagesAck.id} contains? ${_msgMap.containsKey(message.hisMessagesAck.id)}");
+        }
+        break;
+      case RavenMessage_Type.UpDownMessage:
+        print(" receive messages.");
+        //DB insert
+        DataBaseApi.get().updateMessageEntity(message.upDownMessage.converId, 
+            ObjectUtil.getMsgEntity(myUid, message.upDownMessage), true);
+        break;
+    }
+  }
+
+  static void errorHandler(Object error, StackTrace trace){
+    print(error);
+  }
+
+  static void doneHandler(){
+    print("socket done.");
+    _socket.destroy();
+    _socket = null;
+    isLogined = false;
   }
 }

@@ -6,8 +6,10 @@ import 'package:myapp/entity/rest_list_entity.dart';
 
 class RestManager {
   //TODO  through config file
-  static const String APP_SERVER_URL = 'http://10.12.10.18:9080/api';
-  static const String IM_SERVER_URL = 'http://10.12.10.18:8060/route';
+  static const String APP_SERVER_URL = 'http://192.168.31.37:9080/api';
+  static const String IM_SERVER_URL = 'http://192.168.31.37:8060/route';
+  // static const String APP_SERVER_URL = 'http://34.80.128.78:8080/api';
+  // static const String IM_SERVER_URL = 'http://34.80.127.96:8060/route';
 
   static const String GET_TOKEN = '/user/login';
   static const String GET_ACCESS_NODE = '/user/access';

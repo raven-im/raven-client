@@ -6,7 +6,6 @@ import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/dialog_util.dart';
 import 'package:myapp/utils/interact_vative.dart';
 import 'package:myapp/utils/sp_util.dart';
-import 'package:flutter/services.dart';
 
 class LoginPage extends StatelessWidget {
   @override

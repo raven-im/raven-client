@@ -21,7 +21,6 @@ class _SplashPageState extends State<SplashPage> {
   
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _initTools();
     _checkPage();
@@ -78,7 +77,6 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return new Material(
       child: _buildSplashBg(),
     );
@@ -86,7 +84,6 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     if (null != _timerUtil) {
       _timerUtil.cancel();

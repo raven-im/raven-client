@@ -164,7 +164,6 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // TODO: implement didChangeAppLifecycleState
     super.didChangeAppLifecycleState(state);
     //initState后，未调用，所以初始化为resume，当APP进入后台，则为onPause；APP进入前台，为resume
     currentState = state;
@@ -175,7 +174,6 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
 
   @override
   void dispose() {
-    // TODO: implement dispose
     if (null != _refreshTimer) {
       _refreshTimer.cancel();
     }
@@ -184,7 +182,6 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
   }
 
   @override
-  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 
   @override

@@ -78,9 +78,7 @@ class DataBaseApi {
         "DELETE FROM  ${DataBaseConfig.CONVERSATIONS_TABLE}; ");
   }
 
-  /**
-   * Contacts.
-   */
+  // Contacts.
   Future<ContactEntity> getContactsEntity(String uid) async {
     var db = await _init();
     var result =
@@ -133,9 +131,7 @@ class DataBaseApi {
         ]);
   }
 
-  /**
-   * Messages
-   */
+  // Messages
 
   // get all messages that belongs to that conversation.
   Future<List<MessageEntity>> getMessagesEntities(String convId) async {
@@ -224,9 +220,7 @@ class DataBaseApi {
         ]);
   }
 
-  /**
-   * Conversations.
-   */
+  // Conversations.
 
   // get all conversation.
   Future<List<ConversationEntity>> getConversationEntities() async {
