@@ -20,9 +20,9 @@ import 'package:myapp/utils/sp_util.dart';
 class MessagePage extends StatefulWidget {
   final String title;
   final String targetUid;
-  final String convId;
+  String convId;
 
-  const MessagePage(
+  MessagePage(
       {Key key,
       @required this.title,
       @required this.targetUid,
@@ -48,19 +48,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    _getLocalMessage();
     _initData();
-  }
-
-  _getLocalMessage() async {
-    // await DataBaseApi.get().getMessagesEntities(widget.convId)
-    //     .then((listEntity) async {
-    //   for (MessageEntity entity in listEntity) {
-    //     //最新的一条消息，在list的index=0
-    //     _messageList.add(entity);
-    //   }
-    //   setState(() {});
-    // });
   }
 
   _initData() {
@@ -79,26 +67,29 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
         _onRefresh();
       }
     });
-    _pullMsgAndDisplay();
 
     //according to the db, pull new messages.
-    DataBaseApi.get().getMessagesEntities(widget.convId).then((messages) {
-      if (messages.length > 0) {
-        DataBaseApi.get().getLatestMessageTime(widget.convId).then((time) {
-          MessageManager.get().requestMessageEntities(widget.convId, time);
-        });
-      } else {
-        MessageManager.get().requestMessageEntities(widget.convId, 0);
-      }
-    });
+    // first time , no conversation id, but select one contact and send message.
+    if (widget.convId != null) {
+      DataBaseApi.get().getMessagesEntities(widget.convId).then((messages) {
+        if (messages.length > 0) {
+          DataBaseApi.get().getLatestMessageTime(widget.convId).then((time) {
+            MessageManager.get().requestMessageEntities(widget.convId, time + 1);
+          });
+        } else {
+          MessageManager.get().requestMessageEntities(widget.convId, 0);
+        }
+      });
+    }
   }
 
   void _pullMsgAndDisplay() {
+    _messageList.clear();
     DataBaseApi.get().getMessagesEntities(widget.convId).then((messages) => {
       DataBaseApi.get().getAllContactsEntities().then((contacts) {
         messages.forEach((messge) {
           if (messge.contentType == Constants.MESSAGE_TYPE_CHAT && 
-            myUid == messge.targetUid) {
+            (myUid == messge.targetUid || widget.targetUid == messge.targetUid)) {
               // for me.
               contacts.forEach((contact) {
                   if (contact.userId == messge.fromUid) {
@@ -308,14 +299,6 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
   }
 
   Future<Null> _onRefresh() async {
-    await _getLocalMessage();
-//    if (_isLoadAll) {
-//      if (_messageList.length < 1) {
-//        DialogUtil.buildToast('没有历史消息');
-//      } else {
-//        DialogUtil.buildToast('已加载全部历史消息');
-//      }
-//    }
   }
 
   Widget _messageListViewItem(int index) {
@@ -379,21 +362,21 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
     DataBaseApi.get().getAllContactsEntities().then((contacts) {
       
       if (entity.contentType == Constants.MESSAGE_TYPE_CHAT && 
-          myUid==entity.targetUid) {
+          (myUid == entity.targetUid || widget.targetUid == entity.targetUid)) {
             // for me.
             contacts.forEach((contact) {
                 if (contact.userId == entity.fromUid) {
                   entity.senderName = contact.userName;
                 }
               });
+            if (widget.convId == null) {
+              widget.convId = entity.convId;
+            }
+
             _messageList.insert(0, entity);
+            setState(() {});
           }
       });
-      if (this.mounted) {
-        setState((){
-          //Your state change code goes here
-        });
-      }
   }
 
   @override

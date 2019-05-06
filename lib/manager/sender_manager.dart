@@ -174,7 +174,8 @@ class SenderMngr {
         if (message.messageAck.code == Code.SUCCESS) {
           RavenMessage originalMsg = RavenMessage.fromBuffer(_decodeMessage(original));
           DataBaseApi.get().updateMessageEntity(message.messageAck.converId, 
-              ObjectUtil.getMsgEntity(myUid, originalMsg.upDownMessage), false);
+              ObjectUtil.getMsgEntityByAck(myUid, originalMsg.upDownMessage, message.messageAck),
+              false);
         } else {
           print("error: message ack: $message.messageAck.code ");
         }
@@ -186,11 +187,11 @@ class SenderMngr {
           print("error: ${message.converAck.id} contains? ${_msgMap.containsKey(message.converAck.id)}");
         } 
         if (message.converAck.code == Code.SUCCESS) {
-          if (message.converAck.converList != null) {
+          if (message.converAck.converList.isNotEmpty) {
             DataBaseApi.get()
                 .updateConversationEntities(
                   ObjectUtil.getConvEntities(myUid, message.converAck.converList));
-          } else if (message.converAck.converInfo != null) {
+          } else if (message.converAck.converInfo.converId != "") {
             DataBaseApi.get()
                 .updateConversationEntities(
                   ObjectUtil.getConvEntity(myUid, message.converAck.converInfo));

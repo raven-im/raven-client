@@ -101,6 +101,22 @@ class ObjectUtil {
     return entity;
   }
 
+  static MessageEntity getMsgEntityByAck(String myUid, UpDownMessage oriMsg, MessageAck ack) {
+
+    MessageEntity entity = new MessageEntity(
+      msgId: ack.id.toInt(),
+      convType: Constants.CONVERSATION_SINGLE, //TODO Group?
+      fromUid: oriMsg.fromUid,
+      targetUid: oriMsg.targetUid, //??
+      contentType: Constants.MESSAGE_TYPE_CHAT,
+      content: oriMsg.content.content,
+      time: ack.time.toString(),
+      status: 0,
+      messageOwner: myUid == oriMsg.fromUid ? 0 : 1,
+    );
+    return entity;
+  }
+
   static bool isNetUri(String uri) {
     if (uri.isNotEmpty &&
         (uri.startsWith('http://') || uri.startsWith('https://'))) {
@@ -122,6 +138,7 @@ class ObjectUtil {
     //socket disconnect.
     SenderMngr.release();
     //notify UI switch.
+    InteractNative.closeStream();
     InteractNative.getAppEventSink().add(InteractNative.CHANGE_PAGE_TO_LOGIN);
   }
 }

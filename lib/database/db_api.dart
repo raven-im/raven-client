@@ -160,6 +160,10 @@ class DataBaseApi {
   }
 
   Future updateMessageEntities(String convId, List<MessageEntity> entities) async {
+    // if (entities.length <= 0) {
+    //   return null;
+    // }
+
     getMessagesEntities(convId).then((list) {
       var msgList = list.map((f) => f.msgId).toList();
 
