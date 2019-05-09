@@ -8,7 +8,7 @@ class RestManager {
   //TODO  through config file
   // static const String APP_SERVER_URL = 'http://10.12.9.127:9080/api';
   // static const String IM_SERVER_URL = 'http://10.12.9.127:8060/route';
-  static const String APP_SERVER_URL = 'http://34.80.128.78:8080/api';
+  static const String APP_SERVER_URL = 'http://34.80.127.96:8080/api';
   static const String IM_SERVER_URL = 'http://34.80.127.96:8060/raven-zuul/route';
 
   static const String GET_TOKEN = '/user/login';
