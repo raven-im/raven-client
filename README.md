@@ -13,6 +13,12 @@ https://github.com/bbpatience/raven-appserver
 Web Client:
 https://github.com/bbpatience/raven-web
 
+### Test Account
+```
+Test Account1:  13800222222, password: 222222
+Test Account2:  13800333333, password: 333333
+```
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
