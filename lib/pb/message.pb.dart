@@ -452,7 +452,7 @@ class HisMessagesReq extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('HisMessagesReq', package: const $pb.PackageName('com.raven.common.protos'))
     ..a<Int64>(1, 'id', $pb.PbFieldType.OU6, Int64.ZERO)
     ..aOS(2, 'converId')
-    ..a<Int64>(3, 'beaginTime', $pb.PbFieldType.OU6, Int64.ZERO)
+    ..a<Int64>(3, 'beginId', $pb.PbFieldType.OU6, Int64.ZERO)
     ..hasRequiredFields = false
   ;
 
@@ -478,10 +478,10 @@ class HisMessagesReq extends $pb.GeneratedMessage {
   $core.bool hasConverId() => $_has(1);
   void clearConverId() => clearField(2);
 
-  Int64 get beaginTime => $_getI64(2);
-  set beaginTime(Int64 v) { $_setInt64(2, v); }
-  $core.bool hasBeaginTime() => $_has(2);
-  void clearBeaginTime() => clearField(3);
+  Int64 get beginId => $_getI64(2);
+  set beginId(Int64 v) { $_setInt64(2, v); }
+  $core.bool hasBeginId() => $_has(2);
+  void clearBeginId() => clearField(3);
 }
 
 class HisMessagesAck extends $pb.GeneratedMessage {

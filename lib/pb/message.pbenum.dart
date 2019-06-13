@@ -25,11 +25,23 @@ class HeartBeatType extends $pb.ProtobufEnum {
 
 class Code extends $pb.ProtobufEnum {
   static const Code SUCCESS = Code._(0, 'SUCCESS');
-  static const Code FAIL = Code._(1, 'FAIL');
+  static const Code CLIENT_ID_REPEAT = Code._(1, 'CLIENT_ID_REPEAT');
+  static const Code CONVER_TYPE_INVALID = Code._(2, 'CONVER_TYPE_INVALID');
+  static const Code KAFKA_ERROR = Code._(3, 'KAFKA_ERROR');
+  static const Code CONVER_ID_INVALID = Code._(4, 'CONVER_ID_INVALID');
+  static const Code NO_TARGET = Code._(5, 'NO_TARGET');
+  static const Code TOKEN_INVALID = Code._(6, 'TOKEN_INVALID');
+  static const Code OPERATION_TYPE_INVALID = Code._(7, 'OPERATION_TYPE_INVALID');
 
   static const $core.List<Code> values = <Code> [
     SUCCESS,
-    FAIL,
+    CLIENT_ID_REPEAT,
+    CONVER_TYPE_INVALID,
+    KAFKA_ERROR,
+    CONVER_ID_INVALID,
+    NO_TARGET,
+    TOKEN_INVALID,
+    OPERATION_TYPE_INVALID,
   ];
 
   static final $core.Map<$core.int, Code> _byValue = $pb.ProtobufEnum.initByValue(values);

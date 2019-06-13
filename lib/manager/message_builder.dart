@@ -6,7 +6,7 @@ import 'package:protobuf/protobuf.dart';
 class MessageBuilder {
 
   static List<int> login(int id, String uid, String token){
-    var message = new RavenMessage();
+    var message = RavenMessage();
     message.type = RavenMessage_Type.Login;
     var data = Login();
     data.id = Int64(id);
@@ -17,7 +17,7 @@ class MessageBuilder {
   }
 
   static List<int> getAllConversationList(int id) {
-    var message = new RavenMessage();
+    var message = RavenMessage();
     message.type = RavenMessage_Type.ConverReq;
     var data = ConverReq();
     data.id = Int64(id);
@@ -100,7 +100,7 @@ class MessageBuilder {
     var data = HisMessagesReq();
     data.id = Int64(id);
     data.converId = convId;
-    data.beaginTime = Int64(beginTime);
+    data.beginId = Int64(beginTime);
 
     message.hisMessagesReq = data;
     return _protoToDelimitedBuffer(message);

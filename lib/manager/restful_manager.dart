@@ -8,8 +8,8 @@ class RestManager {
   //TODO  through config file
   // static const String APP_SERVER_URL = 'http://10.12.9.127:9080/api';
   // static const String IM_SERVER_URL = 'http://10.12.9.127:8060/route';
-  static const String APP_SERVER_URL = 'http://34.80.127.96:8080/api';
-  static const String IM_SERVER_URL = 'http://34.80.127.96:8060/raven-zuul/route';
+  static const String APP_SERVER_URL = 'http://114.67.79.183:8080/api';
+  static const String IM_SERVER_URL = 'http://114.67.79.183:8060/raven-zuul/route';
 
   static const String GET_TOKEN = '/user/login';
   static const String GET_ACCESS_NODE = '/user/access';
@@ -34,8 +34,13 @@ class RestManager {
 
   Future<RestEntity> getAccess(String appKey, String token) async {
 
-    Response response = await Dio().post(IM_SERVER_URL + GET_ACCESS_NODE,
-      data: {"appKey": appKey, "token": token});
+    Response response = await Dio().get(IM_SERVER_URL + GET_ACCESS_NODE, 
+      options: new Options(
+        headers: {
+          "token": token,
+        }
+    ));
+    
     print(response);
     var data = json.decode(response.toString());
     RestEntity entity = RestEntity.fromMap(data);

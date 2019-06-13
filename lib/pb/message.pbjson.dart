@@ -16,7 +16,13 @@ const Code$json = const {
   '1': 'Code',
   '2': const [
     const {'1': 'SUCCESS', '2': 0},
-    const {'1': 'FAIL', '2': 1},
+    const {'1': 'CLIENT_ID_REPEAT', '2': 1},
+    const {'1': 'CONVER_TYPE_INVALID', '2': 2},
+    const {'1': 'KAFKA_ERROR', '2': 3},
+    const {'1': 'CONVER_ID_INVALID', '2': 4},
+    const {'1': 'NO_TARGET', '2': 5},
+    const {'1': 'TOKEN_INVALID', '2': 6},
+    const {'1': 'OPERATION_TYPE_INVALID', '2': 7},
   ],
 };
 
@@ -163,7 +169,7 @@ const HisMessagesReq$json = const {
   '2': const [
     const {'1': 'id', '3': 1, '4': 1, '5': 4, '10': 'id'},
     const {'1': 'converId', '3': 2, '4': 1, '5': 9, '10': 'converId'},
-    const {'1': 'beaginTime', '3': 3, '4': 1, '5': 4, '10': 'beaginTime'},
+    const {'1': 'beginId', '3': 3, '4': 1, '5': 4, '10': 'beginId'},
   ],
 };
 

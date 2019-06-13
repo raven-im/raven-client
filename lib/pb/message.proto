@@ -1,9 +1,9 @@
 syntax = "proto3";
-package com.tim.common.protos;
+package com.raven.common.protos;
 
 option java_outer_classname = "Message";
 
-message TimMessage {
+message RavenMessage {
   Type type = 1;
   //oneof的意思：如果有多个可选字段，在某一个时刻只能只有一个值被设置，可以节省内存空间
   oneof data {
@@ -89,7 +89,14 @@ message MessageAck {
 
 enum Code {
   SUCCESS = 0;
-  FAIL = 1;
+  CLIENT_ID_REPEAT = 1;
+  CONVER_TYPE_INVALID = 2;
+  KAFKA_ERROR = 3;
+  CONVER_ID_INVALID = 4;
+  NO_TARGET = 5;
+  TOKEN_INVALID = 6;
+  OPERATION_TYPE_INVALID=7;
+
 }
 
 // 会话类型
@@ -119,7 +126,7 @@ enum MessageType {
 message HisMessagesReq {
   uint64 id = 1; // 消息ID
   string converId = 2; // 会话id
-  uint64 beaginTime = 3; // 消息起始时间
+  uint64 beginId = 3; // 消息起始id
 }
 
 // 历史消息
