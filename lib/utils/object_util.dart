@@ -41,6 +41,7 @@ class ObjectUtil {
         targetUid: targetId,
         isUnreadCount: 0, //TODO
         lastMessage: info.lastContent.content,
+        lastMsgType: info.lastContent.type.value,
         timestamp: info.lastContent.time.toInt(),
         conversationType: Constants.CONVERSATION_SINGLE); //TODO group
       list.add(entity);
@@ -74,7 +75,7 @@ class ObjectUtil {
         convType: Constants.CONVERSATION_SINGLE, //TODO Group?
         fromUid: msg.uid,
         targetUid: myUid, //??
-        contentType: Constants.MESSAGE_TYPE_CHAT,
+        contentType: msg.type.value,
         content: msg.content,
         time: msg.time.toString(),
         status: 0,
@@ -92,7 +93,7 @@ class ObjectUtil {
       convType: Constants.CONVERSATION_SINGLE, //TODO Group?
       fromUid: msg.fromUid,
       targetUid: msg.targetUid, //??
-      contentType: Constants.MESSAGE_TYPE_CHAT,
+      contentType: Constants.CONTENT_TYPE_TEXT,
       content: msg.content.content,
       time: msg.content.time.toString(),
       status: 0,
@@ -108,7 +109,7 @@ class ObjectUtil {
       convType: Constants.CONVERSATION_SINGLE, //TODO Group?
       fromUid: oriMsg.fromUid,
       targetUid: oriMsg.targetUid, //??
-      contentType: Constants.MESSAGE_TYPE_CHAT,
+      contentType: Constants.CONTENT_TYPE_TEXT,
       content: oriMsg.content.content,
       time: ack.time.toString(),
       status: 0,

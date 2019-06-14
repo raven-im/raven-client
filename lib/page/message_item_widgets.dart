@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:myapp/entity/content_entities/text_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/date_util.dart';
@@ -196,26 +198,33 @@ class MessageItemWidgets {
   */
   static Widget _contentWidget(MessageEntity entity) {
     Widget widget;
-    if (entity.contentType == Constants.MESSAGE_TYPE_CHAT) {
-      //文本
-      widget = buildTextWidget(entity);
-    } else {
-      widget = ClipRRect(
-        borderRadius: BorderRadius.circular(8.0),
-        child: Container(
-          padding: EdgeInsets.all(10),
-          color: Colors.grey,
-          child: Text(
-            'Unknown Message',
-            style: TextStyle(fontSize: 16, color: Colors.black),
+    switch (entity.contentType) {
+      case Constants.CONTENT_TYPE_TEXT:
+        widget = buildTextWidget(entity);
+        break;
+      case Constants.CONTENT_TYPE_IMAGE:
+        // TODO
+        break;
+      default:
+        widget = ClipRRect(
+          borderRadius: BorderRadius.circular(8.0),
+          child: Container(
+            padding: EdgeInsets.all(10),
+            color: Colors.grey,
+            child: Text(
+              'Unknown Message',
+              style: TextStyle(fontSize: 16, color: Colors.black),
+            ),
           ),
-        ),
-      );
+        );
+        break;
     }
     return widget;
   }
 
   static Widget buildTextWidget(MessageEntity entity) {
+    var data = json.decode(entity.content);
+    TextEntity text = TextEntity.fromMap(data);
     return ClipRRect(
       borderRadius: BorderRadius.circular(8.0),
       child: Container(
@@ -224,7 +233,7 @@ class MessageItemWidgets {
             ? Colors.white
             : Color.fromARGB(255, 158, 234, 106),
         child: Text(
-          entity.content,
+          text.content,
           style: TextStyle(fontSize: 16, color: Colors.black),
         ),
       ),

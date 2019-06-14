@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:myapp/base/base_state.dart';
 import 'package:myapp/database/db_api.dart';
+import 'package:myapp/entity/content_entities/text_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/message_manager.dart';
 import 'package:myapp/manager/sender_manager.dart';
@@ -88,7 +91,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
     DataBaseApi.get().getMessagesEntities(widget.convId).then((messages) => {
       DataBaseApi.get().getAllContactsEntities().then((contacts) {
         messages.forEach((messge) {
-          if (messge.contentType == Constants.MESSAGE_TYPE_CHAT && 
+          if (messge.contentType == Constants.CONTENT_TYPE_TEXT && 
             (myUid == messge.targetUid || widget.targetUid == messge.targetUid)) {
               // for me.
               contacts.forEach((contact) {
@@ -316,20 +319,23 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
 
   //重发
   _onResend(MessageEntity entity) {
-    if (entity.contentType == Constants.MESSAGE_TYPE_CHAT) {
+    if (entity.contentType == Constants.CONTENT_TYPE_TEXT) {
       _sendMessage(entity, isResend: true);
     }
   }
 
   _buildTextMessage(String content) {
+    TextEntity text = new TextEntity(content: content);
+    String jsonText = json.encode(text.toMap());
+    print(jsonText);
     MessageEntity messageEntity = new MessageEntity(
-        contentType: Constants.MESSAGE_TYPE_CHAT,
+        contentType: Constants.CONTENT_TYPE_TEXT,
         fromUid: myUid,
         targetUid: widget.targetUid,
         convType: Constants.CONVERSATION_SINGLE,
-        content: content,
+        content: jsonText,
         convId: widget.convId,
-        time: new DateTime.now().millisecondsSinceEpoch.toString());
+        time: DateTime.now().millisecondsSinceEpoch.toString());
     messageEntity.messageOwner = 0;
     messageEntity.status = 0;
     setState(() {
@@ -361,7 +367,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
 
     DataBaseApi.get().getAllContactsEntities().then((contacts) {
       
-      if (entity.contentType == Constants.MESSAGE_TYPE_CHAT && 
+      if (entity.contentType == Constants.CONTENT_TYPE_TEXT && 
           (myUid == entity.targetUid || widget.targetUid == entity.targetUid)) {
             // for me.
             contacts.forEach((contact) {

@@ -16,9 +16,9 @@ class SenderMngr {
 
   static bool isLogined = false;
   // client id match to server.
-  static int _msgId = 1;
+  static Int64 _msgId = Int64(DateTime.now().millisecondsSinceEpoch);
   // client message list.
-  static Map<int, List<int>> _msgMap = new Map<int, List<int>>();
+  static Map<Int64, List<int>> _msgMap = new Map<Int64, List<int>>();
   static Socket _socket;
   
   static init() async {
@@ -102,7 +102,7 @@ class SenderMngr {
   }
 
   static void sendPing() {
-    List<int> list = MessageBuilder.sendHeartBeat(Int64(_msgId), HeartBeatType.PING);
+    List<int> list = MessageBuilder.sendHeartBeat(_msgId, HeartBeatType.PING);
     _sendMsg(list);
   }
 

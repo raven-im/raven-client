@@ -6,13 +6,15 @@ class Constants {
   static const String KEY_ACCESS_NODE_IP = 'key_access_ip';
   static const String KEY_ACCESS_NODE_PORT = 'key_access_port';
   static const String INPUTFORMATTERS = '[a-zA-Z0-9!.?,~@#%^&*()]';
-  static const String CONTENT_TYPE_TEXT = "text"; //消息内容类型：文本
   static int currentPage = 0;
-
-  static const String MESSAGE_TYPE_CHAT = 'chat';
 
   static const int CONVERSATION_SINGLE = 1;
   static const int CONVERSATION_GROUP = 2;
+
+  static const int CONTENT_TYPE_TEXT = 0;
+  static const int CONTENT_TYPE_IMAGE = 1;
+  static const int CONTENT_TYPE_VOICE = 2;
+  static const int CONTENT_TYPE_VIDEO = 3;
 
   /* response code from */
   static const int RSP_COMMON_SUCCESS = 10000;

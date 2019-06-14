@@ -22,10 +22,9 @@ class MessageEntity {
       targetUid,
       convId,
       content,
-      contentType,
       senderName,
       time;
-  int convType, status, msgId;
+  int convType, status, msgId, contentType;
   int isUnread, messageOwner, isUnreadCount;
 
   MessageEntity(
@@ -53,7 +52,7 @@ class MessageEntity {
           fromUid: map[FROM_UID],
           targetUid: map[TARGET_UID],
           content: map[CONTENT],
-          contentType: map[CONTENT_TYPE],
+          contentType: int.parse(map[CONTENT_TYPE]),
           time: map[TIME],
           isUnread: map[IS_UNREAD],
           messageOwner: map[MESSAGE_OWNER],

@@ -5,45 +5,45 @@ import 'package:protobuf/protobuf.dart';
 
 class MessageBuilder {
 
-  static List<int> login(int id, String uid, String token){
+  static List<int> login(Int64 id, String uid, String token){
     var message = RavenMessage();
     message.type = RavenMessage_Type.Login;
     var data = Login();
-    data.id = Int64(id);
+    data.id = id;
     data.uid = uid;
     data.token = token;
     message.login = data;
     return _protoToDelimitedBuffer(message);
   }
 
-  static List<int> getAllConversationList(int id) {
+  static List<int> getAllConversationList(Int64 id) {
     var message = RavenMessage();
     message.type = RavenMessage_Type.ConverReq;
     var data = ConverReq();
-    data.id = Int64(id);
+    data.id = id;
     data.type = OperationType.ALL;
     message.converReq = data;
     return _protoToDelimitedBuffer(message);
   }
 
-  static List<int> getDetailConversationList(int id, String cid) {
+  static List<int> getDetailConversationList(Int64 id, String cid) {
     var message = new RavenMessage();
     message.type = RavenMessage_Type.ConverReq;
     var data = ConverReq();
-    data.id = Int64(id);
+    data.id = id;
     data.type = OperationType.DETAIL;
     data.conversationId = cid;
     message.converReq = data;
     return _protoToDelimitedBuffer(message);
   }
 
-  static List<int> sendSingleMessage(int id, String fromId, String targetId, MessageType type, 
+  static List<int> sendSingleMessage(Int64 id, String fromId, String targetId, MessageType type, 
       String content, {String converId}) {
     var message = new RavenMessage();
     message.type = RavenMessage_Type.UpDownMessage;
     var data = UpDownMessage();
     // data.id = Int64(id);  server set
-    data.cid = Int64(id);
+    data.cid = id;
     data.fromUid = fromId;
     data.targetUid = targetId;
     data.converType = ConverType.SINGLE;
@@ -55,13 +55,13 @@ class MessageBuilder {
     return _protoToDelimitedBuffer(message);
   }
 
-  static List<int> sendGroupMessage(int id, String fromId, String targetId, MessageType type, 
+  static List<int> sendGroupMessage(Int64 id, String fromId, String targetId, MessageType type, 
       String content, String groupId, {String converId}) {
     var message = new RavenMessage();
     message.type = RavenMessage_Type.UpDownMessage;
     var data = UpDownMessage();
     // data.id = Int64(id);  server set
-    data.cid = Int64(id);
+    data.cid = id;
     data.fromUid = fromId;
     data.targetUid = targetId;
     data.converType = ConverType.GROUP;
@@ -94,11 +94,11 @@ class MessageBuilder {
     return _protoToDelimitedBuffer(message);
   }
 
-  static List<int> getMessageList(int id, String convId, int beginTime) {
+  static List<int> getMessageList(Int64 id, String convId, int beginTime) {
     var message = new RavenMessage();
     message.type = RavenMessage_Type.HisMessagesReq;
     var data = HisMessagesReq();
-    data.id = Int64(id);
+    data.id = id;
     data.converId = convId;
     data.beginId = Int64(beginTime);
 

@@ -1,9 +1,13 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:myapp/database/db_config.dart';
 import 'package:myapp/entity/contact_entity.dart';
+import 'package:myapp/entity/content_entities/image_entity.dart';
+import 'package:myapp/entity/content_entities/text_entity.dart';
 import 'package:myapp/entity/conversation_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/conversation_manager.dart';
+import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/interact_vative.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -59,6 +63,7 @@ class DataBaseApi {
           "${ConversationEntity.LAST_MESSAGE} TEXT,"
           "${ConversationEntity.IS_UNREAD_COUNT} INTEGER,"
           "${ConversationEntity.LAST_MESSAGE_TIME} TEXT,"
+          "${ConversationEntity.LAST_MESSAGE_TYPE} INTEGER,"
           "${ConversationEntity.CONVERATION_TYPE} INTEGER"
           ")");
     });
@@ -193,6 +198,7 @@ class DataBaseApi {
         updateConversationEntity(convId, entity);
       } else {
         //if conversation id not exsists,  request the conversation from server.
+        print("haha" + convId);
         ConversationManager.get().requestConverEntity(convId);
       }
     });
@@ -285,27 +291,60 @@ class DataBaseApi {
 
   Future _updateConversationEntity(String convId, MessageEntity entity) async {
     var db = await _init();
+    String lastMsg = "default";
+    var data = json.decode(entity.content);
+    switch (entity.contentType) {
+      case Constants.CONTENT_TYPE_TEXT:
+        TextEntity text = TextEntity.fromMap(data);
+        lastMsg = text.content;
+        break;
+      case Constants.CONTENT_TYPE_IMAGE:
+        ImgEntity image = ImgEntity.fromMap(data);
+        lastMsg = image.name;
+        break;
+      default:
+        break;
+    }
+    
     await db.rawUpdate(
         'UPDATE ${DataBaseConfig.CONVERSATIONS_TABLE} SET '
-        ' ${ConversationEntity.LAST_MESSAGE} = "${entity.content}", '
+        ' ${ConversationEntity.LAST_MESSAGE} = "$lastMsg", '
         ' ${ConversationEntity.LAST_MESSAGE_TIME} = "${entity.time}" '
         'where ${ConversationEntity.CON_ID} = "$convId"');
   }
 
   Future _updateConversationsEntity(ConversationEntity entity) async {
     var db = await _init();
+    
+    String lastMsg = "default";
+    var data = json.decode(entity.lastMessage);
+    switch (entity.lastMsgType) {
+      case Constants.CONTENT_TYPE_TEXT:
+        TextEntity text = TextEntity.fromMap(data);
+        lastMsg = text.content;
+        break;
+      case Constants.CONTENT_TYPE_IMAGE:
+        ImgEntity image = ImgEntity.fromMap(data);
+        lastMsg = image.name;
+        break;
+      default:
+        break;
+    }
+
     await db.rawUpdate(
         'INSERT OR REPLACE INTO '
         '${DataBaseConfig.CONVERSATIONS_TABLE} '
         '(${ConversationEntity.CON_ID},${ConversationEntity.TARGET_UID},'
         '${ConversationEntity.LAST_MESSAGE},${ConversationEntity.IS_UNREAD_COUNT},'
+        '${ConversationEntity.LAST_MESSAGE_TYPE},'
         '${ConversationEntity.LAST_MESSAGE_TIME},${ConversationEntity.CONVERATION_TYPE}) '
-        ' VALUES(?,?,?,?,?,?)',
+        ' VALUES(?,?,?,?,?,?,?)',
         [
           entity.id,
           entity.targetUid,
-          entity.lastMessage,
+          lastMsg,
           entity.isUnreadCount,
+          entity.lastMsgType,
           entity.timestamp,
           entity.conversationType,
         ]);
