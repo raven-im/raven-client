@@ -93,7 +93,7 @@ class ObjectUtil {
       convType: Constants.CONVERSATION_SINGLE, //TODO Group?
       fromUid: msg.fromUid,
       targetUid: msg.targetUid, //??
-      contentType: Constants.CONTENT_TYPE_TEXT,
+      contentType: msg.content.type.value, //??
       content: msg.content.content,
       time: msg.content.time.toString(),
       status: 0,
@@ -109,7 +109,7 @@ class ObjectUtil {
       convType: Constants.CONVERSATION_SINGLE, //TODO Group?
       fromUid: oriMsg.fromUid,
       targetUid: oriMsg.targetUid, //??
-      contentType: Constants.CONTENT_TYPE_TEXT,
+      contentType: oriMsg.content.type.value, //??
       content: oriMsg.content.content,
       time: ack.time.toString(),
       status: 0,

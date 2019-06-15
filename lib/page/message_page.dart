@@ -91,8 +91,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
     DataBaseApi.get().getMessagesEntities(widget.convId).then((messages) => {
       DataBaseApi.get().getAllContactsEntities().then((contacts) {
         messages.forEach((messge) {
-          if (messge.contentType == Constants.CONTENT_TYPE_TEXT && 
-            (myUid == messge.targetUid || widget.targetUid == messge.targetUid)) {
+          if (myUid == messge.targetUid || widget.targetUid == messge.targetUid) {
               // for me.
               contacts.forEach((contact) {
                   if (contact.userId == messge.fromUid) {
@@ -367,8 +366,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
 
     DataBaseApi.get().getAllContactsEntities().then((contacts) {
       
-      if (entity.contentType == Constants.CONTENT_TYPE_TEXT && 
-          (myUid == entity.targetUid || widget.targetUid == entity.targetUid)) {
+      if (myUid == entity.targetUid || widget.targetUid == entity.targetUid) {
             // for me.
             contacts.forEach((contact) {
                 if (contact.userId == entity.fromUid) {
