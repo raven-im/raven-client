@@ -637,7 +637,7 @@ class MoreWidgets {
               child: Container(
                 width: 54,
                 height: 54,
-                color: Colors.red,
+                color: Colors.white,
                 child: Icon(icon, size: 28),
               ),
             )),

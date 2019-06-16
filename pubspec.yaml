@@ -34,6 +34,14 @@ dependencies:
   sqflite: ^1.1.1 #数据库
   path_provider: ^0.5.0+1
   flutter_launcher_icons: ^0.7.0
+  image_picker: ^0.5.0+3 #相机相册
+  # permission_handler: ^3.0.0 #权限申请
+  cached_network_image: ^0.6.0+1 #网络图片
+
+  flukit:
+      git:
+        url: git://github.com/flutterchina/flukit.git
+        path: package_src/
 
 dev_dependencies:
   flutter_test:

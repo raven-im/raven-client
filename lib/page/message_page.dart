@@ -1,11 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:flukit/flukit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:myapp/base/base_state.dart';
 import 'package:myapp/database/db_api.dart';
+import 'package:myapp/entity/content_entities/image_entity.dart';
 import 'package:myapp/entity/content_entities/text_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/message_manager.dart';
@@ -14,7 +17,10 @@ import 'package:myapp/page/message_item_widgets.dart';
 import 'package:myapp/page/more_widgets.dart';
 import 'package:myapp/pb/message.pbenum.dart';
 import 'package:myapp/utils/constants.dart';
+import 'package:myapp/utils/dialog_util.dart';
+import 'package:myapp/utils/image_util.dart';
 import 'package:myapp/utils/interact_vative.dart';
+import 'package:myapp/utils/popupwindow_widget.dart';
 import 'package:myapp/utils/sp_util.dart';
 
 /*
@@ -42,6 +48,8 @@ class MessagePage extends StatefulWidget {
 class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
   
   bool _isShowSend = false; //是否显示发送按钮
+  bool _isShowTools = false; //是否显示工具栏
+  List<Widget> _guideToolsList = new List();
   TextEditingController _controller = new TextEditingController();
   FocusNode _textFieldNode = FocusNode();
   List<MessageEntity> _messageList = new List();
@@ -57,6 +65,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
   _initData() {
     KeyboardVisibilityNotification().addNewListener(
       onChange: (bool visible) {
+        _isShowTools = false;
         if (visible) {
           try {
             _scrollController.position.jumpTo(0);
@@ -160,6 +169,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
         onTap: () {
           _hideKeyBoard();
           setState(() {
+            _isShowTools = false;
           });
         },
       )),
@@ -178,6 +188,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
                   onPressed: () {
                     setState(() {
                       _hideKeyBoard();
+                      _isShowTools = false;
                     });
                   }),
               new Flexible(child: _enterWidget()),
@@ -220,13 +231,25 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
                       onPressed: () {
                         _hideKeyBoard();
                         setState(() {
-                          
+                          if (_isShowTools) {
+                            _isShowTools = false;
+                          } else {
+                            _isShowTools = true;
+                          }
                         });
                       }),
             ],
           ),
         ),
       ),
+      (_isShowTools)
+          ? Container(
+              height: 210,
+              child: _bottomWidget(),
+            )
+          : SizedBox(
+              height: 0,
+            )
     ]);
   }
 
@@ -234,7 +257,60 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
     _textFieldNode.unfocus();
   }
 
- 
+  _bottomWidget() {
+    Widget widget;
+    if (_isShowTools) {
+      widget = _toolsWidget();
+    // } else if (_isShowFace) {
+    //   widget = _faceWidget();
+    // } else if (_isShowVoice) {
+    //   widget = _voiceWidget();
+    }
+    return widget;
+  } 
+
+  _toolsWidget() {
+    if (_guideToolsList.length > 0) {
+      _guideToolsList.clear();
+    }
+    List<Widget> _widgets = new List();
+    _widgets.add(MoreWidgets.buildIcon(Icons.insert_photo, 'Album', o: (res) {
+      ImageUtil.getGalleryImage().then((imageFile) {
+        //相册取图片
+        _willBuildImageMessage(imageFile);
+      });
+    }));
+
+    _widgets.add(MoreWidgets.buildIcon(Icons.camera_alt, 'Camera', o: (res) {
+      PopupWindowUtil.showCameraChosen(context, onCallBack: (type, file) {
+        if (type == 1) {
+          //相机取图片
+          _willBuildImageMessage(file);
+        // } else if (type == 2) {
+        //   //相机拍视频
+        //   _buildVideoMessage(file);
+        }
+      });
+    }));
+    _widgets.add(MoreWidgets.buildIcon(Icons.videocam, 'Video Call'));
+    _widgets.add(MoreWidgets.buildIcon(Icons.location_on, 'Location'));
+    _widgets.add(MoreWidgets.buildIcon(Icons.view_agenda, 'Red Packet'));
+    _widgets.add(MoreWidgets.buildIcon(Icons.swap_horiz, 'Tansfer'));
+    _widgets.add(MoreWidgets.buildIcon(Icons.mic, 'Voice Input'));
+    _widgets.add(MoreWidgets.buildIcon(Icons.favorite, 'Favorites'));
+    _guideToolsList.add(GridView.count(
+        crossAxisCount: 4, padding: EdgeInsets.all(0.0), children: _widgets));
+    
+    return Swiper(
+        autoStart: false,
+        circular: false,
+        indicator: CircleSwiperIndicator(
+            radius: 3.0,
+            padding: EdgeInsets.only(top: 10.0, bottom: 10),
+            itemColor: Colors.grey,
+            itemActiveColor: Colors.white),
+        children: _guideToolsList);
+  }
 
   /*输入框*/
   _enterWidget() {
@@ -354,6 +430,43 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
     SenderMngr.sendSingleMessageReq(messageEntity.fromUid, messageEntity.targetUid, 
       MessageType.TEXT, messageEntity.content, convId:messageEntity.convId);
   }
+
+  _willBuildImageMessage(File imageFile) {
+    if (imageFile == null || imageFile.path.isEmpty) {
+      return;
+    }
+    DialogUtil.showBaseDialog(context, 'Full Image？',
+        right: 'Yes', left: 'No', rightClick: (res) {
+      _buildImageMessage(imageFile, true);
+    }, leftClick: (res) {
+      _buildImageMessage(imageFile, false);
+    });
+  }
+
+  _buildImageMessage(File file, bool sendOriginalImage) {
+    ImgEntity image = new ImgEntity(
+      name: file.path,
+      size: 0,
+      url: ''); // async from File Server.
+    String jsonImg = json.encode(image.toMap());
+    MessageEntity messageEntity = new MessageEntity(
+        contentType: Constants.CONTENT_TYPE_IMAGE,
+        fromUid: myUid,
+        targetUid: widget.targetUid,
+        convType: Constants.CONVERSATION_SINGLE, // TODO
+        content: jsonImg,
+        convId: widget.convId,
+        time: DateTime.now().millisecondsSinceEpoch.toString());
+    messageEntity.messageOwner = 0;
+    messageEntity.status = 0;
+    
+    setState(() {
+      _messageList.insert(0, messageEntity);
+      _controller.clear();
+    });
+    _sendMessage(messageEntity);
+  }
+  
   @override
   void dispose() {
     print(" message page dispose");
