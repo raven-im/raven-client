@@ -195,16 +195,14 @@ class MoreWidgets {
   */
   static Widget buildDivider({
     double height = 10,
-    Color bgColor = Colors.green,
     double dividerHeight = 0.5,
-    Color dividerColor = Colors.yellow,
   }) {
     BorderSide side = BorderSide(
-        color: dividerColor, width: dividerHeight, style: BorderStyle.solid);
+        color: Colors.white, width: dividerHeight, style: BorderStyle.solid);
     return new Container(
         padding: EdgeInsets.all(height / 2),
         decoration: new BoxDecoration(
-          color: bgColor,
+          color: Colors.grey[300],
           border: Border(top: side, bottom: side),
         ));
   }
@@ -280,6 +278,87 @@ class MoreWidgets {
                   : SizedBox(
                       height: 14,
                     )
+            ])));
+  }
+
+  /*
+  *  生成我的-ListView的item
+  */
+  static Widget mineListViewItem1(String text,
+      {int unread = 0,
+      String content = '',
+      String time = '',
+      @required Widget imageChild,
+      OnItemClick onItemClick,
+      OnItemClick onImageClick}) {
+    return InkWell(
+        onTap: () {
+          if (null != onItemClick) {
+            onItemClick(null);
+          }
+        },
+        onLongPress: () {},
+        child: Container(
+            padding:
+                EdgeInsets.only(left: 20.0, right: 16, top: 20, bottom: 20),
+            child: Column(children: <Widget>[
+              //1列n行
+              Row(
+                children: <Widget>[
+                  //1行3列
+                  InkWell(
+                      onTap: () {
+                        if (onImageClick != null) {
+                          onImageClick(null);
+                        }
+                      },
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: imageChild)),
+                  SizedBox(
+                    width: 20.0,
+                  ),
+                  Expanded(
+                    //文本过长，打点
+                    flex: 1,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          text,
+                          maxLines: 1,
+                          softWrap: true,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 22.0, color: Colors.black),
+                        ),
+                        SizedBox(
+                          height: 5.0,
+                        ),
+                        Text(
+                          content,
+                          maxLines: 1,
+                          softWrap: true,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 14.0, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: 15.0,
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.grey,
+                      size: 18,
+                    ),
+                  )
+                ],
+              ),
             ])));
   }
 

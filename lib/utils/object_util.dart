@@ -134,6 +134,9 @@ class ObjectUtil {
     SPUtil.remove(Constants.KEY_LOGIN_TOKEN);
     SPUtil.remove(Constants.KEY_ACCESS_NODE_IP);
     SPUtil.remove(Constants.KEY_ACCESS_NODE_PORT);
+    SPUtil.remove(Constants.KEY_LOGIN_ACCOUNT_MOBILE);
+    SPUtil.remove(Constants.KEY_LOGIN_ACCOUNT_PORTRAIT);
+    
     //DB delete.
     DataBaseApi.get().clearDB().then((_) => DataBaseApi.get().close());
     //socket disconnect.

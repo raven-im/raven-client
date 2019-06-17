@@ -7,6 +7,7 @@ import 'package:myapp/manager/sender_manager.dart';
 import 'package:myapp/page/contacts_page.dart';
 import 'package:myapp/page/conversation_page.dart';
 import 'package:myapp/page/login_page.dart';
+import 'package:myapp/page/mine_page.dart';
 import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/interact_vative.dart';
 import 'package:myapp/utils/sp_util.dart';
@@ -37,7 +38,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends BaseState<MyHomePage> {
   var _pageController = new PageController(initialPage: 0);
   int _tabIndex = 0;
-  var appBarTitles = ['Conversations', 'Contacts'];
+  var appBarTitles = ['Conversations', 'Contacts', 'Me'];
   List _pageList;
   bool _isShowLogin;
 
@@ -56,24 +57,29 @@ class _MyHomePageState extends BaseState<MyHomePage> {
   
   void initData() {
     /*
-     * 2个子界面
+     * 3个子界面
      */
     _pageList = [
       new ConversationPage(rootContext: context),
       new ContactsPage(rootContext: context),
+      new MinePage(rootContext: context)
     ];
-
-    String myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
     SenderMngr.init();
 
     // request Contacts.
-    if (myUid != null) {
-      ContactManager.get().getContactsEntity(myUid).then((entities) {
-        entities.forEach((entity) {
-          DataBaseApi.get().updateContactsEntity(entity);
-        });
+    ContactManager.get().getContactsEntity().then((entities) {
+      entities.forEach((entity) {
+        DataBaseApi.get().updateContactsEntity(entity);
       });
-    }
+      String myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
+      if (myUid != null) {
+        DataBaseApi.get().getContactsEntity(myUid).then((entity) {
+          SPUtil.putString(Constants.KEY_LOGIN_ACCOUNT, entity.userName);
+          SPUtil.putString(Constants.KEY_LOGIN_ACCOUNT_MOBILE, entity.mobile);
+          SPUtil.putString(Constants.KEY_LOGIN_ACCOUNT_PORTRAIT, entity.portrait);
+        });
+      }
+    });
   }
 
   @override
@@ -110,7 +116,7 @@ class _MyHomePageState extends BaseState<MyHomePage> {
                   itemBuilder: (BuildContext context, int index) {
                     return _pageList[index];
                   },
-                  itemCount: 2,
+                  itemCount: 3,
                 ),
                 bottomNavigationBar: new BottomNavigationBar(
                   items: <BottomNavigationBarItem>[
@@ -122,10 +128,16 @@ class _MyHomePageState extends BaseState<MyHomePage> {
                         title: getTabTitle(0)),
                     new BottomNavigationBarItem(
                         icon: new Icon(
-                          Icons.contacts,
+                          Icons.contact_phone,
                           color: _tabIndex == 1 ? Colors.blueGrey : null,
                         ),
                         title: getTabTitle(1)),
+                    new BottomNavigationBarItem(
+                        icon: new Icon(
+                          Icons.contacts,
+                          color: _tabIndex == 2 ? Colors.blueGrey : null,
+                        ),
+                        title: getTabTitle(2)),
                   ],
                   type: BottomNavigationBarType.fixed,
                   //默认选中首页

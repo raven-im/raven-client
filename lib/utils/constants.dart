@@ -1,6 +1,8 @@
 class Constants {
   static const String KEY_LOGIN = 'key_login'; //false: show login page;
   static const String KEY_LOGIN_ACCOUNT = 'key_login_account';
+  static const String KEY_LOGIN_ACCOUNT_MOBILE = 'key_login_account_mobile';
+  static const String KEY_LOGIN_ACCOUNT_PORTRAIT = 'key_login_account_url';
   static const String KEY_LOGIN_UID = 'key_login_uid';
   static const String KEY_LOGIN_TOKEN = 'key_login_token';
   static const String KEY_ACCESS_NODE_IP = 'key_access_ip';
@@ -18,4 +20,6 @@ class Constants {
 
   /* response code from */
   static const int RSP_COMMON_SUCCESS = 10000;
+
+  static const String DEFAULT_PORTRAIT = "https://api.adorable.io/avatars/285/1.png";
 }

@@ -18,7 +18,7 @@ class PopupWindowUtil {
             children: <Widget>[
               new ListTile(
                 leading: new Icon(Icons.photo_camera),
-                title: new Text("拍照"),
+                title: new Text("Photo"),
                 onTap: () async {
                   Navigator.pop(context);
                   ImageUtil.getCameraImage().then((image) {
@@ -31,7 +31,7 @@ class PopupWindowUtil {
               MoreWidgets.buildDivider(height: 0),
               new ListTile(
                 leading: new Icon(Icons.photo_library),
-                title: new Text("相册"),
+                title: new Text("Album"),
                 onTap: () async {
                   Navigator.pop(context);
                   ImageUtil.getGalleryImage().then((image) {

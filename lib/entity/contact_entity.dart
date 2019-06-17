@@ -7,18 +7,21 @@ class ContactEntity {
   static const String DB_ID = "db_id";
   static const String USER_ID = "id";
   static const String USER_NAME = "user_name";
+  static const String MOBILE = "mobile";
   static const String PORTRAIT = "portrait";
   static const String STATUS = "status";
 
   String userId;
   String userName;
   String portrait;
+  String mobile;
   int status;
 
   ContactEntity({
     @required this.userId,
     this.userName,
     this.portrait,
+    this.mobile,
     this.status = 0,
   });
 
@@ -28,6 +31,7 @@ class ContactEntity {
           userName: map[USER_NAME],
           portrait: map[PORTRAIT],
           status: map[STATUS],
+          mobile: map[MOBILE],
         );
 
   // Currently not used
@@ -37,6 +41,7 @@ class ContactEntity {
       USER_NAME: userName,
       PORTRAIT: portrait,
       STATUS: status,
+      MOBILE: mobile,
     };
   }
 }

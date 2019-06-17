@@ -38,6 +38,7 @@ class DataBaseApi {
           "${ContactEntity.STATUS} INTEGER,"
           "${ContactEntity.USER_ID} TEXT,"
           "${ContactEntity.USER_NAME} TEXT,"
+          "${ContactEntity.MOBILE} TEXT,"
           "${ContactEntity.PORTRAIT} TEXT"
           ")");
       await db.execute(
@@ -126,13 +127,14 @@ class DataBaseApi {
     var db = await _init();
     await db.rawUpdate(
         'INSERT OR REPLACE INTO '
-        '${DataBaseConfig.CONTACTS_TABLE}(${ContactEntity.USER_ID},${ContactEntity.USER_NAME},${ContactEntity.PORTRAIT},${ContactEntity.STATUS})'
-        ' VALUES(?,?,?,?)',
+        '${DataBaseConfig.CONTACTS_TABLE}(${ContactEntity.USER_ID},${ContactEntity.USER_NAME},${ContactEntity.PORTRAIT},${ContactEntity.STATUS},${ContactEntity.MOBILE})'
+        ' VALUES(?,?,?,?,?)',
         [
           entity.userId,
           entity.userName,
           entity.portrait,
-          entity.status
+          entity.status,
+          entity.mobile,
         ]);
   }
 

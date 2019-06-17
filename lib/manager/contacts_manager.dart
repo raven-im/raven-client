@@ -16,21 +16,20 @@ class ContactManager {
   /*
   *  查询联系人列表
   */
-  Future<List<ContactEntity>> getContactsEntity(String myUid) async {
+  Future<List<ContactEntity>> getContactsEntity() async {
     List<ContactEntity> res = [];
     RestListEntity entity = await RestManager.get().getUserList();
     if (Constants.RSP_COMMON_SUCCESS != entity.code) {
       DialogUtil.buildToast(entity.message);
     } else {
       entity.data.forEach((item) {
-        if (item['id'] != myUid) {
-          res.add(new ContactEntity(
-            userId: item['id'],
-            userName: item['name'],
-            portrait: 'http://google.com/1.jpg',
-            status: item['state'],
-            ));
-        }
+        res.add(new ContactEntity(
+          userId: item['id'],
+          userName: item['name'],
+          portrait: item['portrait'],
+          status: item['state'],
+          mobile: item['mobile'],
+          ));
       });
     }
     return res;
