@@ -15,7 +15,6 @@ import 'package:myapp/manager/restful_manager.dart';
 import 'package:myapp/manager/sender_manager.dart';
 import 'package:myapp/page/message_item_widgets.dart';
 import 'package:myapp/page/more_widgets.dart';
-import 'package:myapp/pb/message.pbenum.dart';
 import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/dialog_util.dart';
 import 'package:myapp/utils/image_util.dart';

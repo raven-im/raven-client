@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:myapp/entity/content_entities/image_entity.dart';
 import 'dart:convert';
-
+import 'package:path/path.dart' as path;
 import 'package:myapp/entity/rest_entity.dart';
 import 'package:myapp/entity/rest_list_entity.dart';
 import 'package:myapp/utils/constants.dart';
@@ -61,9 +61,9 @@ class RestManager {
   }
 
   Future<ImgEntity> uploadFile(File file, String token) async {
-    print(file.path);
+    String fileName = path.basename(file.path);
     FormData formData = new FormData.from({
-      "file": new UploadFileInfo(file, file.path)
+      "file": new UploadFileInfo(file, fileName)
     });
 
     Response response = await Dio().post(IM_SERVER_URL + UPLOAD_FILE,
