@@ -684,11 +684,6 @@ class MoreWidgets {
             child: Text(texts[0],
                 style: new TextStyle(fontSize: 16.0, color: Colors.black)),
           ),
-          new PopupMenuItem<String>(
-            value: 'two',
-            child: Text(texts[1],
-                style: new TextStyle(fontSize: 16.0, color: Colors.black)),
-          ),
         ]).then((res) {
       if (null != onItemClick) {
         onItemClick(res);

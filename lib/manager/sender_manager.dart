@@ -229,7 +229,7 @@ class SenderMngr {
 
   static void doneHandler(){
     print("socket done.");
-    _socket.destroy();
+    _socket?.destroy();
     _socket = null;
     isLogined = false;
   }

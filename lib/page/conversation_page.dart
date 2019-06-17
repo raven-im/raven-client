@@ -41,7 +41,6 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
     _getData();
     _startRefresh();
     _popString.add('Reconnect');
-    _popString.add('Logout');
   }
 
   @override
@@ -92,14 +91,6 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
                       // socket reconnect.
                       DialogUtil.buildToast('Try Reconnect Done.');
                       SenderMngr.init();
-                      break;
-                    case 'two':
-                      DialogUtil.showBaseDialog(context, 'Confirm to logout?',
-                          leftClick: (res) {
-                        print("press OK.");
-                        DialogUtil.buildToast('Logout Done.');
-                        ObjectUtil.doExit(widget.rootContext);
-                      });
                       break;
                 }
               });

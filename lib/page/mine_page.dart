@@ -7,6 +7,7 @@ import 'package:myapp/manager/restful_manager.dart';
 import 'package:myapp/page/more_widgets.dart';
 import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/dialog_util.dart';
+import 'package:myapp/utils/object_util.dart';
 import 'package:myapp/utils/popupwindow_widget.dart';
 import 'package:myapp/utils/sp_util.dart';
 
@@ -69,7 +70,7 @@ class _MineState extends State<MinePage> with AutomaticKeepAliveClientMixin {
             MoreWidgets.buildDivider(),
             MoreWidgets.defaultListViewItem(Icons.exit_to_app, 'Logout',
                 textColor: Colors.black, isDivider: false, onItemClick: (res) {
-              DialogUtil.showBaseDialog(context, 'Sure to logout？', rightClick: (res) {
+              DialogUtil.showBaseDialog(context, 'Sure to logout？', leftClick: (res) {
                 _logOut();
               });
             }),
@@ -128,17 +129,7 @@ class _MineState extends State<MinePage> with AutomaticKeepAliveClientMixin {
   }
 
   _logOut() {
-    // InteractNative.goNativeWithValue(InteractNative.methodNames['logout'])
-    //     .then((success) {
-    //   if (success == true) {
-    //     DialogUtil.buildToast('Success');
-    //     ObjectUtil.doExit(widget.rootContext);
-    //   } else if (success is String) {
-    //     DialogUtil.buildToast(success);
-    //   } else {
-    //     DialogUtil.buildToast('Failed');
-    //   }
-    // });
+    ObjectUtil.doExit(widget.rootContext);
   }
 
   @override
