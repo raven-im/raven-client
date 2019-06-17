@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:myapp/base/base_state.dart';
 import 'package:myapp/database/db_api.dart';
+import 'package:myapp/entity/content_entities/image_entity.dart';
 import 'package:myapp/entity/content_entities/text_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/message_manager.dart';
@@ -15,6 +16,7 @@ import 'package:myapp/manager/restful_manager.dart';
 import 'package:myapp/manager/sender_manager.dart';
 import 'package:myapp/page/message_item_widgets.dart';
 import 'package:myapp/page/more_widgets.dart';
+import 'package:myapp/page/photo_view_page.dart';
 import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/dialog_util.dart';
 import 'package:myapp/utils/image_util.dart';
@@ -387,6 +389,18 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
         onResend: (reSendEntity) {
       _onResend(reSendEntity); //重发
     }, onItemClick: (onClickEntity) async {
+      MessageEntity entity = onClickEntity;
+      if (entity.contentType == Constants.CONTENT_TYPE_IMAGE) {
+        //点击了图片
+        var data = json.decode(entity.content);
+        ImgEntity imgEntity = ImgEntity.fromMap(data);
+        Navigator.push(
+            context,
+            new CupertinoPageRoute<void>(
+                builder: (ctx) => PhotoViewPage(
+                      images: [imgEntity.url],
+                    )));
+      }
     });
   }
 
