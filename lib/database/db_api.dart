@@ -138,6 +138,13 @@ class DataBaseApi {
         ]);
   }
 
+  Future updatePortrait(String url, String uid) async {
+    var db = await _init();
+    await db.rawUpdate(
+      'UPDATE ${DataBaseConfig.CONTACTS_TABLE} SET '
+      ' ${ContactEntity.PORTRAIT} = "$url" '
+      'where ${ContactEntity.USER_ID} = "$uid"');
+  }
   // Messages
 
   // get all messages that belongs to that conversation.
@@ -200,7 +207,6 @@ class DataBaseApi {
         updateConversationEntity(convId, entity);
       } else {
         //if conversation id not exsists,  request the conversation from server.
-        print("haha" + convId);
         ConversationManager.get().requestConverEntity(convId);
       }
     });

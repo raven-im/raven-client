@@ -18,6 +18,8 @@ class RestManager {
   static const String GET_ACCESS_NODE = '/user/access';
   static const String GET_USER_LIST = '/user/list';
   static const UPLOAD_FILE = '/upload';
+  static const String GET_USER = '/user/';
+  static const PORTRAIT = '/portrait';
   static final RestManager _rest = new RestManager._internal();
 
   static RestManager get() {
@@ -73,6 +75,31 @@ class RestManager {
           "token": token,
         }
     ));
+    
+    print(response);
+    var data = json.decode(response.toString());
+    RestEntity entity = RestEntity.fromMap(data);
+    if (Constants.RSP_COMMON_SUCCESS != entity.code) {
+      print('upload fail ' + entity.message);
+      return null;
+    }
+    
+    ImgEntity image = new ImgEntity(
+      name: entity.data['name'],
+      size: entity.data['size'],
+      url: entity.data['url']); // async from File Server.
+    return image;
+  }
+
+  Future<ImgEntity> updatePortrait(File file, String uid) async {
+    String fileName = path.basename(file.path);
+    FormData formData = new FormData.from({
+      "file": new UploadFileInfo(file, fileName)
+    });
+
+    Response response = await Dio().post(APP_SERVER_URL + GET_USER + uid + PORTRAIT,
+      data: formData,
+    );
     
     print(response);
     var data = json.decode(response.toString());

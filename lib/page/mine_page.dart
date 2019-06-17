@@ -2,10 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/database/db_api.dart';
+import 'package:myapp/manager/restful_manager.dart';
 import 'package:myapp/page/more_widgets.dart';
 import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/dialog_util.dart';
-import 'package:myapp/utils/file_util.dart';
 import 'package:myapp/utils/popupwindow_widget.dart';
 import 'package:myapp/utils/sp_util.dart';
 
@@ -25,7 +26,8 @@ class MinePage extends StatefulWidget {
 }
 
 class _MineState extends State<MinePage> with AutomaticKeepAliveClientMixin {
-
+  File imageChild;
+  String myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,9 +40,21 @@ class _MineState extends State<MinePage> with AutomaticKeepAliveClientMixin {
                 content: SPUtil.getString(Constants.KEY_LOGIN_ACCOUNT_MOBILE),
                 imageChild: _getHeadPortrait(), onImageClick: (res) {
               PopupWindowUtil.showPhotoChosen(context, onCallBack: (image) {
-                setState(() {
-                  // imageChild = image;
-                });
+                File file = image;
+                RestManager.get().updatePortrait(file, myUid)
+                  .then((imgEntity) {
+                    if (imgEntity == null) {
+                      return;
+                    }
+                    // set DB
+                    String uid = SPUtil.getString(Constants.KEY_LOGIN_UID);
+                    DataBaseApi.get().updatePortrait(imgEntity.url, uid).then((entities) {
+                      SPUtil.putString(Constants.KEY_LOGIN_ACCOUNT_PORTRAIT, imgEntity.url);
+                    });
+                    setState(() {
+                      imageChild = image;
+                    });
+                  });
               });
             }),
             MoreWidgets.buildDivider(),
@@ -76,20 +90,37 @@ class _MineState extends State<MinePage> with AutomaticKeepAliveClientMixin {
               size: 22,
             )),
         onTap: () {
-          PopupWindowUtil.showPhotoChosen(context);
+          PopupWindowUtil.showPhotoChosen(context, onCallBack: (image) {
+                File file = image;
+                RestManager.get().updatePortrait(file, myUid)
+                  .then((imgEntity) {
+                    if (imgEntity == null) {
+                      return;
+                    }
+                    // set DB
+                    DataBaseApi.get().updatePortrait(imgEntity.url, myUid).then((entities) {
+                      SPUtil.putString(Constants.KEY_LOGIN_ACCOUNT_PORTRAIT, imgEntity.url);
+                    });
+                    setState(() {
+                      imageChild = image;
+                    });
+                  });
+              });
         });
     actions.add(widget);
     return actions;
   }
 
   Widget _getHeadPortrait() {
-    String url = Constants.DEFAULT_PORTRAIT;
+    if (null != imageChild) {
+      return Image.file(imageChild, width: 62, height: 62, fit: BoxFit.fill);
+    }
     String portraitUrl = SPUtil.getString(Constants.KEY_LOGIN_ACCOUNT_PORTRAIT);
-    if (portraitUrl != null && portraitUrl.length > 0) {
-      url = portraitUrl;
+    if (portraitUrl == null || portraitUrl.length <= 0) {
+      portraitUrl = Constants.DEFAULT_PORTRAIT;
     }
     return Image.network(
-        url,
+        portraitUrl,
         width: 62,
         height: 62,
         fit: BoxFit.fill,
