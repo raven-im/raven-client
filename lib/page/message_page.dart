@@ -31,12 +31,14 @@ class MessagePage extends StatefulWidget {
   final String title;
   final String targetUid;
   String convId;
+  final String targetUrl;
 
   MessagePage(
       {Key key,
       @required this.title,
       @required this.targetUid,
       @required this.convId,
+      @required this.targetUrl,
       })
       : super(key: key);
 
@@ -385,7 +387,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
     MessageEntity _nextEntity =
         (index == _messageList.length - 1) ? null : _messageList[index + 1];
     MessageEntity _entity = _messageList[index];
-    return MessageItemWidgets.buildChatListItem(_nextEntity, _entity,
+    return MessageItemWidgets.buildChatListItem(_nextEntity, _entity, widget.targetUrl,
         onResend: (reSendEntity) {
       _onResend(reSendEntity); //重发
     }, onItemClick: (onClickEntity) async {

@@ -8,13 +8,15 @@ import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/date_util.dart';
 import 'package:myapp/utils/functions.dart';
 import 'package:myapp/utils/object_util.dart';
+import 'package:myapp/utils/sp_util.dart';
 
 /*
 * 对话页面中的widget
 */
 class MessageItemWidgets {
   static Widget buildChatListItem(
-      MessageEntity nextEntity, MessageEntity entity,
+      MessageEntity nextEntity, MessageEntity entity, 
+      String targetProtrait,
       {OnItemClick onResend, OnItemClick onItemClick}) {
     bool _isShowTime = true;
     var showTime; //最终显示的时间
@@ -67,22 +69,23 @@ class MessageItemWidgets {
                     style: TextStyle(color: Colors.transparent),
                   ))
               : SizedBox(height: 0),
-          _chatItemWidget(entity, onResend, onItemClick)
+          _chatItemWidget(entity, targetProtrait, onResend, onItemClick)
         ],
       ),
     );
   }
 
   static Widget _chatItemWidget(
-      MessageEntity entity, OnItemClick onResend, OnItemClick onItemClick) {
+      MessageEntity entity, String targetProtrait, OnItemClick onResend, OnItemClick onItemClick) {
     if (entity.messageOwner == 1) {
       //对方的消息
+      
       return Container(
         margin: EdgeInsets.only(left: 10, right: 90, bottom: 30, top: 4),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _headPortrait('', 1),
+            _headPortrait(targetProtrait, 1),
             SizedBox(width: 10),
             new Expanded(
                 child: Column(
@@ -111,6 +114,7 @@ class MessageItemWidgets {
       );
     } else {
       //自己的消息
+      String myPortraitUrl = SPUtil.getString(Constants.KEY_LOGIN_ACCOUNT_PORTRAIT);
       return Container(
         margin: EdgeInsets.only(left: 90, right: 10, bottom: 30, top: 4),
         child: Row(
@@ -167,7 +171,7 @@ class MessageItemWidgets {
               ],
             )),
             SizedBox(width: 10),
-            _headPortrait('', 0),
+            _headPortrait(myPortraitUrl, 0),
           ],
         ),
       );

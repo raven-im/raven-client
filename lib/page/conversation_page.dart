@@ -122,14 +122,18 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
         unread: entity.isUnreadCount, onItemClick: (res) {
       if (entity.conversationType == Constants.CONVERSATION_SINGLE) {
         //聊天消息，跳转聊天对话页面
-        Navigator.push(
-            context,
-            new CupertinoPageRoute<void>(
-                builder: (ctx) => MessagePage(
-                      title: entity.name == null ? entity.targetUid : entity.name,
-                      targetUid: entity.targetUid,
-                      convId: entity.id,
-                    )));
+        DataBaseApi.get().getContactsEntity(entity.targetUid).then((contact) => {
+          Navigator.push(
+              context,
+              new CupertinoPageRoute<void>(
+                  builder: (ctx) => MessagePage(
+                        title: entity.name == null ? entity.targetUid : entity.name,
+                        targetUid: entity.targetUid,
+                        convId: entity.id,
+                        targetUrl: contact.portrait,
+                      )))
+        });
+
       }
     });
     return res;
