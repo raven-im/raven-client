@@ -2,6 +2,7 @@
 import 'package:fixnum/fixnum.dart';
 import 'dart:io';
 import 'package:myapp/database/db_api.dart';
+import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/conversation_manager.dart';
 import 'package:myapp/manager/message_builder.dart';
 import 'package:myapp/pb/message.pb.dart';
@@ -82,13 +83,13 @@ class SenderMngr {
     _sendMsg(list);
   }
 
-  static void sendSingleMessageReq(String fromId, String targetId, MessageType type, String content, {String convId}) {
-    List<int> list = MessageBuilder.sendSingleMessage(_msgId, fromId, targetId, type, content, converId: convId);
+  static void sendSingleMessageReq(MessageEntity entity) {
+    List<int> list = MessageBuilder.sendSingleMessage(_msgId, entity);
     _sendMsg(list);
   }
 
-  static void sendGroupMessageReq(String fromId, String targetId, MessageType type, String content, String groupId, {String convId}) {
-    List<int> list = MessageBuilder.sendGroupMessage(_msgId, fromId, targetId, type, content, groupId, converId: convId);
+  static void sendGroupMessageReq(MessageEntity entity, String groupId) {
+    List<int> list = MessageBuilder.sendGroupMessage(_msgId, groupId, entity);
     _sendMsg(list);
   }
 

@@ -1,6 +1,8 @@
 import 'dart:typed_data';
+import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/pb/message.pb.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:myapp/utils/constants.dart';
 import 'package:protobuf/protobuf.dart';
 
 class MessageBuilder {
@@ -37,49 +39,64 @@ class MessageBuilder {
     return _protoToDelimitedBuffer(message);
   }
 
-  static List<int> sendSingleMessage(Int64 id, String fromId, String targetId, MessageType type, 
-      String content, {String converId}) {
+  static List<int> sendSingleMessage(Int64 id, MessageEntity entity) {
     var message = new RavenMessage();
     message.type = RavenMessage_Type.UpDownMessage;
     var data = UpDownMessage();
     // data.id = Int64(id);  server set
     data.cid = id;
-    data.fromUid = fromId;
-    data.targetUid = targetId;
+    data.fromUid = entity.fromUid;
+    data.targetUid = entity.targetUid;
     data.converType = ConverType.SINGLE;
-    if (converId != null) {
-      data.converId = converId;
+    if (entity.convId != null) {
+      data.converId = entity.convId;
     }
-    data.content = _getMessageContent(fromId, type, content);
+    data.content = _getMessageContent(entity);
     message.upDownMessage = data;
     return _protoToDelimitedBuffer(message);
   }
 
-  static List<int> sendGroupMessage(Int64 id, String fromId, String targetId, MessageType type, 
-      String content, String groupId, {String converId}) {
+  static List<int> sendGroupMessage(Int64 id, String groupId, MessageEntity entity) {
     var message = new RavenMessage();
     message.type = RavenMessage_Type.UpDownMessage;
     var data = UpDownMessage();
     // data.id = Int64(id);  server set
     data.cid = id;
-    data.fromUid = fromId;
-    data.targetUid = targetId;
+    data.fromUid = entity.fromUid;
+    data.targetUid = entity.targetUid;
     data.converType = ConverType.GROUP;
-    if (converId != null) {
-      data.converId = converId;
+    if (entity.convId != null) {
+      data.converId = entity.convId;
     }
     data.groupId = groupId;
-    data.content = _getMessageContent(fromId, type, content);
+    data.content = _getMessageContent(entity);
     message.upDownMessage = data;
     return _protoToDelimitedBuffer(message);
   }
 
-  static MessageContent _getMessageContent(String fromId, MessageType type, String content) {
+  static MessageContent _getMessageContent(MessageEntity entity) {
     var msgContent = MessageContent();
     // msgContent.id = Int64(1);   Server set.
-    msgContent.uid = fromId;
+    MessageType type;
+    switch (entity.contentType) {
+      case Constants.CONTENT_TYPE_TEXT:
+        type = MessageType.TEXT;
+        break;
+      case Constants.CONTENT_TYPE_IMAGE:
+        type = MessageType.PICTURE;
+        break;
+      case Constants.CONTENT_TYPE_VOICE:
+        type = MessageType.VOICE;
+        break;
+      case Constants.CONTENT_TYPE_VIDEO:
+        type = MessageType.VIDEO;
+        break;
+      default:
+        type = MessageType.TEXT;
+    }
+    msgContent.uid = entity.fromUid;
     msgContent.type = type;
-    msgContent.content = content;
+    msgContent.content = entity.content;
     msgContent.time = Int64(DateTime.now().millisecondsSinceEpoch);
     return msgContent;
   }

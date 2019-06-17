@@ -8,10 +8,10 @@ import 'package:flutter/services.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:myapp/base/base_state.dart';
 import 'package:myapp/database/db_api.dart';
-import 'package:myapp/entity/content_entities/image_entity.dart';
 import 'package:myapp/entity/content_entities/text_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/message_manager.dart';
+import 'package:myapp/manager/restful_manager.dart';
 import 'package:myapp/manager/sender_manager.dart';
 import 'package:myapp/page/message_item_widgets.dart';
 import 'package:myapp/page/more_widgets.dart';
@@ -427,8 +427,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
         messageEntity.status = 1;
       });
     }
-    SenderMngr.sendSingleMessageReq(messageEntity.fromUid, messageEntity.targetUid, 
-      MessageType.TEXT, messageEntity.content, convId:messageEntity.convId);
+    SenderMngr.sendSingleMessageReq(messageEntity);
   }
 
   _willBuildImageMessage(File imageFile) {
@@ -444,32 +443,40 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
   }
 
   _buildImageMessage(File file, bool sendOriginalImage) {
-    ImgEntity image = new ImgEntity(
-      name: file.path,
-      size: 0,
-      url: ''); // async from File Server.
-    String jsonImg = json.encode(image.toMap());
-    MessageEntity messageEntity = new MessageEntity(
-        contentType: Constants.CONTENT_TYPE_IMAGE,
-        fromUid: myUid,
-        targetUid: widget.targetUid,
-        convType: Constants.CONVERSATION_SINGLE, // TODO
-        content: jsonImg,
-        convId: widget.convId,
-        time: DateTime.now().millisecondsSinceEpoch.toString());
-    messageEntity.messageOwner = 0;
-    messageEntity.status = 0;
+    //TODO Full or compact
+    String token = SPUtil.getString(Constants.KEY_LOGIN_TOKEN);
+    // upload file to File server and then send image message.
+    RestManager.get().uploadFile(file, token)
+        .then((image) {
+          if (image == null) {
+            // TODO set image message state fail.
+            return;
+          }
+          String jsonImg = json.encode(image.toMap());
+          MessageEntity messageEntity = new MessageEntity(
+              contentType: Constants.CONTENT_TYPE_IMAGE,
+              fromUid: myUid,
+              targetUid: widget.targetUid,
+              convType: Constants.CONVERSATION_SINGLE, // TODO
+              content: jsonImg,
+              convId: widget.convId,
+              time: DateTime.now().millisecondsSinceEpoch.toString());
+          messageEntity.messageOwner = 0;
+          messageEntity.status = 0;
+          
+          setState(() {
+            _messageList.insert(0, messageEntity);
+            _controller.clear();
+          });
+          _sendMessage(messageEntity);
+        });
     
-    setState(() {
-      _messageList.insert(0, messageEntity);
-      _controller.clear();
-    });
-    _sendMessage(messageEntity);
+    
   }
   
   @override
   void dispose() {
-    print(" message page dispose");
+    print("message page dispose");
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
   }

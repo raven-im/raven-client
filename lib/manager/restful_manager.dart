@@ -1,8 +1,11 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:myapp/entity/content_entities/image_entity.dart';
 import 'dart:convert';
 
 import 'package:myapp/entity/rest_entity.dart';
 import 'package:myapp/entity/rest_list_entity.dart';
+import 'package:myapp/utils/constants.dart';
 
 class RestManager {
   //TODO  through config file
@@ -14,10 +17,11 @@ class RestManager {
   static const String GET_TOKEN = '/user/login';
   static const String GET_ACCESS_NODE = '/user/access';
   static const String GET_USER_LIST = '/user/list';
-  static final RestManager _contacts = new RestManager._internal();
+  static const UPLOAD_FILE = '/upload';
+  static final RestManager _rest = new RestManager._internal();
 
   static RestManager get() {
-    return _contacts;
+    return _rest;
   }
 
   RestManager._internal();
@@ -54,5 +58,34 @@ class RestManager {
     var data = json.decode(response.toString());
     RestListEntity entity = RestListEntity.fromMap(data);
     return entity;
+  }
+
+  Future<ImgEntity> uploadFile(File file, String token) async {
+    print(file.path);
+    FormData formData = new FormData.from({
+      "file": new UploadFileInfo(file, file.path)
+    });
+
+    Response response = await Dio().post(IM_SERVER_URL + UPLOAD_FILE,
+      data: formData,
+      options: new Options(
+        headers: {
+          "token": token,
+        }
+    ));
+    
+    print(response);
+    var data = json.decode(response.toString());
+    RestEntity entity = RestEntity.fromMap(data);
+    if (Constants.RSP_COMMON_SUCCESS != entity.code) {
+      print('upload fail ' + entity.message);
+      return null;
+    }
+    
+    ImgEntity image = new ImgEntity(
+      name: entity.data['name'],
+      size: entity.data['size'],
+      url: entity.data['url']); // async from File Server.
+    return image;
   }
 }
