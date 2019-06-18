@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/dialog_util.dart';
 import 'package:myapp/utils/functions.dart';
 import 'package:myapp/utils/object_util.dart';
@@ -36,11 +38,16 @@ class MoreWidgets {
   /*
   *  生成ContactsListView的item
   */
-  static Widget buildListViewItem(String fileName, String text,
-      {String dir = 'icon',
-      String format = 'png',
+  static Widget buildListViewItem(String portraitUrl, String text,
+      {
       double padding = 8.0,
       double imageSize = 38.0}) {
+    String url;
+    if (portraitUrl == '' || portraitUrl.length <= 0) {
+      url = Constants.DEFAULT_PORTRAIT;
+    } else {
+      url = portraitUrl;
+    }
     return Container(
         padding:
             EdgeInsets.only(left: 16.0, right: 16, top: padding, bottom: 0),
@@ -52,9 +59,14 @@ class MoreWidgets {
               ),
               ClipRRect(
                 borderRadius: BorderRadius.circular(6.0),
-                child: new Icon(Icons.face,
-                    color: Colors.blueGrey,
-                ),
+                child: CachedNetworkImage(
+                  width: imageSize,
+                  height: imageSize,
+                  fit: BoxFit.fill,
+                  imageUrl: url,
+                  placeholder: (context, url) => new CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => new Icon(Icons.face),
+                )
               ),
               SizedBox(
                 width: 15.0,
@@ -118,8 +130,14 @@ class MoreWidgets {
                               ),
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(8.0),
-                                child: Icon(Icons.mobile_screen_share,
-                                  size: 30.0)
+                                child: CachedNetworkImage(
+                                  width: 30,
+                                  height: 30,
+                                  fit: BoxFit.fill,
+                                  placeholder: (context, url) => new CircularProgressIndicator(),
+                                  imageUrl: Constants.DEFAULT_PORTRAIT, //TODO
+                                  errorWidget: (context, url, error) => new Icon(Icons.mobile_screen_share),
+                                )
                               ),
                             ]),
                         unread > 0

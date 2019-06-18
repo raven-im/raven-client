@@ -98,20 +98,18 @@ class Contacts extends State<ContactsPage> with AutomaticKeepAliveClientMixin {
   Widget _itemWidget(int index) {
     return InkWell(
       onTap: () {
-        DataBaseApi.get().getContactsEntity(_list[index].userId).then((contact) => {
-          Navigator.push(
-            context,
-            new CupertinoPageRoute<void>(
-                builder: (ctx) => MessagePage(
-                      title: _list[index].userName,
-                      targetUid: _list[index].userId,
-                      targetUrl: contact.portrait,
-                      convId: _map[_list[index].userId],
-                    )))
-        });
+        Navigator.push(
+          context,
+          new CupertinoPageRoute<void>(
+              builder: (ctx) => MessagePage(
+                    title: _list[index].userName,
+                    targetUid: _list[index].userId,
+                    targetUrl: _list[index].portrait,
+                    convId: _map[_list[index].userId],
+                  )));
       },
       
-      child: MoreWidgets.buildListViewItem('img_headportrait', _list[index].userName),
+      child: MoreWidgets.buildListViewItem(_list[index].portrait, _list[index].userName),
     );
   
   }

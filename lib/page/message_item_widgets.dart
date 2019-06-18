@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:myapp/entity/content_entities/image_entity.dart';
@@ -189,12 +190,14 @@ class MessageItemWidgets {
               ? new Icon(Icons.face)
               : new Icon(Icons.computer)
             : (ObjectUtil.isNetUri(url)
-                ? Image.network(
-                    url,
-                    width: 44,
-                    height: 44,
-                    fit: BoxFit.fill,
-                  )
+                ? CachedNetworkImage(
+                  width: 44,
+                  height: 44,
+                  fit: BoxFit.fill,
+                  imageUrl: url,
+                  placeholder: (context, url) => new CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => new Icon(Icons.error),
+                )
                 : Image.asset(url, width: 44, height: 44)));
   }
 

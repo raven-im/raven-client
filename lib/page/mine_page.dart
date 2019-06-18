@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/database/db_api.dart';
@@ -120,12 +121,14 @@ class _MineState extends State<MinePage> with AutomaticKeepAliveClientMixin {
     if (portraitUrl == null || portraitUrl.length <= 0) {
       portraitUrl = Constants.DEFAULT_PORTRAIT;
     }
-    return Image.network(
-        portraitUrl,
-        width: 62,
-        height: 62,
-        fit: BoxFit.fill,
-      );
+    return CachedNetworkImage(
+      width: 62,
+      height: 62,
+      fit: BoxFit.fill,
+      imageUrl: portraitUrl,
+      placeholder: (context, url) => new CircularProgressIndicator(),
+      errorWidget: (context, url, error) => new Icon(Icons.error),
+    );
   }
 
   _logOut() {
