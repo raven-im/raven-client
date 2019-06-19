@@ -13,7 +13,6 @@ import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/date_util.dart';
 import 'package:myapp/utils/dialog_util.dart';
 import 'package:myapp/utils/interact_vative.dart';
-import 'package:myapp/utils/object_util.dart';
 
 class ConversationPage extends StatefulWidget {
   ConversationPage({Key key, this.rootContext}) : super(key: key);
@@ -175,9 +174,6 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
   }
-
-  @override
-  bool get wantKeepAlive => true;
 
   @override
   void updateData(MessageEntity entity) {
