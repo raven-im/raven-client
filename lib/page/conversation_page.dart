@@ -28,6 +28,7 @@ class ConversationPage extends StatefulWidget {
 class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserver {
   var map = Map();
   var list = new List();
+  var contactsMap = new Map();
   var _popString = List<String>();
   bool isShowNoPage = false;
   Timer _refreshTimer;
@@ -108,23 +109,21 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
     res = MoreWidgets.conversationListViewItem(
         entity.name == null ? entity.targetUid : entity.name, 
         entity.conversationType,
+        portrait: contactsMap[entity.targetUid].portrait,
         content: entity.lastMessage,
         time: time,
         unread: entity.isUnreadCount, onItemClick: (res) {
       if (entity.conversationType == Constants.CONVERSATION_SINGLE) {
         //聊天消息，跳转聊天对话页面
-        DataBaseApi.get().getContactsEntity(entity.targetUid).then((contact) => {
-          Navigator.push(
-              context,
-              new CupertinoPageRoute<void>(
-                  builder: (ctx) => MessagePage(
-                        title: entity.name == null ? entity.targetUid : entity.name,
-                        targetUid: entity.targetUid,
-                        convId: entity.id,
-                        targetUrl: contact.portrait,
-                      )))
-        });
-
+        Navigator.push(
+            context,
+            new CupertinoPageRoute<void>(
+                builder: (ctx) => MessagePage(
+                      title: entity.name == null ? entity.targetUid : entity.name,
+                      targetUid: entity.targetUid,
+                      convId: entity.id,
+                      targetUrl: contactsMap[entity.targetUid].portrait,
+                    )));
       }
     });
     return res;
@@ -135,6 +134,7 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
     setState(() {
       list.clear();
       map.clear();
+      contactsMap.clear();
       isShowNoPage = true;
     });
   }
@@ -189,14 +189,15 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
     if (type == InteractNative.PULL_CONVERSATION) {
       list.clear();
       map.clear();
+      contactsMap.clear();
 
       DataBaseApi.get().getConversationEntities().then((conversations) => {
         DataBaseApi.get().getAllContactsEntities().then((contacts) {
-          var contactsMap = new Map();
-          contacts.forEach((contact) => contactsMap[contact.userId] = contact.userName);
+          
+          contacts.forEach((contact) => contactsMap[contact.userId] = contact);
           conversations.forEach((entity) {
             if (contactsMap.containsKey(entity.targetUid)) {
-              entity.name = contactsMap[entity.targetUid];
+              entity.name = contactsMap[entity.targetUid].userName;
             }
             list.insert(0, entity.targetUid);//TODO  group?
             map[entity.targetUid] = entity;

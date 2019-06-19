@@ -97,6 +97,7 @@ class MoreWidgets {
   static Widget conversationListViewItem(
     String text, int contentType,
       {
+      String portrait = '',
       int unread = 0,
       String content = '',
       String time = '',
@@ -135,7 +136,7 @@ class MoreWidgets {
                                   height: 30,
                                   fit: BoxFit.fill,
                                   placeholder: (context, url) => new CircularProgressIndicator(),
-                                  imageUrl: Constants.DEFAULT_PORTRAIT, //TODO
+                                  imageUrl: portrait == null || portrait.length <= 0 ? Constants.DEFAULT_PORTRAIT : portrait,
                                   errorWidget: (context, url, error) => new Icon(Icons.mobile_screen_share),
                                 )
                               ),
