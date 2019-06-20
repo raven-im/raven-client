@@ -9,8 +9,6 @@ import 'package:myapp/utils/constants.dart';
 
 class RestManager {
   //TODO  through config file
-  // static const String APP_SERVER_URL = 'http://10.12.9.127:9080/api';
-  // static const String IM_SERVER_URL = 'http://10.12.9.127:8060/route';
   static const String APP_SERVER_URL = 'http://114.67.79.183:8080/api';
   static const String IM_SERVER_URL = 'http://114.67.79.183:8060/raven-zuul/route';
 

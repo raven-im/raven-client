@@ -98,6 +98,7 @@ class ObjectUtil {
       time: msg.content.time.toString(),
       status: 0,
       messageOwner: myUid == msg.fromUid ? 0 : 1,
+      convId: msg.converId,
     );
     return entity;
   }
@@ -114,6 +115,7 @@ class ObjectUtil {
       time: ack.time.toString(),
       status: 0,
       messageOwner: myUid == oriMsg.fromUid ? 0 : 1,
+      convId: ack.converId
     );
     return entity;
   }

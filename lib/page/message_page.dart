@@ -498,7 +498,9 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
 
   @override
   void updateData(MessageEntity entity) {
-
+    if (entity.convId != widget.convId) {
+      return;
+    }
     DataBaseApi.get().getAllContactsEntities().then((contacts) {
       
       if (myUid == entity.targetUid || widget.targetUid == entity.targetUid) {
@@ -513,7 +515,11 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
             }
 
             _messageList.insert(0, entity);
-            setState(() {});
+            if (this.mounted) {
+              setState(() {
+                
+              });
+            }
           }
       });
   }

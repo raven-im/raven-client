@@ -192,22 +192,20 @@ class DataBaseApi {
     return null;
   }
 
-  Future updateMessageEntity(String convId, MessageEntity entity, bool notify) async {
-    
-    entity.convId = convId;
+  Future updateMessageEntity(MessageEntity entity, bool notify) async {
     _updateMessagesEntity(entity).then((_) {
       if (notify) {
         InteractNative.getMessageEventSink().add(entity);
       }
     });
 
-    isConversationIdExist(convId).then((isExist) {
+    isConversationIdExist(entity.convId).then((isExist) {
       if (isExist) {
         // otherwise update the conversation.
-        updateConversationEntity(convId, entity);
+        updateConversationEntity(entity.convId, entity);
       } else {
         //if conversation id not exsists,  request the conversation from server.
-        ConversationManager.get().requestConverEntity(convId);
+        ConversationManager.get().requestConverEntity(entity.convId);
       }
     });
   }

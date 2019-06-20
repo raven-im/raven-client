@@ -128,6 +128,8 @@ class SenderMngr {
       decodeMsg = _state.handleInput(nextByte);
       i++;
     }
+    print(i);
+    print(message.length);
     if (i < message.length) {
       print("decode error.");
       return null;
@@ -142,7 +144,6 @@ class SenderMngr {
     // protobuf,  length + bytes
     List<int> decodeMsg = _decodeMessage(data);
     if (decodeMsg == null) {
-      print("decode error.");
       return;
     }
 
@@ -174,9 +175,9 @@ class SenderMngr {
         } 
         if (message.messageAck.code == Code.SUCCESS) {
           RavenMessage originalMsg = RavenMessage.fromBuffer(_decodeMessage(original));
-          DataBaseApi.get().updateMessageEntity(message.messageAck.converId, 
-              ObjectUtil.getMsgEntityByAck(myUid, originalMsg.upDownMessage, message.messageAck),
-              false);
+          DataBaseApi.get().updateMessageEntity(
+            ObjectUtil.getMsgEntityByAck(myUid, originalMsg.upDownMessage, message.messageAck),
+            false);
         } else {
           print("error: message ack: $message.messageAck.code ");
         }
@@ -217,8 +218,9 @@ class SenderMngr {
       case RavenMessage_Type.UpDownMessage:
         print(" receive messages.");
         //DB insert
-        DataBaseApi.get().updateMessageEntity(message.upDownMessage.converId, 
-            ObjectUtil.getMsgEntity(myUid, message.upDownMessage), true);
+        DataBaseApi.get().updateMessageEntity( 
+            ObjectUtil.getMsgEntity(myUid, message.upDownMessage), 
+            true);
         break;
     }
   }

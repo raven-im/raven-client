@@ -158,7 +158,7 @@ class _LoginState extends State<Login> {
         );
   }
 
-  void _checkInput(BuildContext context) {
+  void _checkInput(BuildContext context) async {
     var username = _usernameController.text;
     if (username.isEmpty) {
       // FocusScope.of(context).requestFocus(firstTextFieldNode);
@@ -171,35 +171,58 @@ class _LoginState extends State<Login> {
       DialogUtil.buildToast("please enter password.");
       return;
     }
+    var firstEntity = await RestManager.get().login(username, password);
+    if (Constants.RSP_COMMON_SUCCESS != firstEntity.code) {
+      // FocusScope.of(context).requestFocus(firstTextFieldNode);
+      DialogUtil.buildToast(firstEntity.message);
+    } else {
+      var secondEntity = await RestManager.get().getAccess(firstEntity.data["appKey"], firstEntity.data["token"]);
+      if (Constants.RSP_COMMON_SUCCESS != secondEntity.code) {
+        DialogUtil.buildToast(secondEntity.message);
+      } else {
+        String accessIp = secondEntity.data["ip"];
+        int port = secondEntity.data["port"];
+        print("Access address: $accessIp:$port");
+        DialogUtil.buildToast('Sign in success.');
+        SPUtil.putBool(Constants.KEY_LOGIN, true);
+        SPUtil.putString(Constants.KEY_LOGIN_UID, firstEntity.data["uid"]);
+        SPUtil.putString(Constants.KEY_LOGIN_TOKEN, firstEntity.data["token"]);
+        SPUtil.putString(Constants.KEY_ACCESS_NODE_IP, accessIp);
+        SPUtil.putInt(Constants.KEY_ACCESS_NODE_PORT, port);
+        SystemChannels.textInput.invokeMethod('TextInput.hide');
+        _usernameController.text = "";
+        _passwordController.text = "";
+        InteractNative.getAppEventSink().add(InteractNative.CHANGE_PAGE_TO_MAIN);
+      }
+    }
+    // RestManager.get().login(username, password)
+    //     .then((firstEntity) {
+    //       if (Constants.RSP_COMMON_SUCCESS != firstEntity.code) {
+    //         // FocusScope.of(context).requestFocus(firstTextFieldNode);
+    //         DialogUtil.buildToast(firstEntity.message);
+    //       } else {
+    //         RestManager.get().getAccess(firstEntity.data["appKey"], firstEntity.data["token"])
+    //         .then((secondEntity) {
+    //           if (Constants.RSP_COMMON_SUCCESS != secondEntity.code) {
+    //             DialogUtil.buildToast(secondEntity.message);
+    //           } else {
+    //             String accessIp = secondEntity.data["ip"];
+    //             int port = secondEntity.data["port"];
+    //             print("Access address: $accessIp:$port");
+    //             DialogUtil.buildToast('Sign in success.');
+    //             SPUtil.putBool(Constants.KEY_LOGIN, true);
+    //             SPUtil.putString(Constants.KEY_LOGIN_UID, firstEntity.data["uid"]);
+    //             SPUtil.putString(Constants.KEY_LOGIN_TOKEN, firstEntity.data["token"]);
+    //             SPUtil.putString(Constants.KEY_ACCESS_NODE_IP, accessIp);
+    //             SPUtil.putInt(Constants.KEY_ACCESS_NODE_PORT, port);
+    //             SystemChannels.textInput.invokeMethod('TextInput.hide');
+    //             _usernameController.text = "";
+    //             _passwordController.text = "";
+    //             InteractNative.getAppEventSink().add(InteractNative.CHANGE_PAGE_TO_MAIN);
+    //           }
+    //         });
 
-    RestManager.get().login(username, password)
-        .then((firstEntity) {
-          if (Constants.RSP_COMMON_SUCCESS != firstEntity.code) {
-            // FocusScope.of(context).requestFocus(firstTextFieldNode);
-            DialogUtil.buildToast(firstEntity.message);
-          } else {
-            RestManager.get().getAccess(firstEntity.data["appKey"], firstEntity.data["token"])
-            .then((secondEntity) {
-              if (Constants.RSP_COMMON_SUCCESS != secondEntity.code) {
-                DialogUtil.buildToast(secondEntity.message);
-              } else {
-                String accessIp = secondEntity.data["ip"];
-                int port = secondEntity.data["port"];
-                print("Access address: $accessIp:$port");
-                DialogUtil.buildToast('Sign in success.');
-                SPUtil.putBool(Constants.KEY_LOGIN, true);
-                SPUtil.putString(Constants.KEY_LOGIN_UID, firstEntity.data["uid"]);
-                SPUtil.putString(Constants.KEY_LOGIN_TOKEN, firstEntity.data["token"]);
-                SPUtil.putString(Constants.KEY_ACCESS_NODE_IP, accessIp);
-                SPUtil.putInt(Constants.KEY_ACCESS_NODE_PORT, port);
-                SystemChannels.textInput.invokeMethod('TextInput.hide');
-                _usernameController.text = "";
-                _passwordController.text = "";
-                InteractNative.getAppEventSink().add(InteractNative.CHANGE_PAGE_TO_MAIN);
-              }
-            });
-
-          }
-        });
+    //       }
+    //     });
   }
 }
