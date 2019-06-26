@@ -18,6 +18,10 @@ https://github.com/bbpatience/raven-web
 Test Account1:  13800222222, password: 222222
 Test Account2:  13800333333, password: 333333
 ```
+<div>
+<img src="picture/conversation.jpeg" height="330" width="190" >
+<img src="picture/chat.jpeg" height="330" width="190" >
+</div>
 
 ## Getting Started
 
