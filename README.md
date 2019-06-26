@@ -20,7 +20,8 @@ Test Account2:  13800333333, password: 333333
 ```
 <div>
 <img src="picture/conversation.jpeg" height="330" width="190" >
-<img src="picture/chat.jpeg" height="330" width="190" >
+<img src="picture/chat1.png" height="330" width="190" >
+<img src="picture/chat2.jpeg" height="330" width="190" >
 </div>
 
 ## Getting Started
