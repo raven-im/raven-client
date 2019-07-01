@@ -33,12 +33,12 @@ class _MineState extends State<MinePage> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: MoreWidgets.buildAppBar(context, '',
+        appBar: MoreWidgets.buildAppBar(context, 'Profile',
             elevation: 0.0, actions: _actions(context)),
         body: ListView(
           children: <Widget>[
             MoreWidgets.mineListViewItem1(
-                SPUtil.getString(Constants.KEY_LOGIN_ACCOUNT),
+                SPUtil.getString(Constants.KEY_LOGIN_ACCOUNT)??"Me",
                 content: SPUtil.getString(Constants.KEY_LOGIN_ACCOUNT_MOBILE),
                 imageChild: _getHeadPortrait(), onImageClick: (res) {
               PopupWindowUtil.showPhotoChosen(context, onCallBack: (image) {

@@ -16,8 +16,6 @@ import 'package:myapp/utils/sp_util.dart';
 class SenderMngr {
 
   static bool isLogined = false;
-  // client id match to server.
-  static Int64 _msgId = Int64(DateTime.now().millisecondsSinceEpoch);
   // client message list.
   static Map<Int64, List<int>> _msgMap = new Map<Int64, List<int>>();
   static Socket _socket;
@@ -39,9 +37,9 @@ class SenderMngr {
     print("socket connect to $ip:$port");
     Socket.connect(ip, port).then((Socket sock) {
       _socket = sock;
-      _socket.listen(dataHandler, 
-          onError: errorHandler, 
-          onDone: doneHandler, 
+      _socket.listen(_dataHandler, 
+          onError: _errorHandler, 
+          onDone: _doneHandler, 
           cancelOnError: false);
       // socket connected, login.
       _loginReq();
@@ -50,10 +48,10 @@ class SenderMngr {
 
   static void _sendMsg(List<int> msg) async {
     if (isLogined && _socket != null) {
-      print("sending message.  $_msgId");
+      Int64 msgId = _getMsgId();
+      print("sending message.  $msgId");
       _socket.add(msg);
-      _msgMap.putIfAbsent(_msgId, () => msg);
-      _msgId++;
+      _msgMap.putIfAbsent(msgId, () => msg);
     } else {
       print(" can't send message. Login($isLogined), Socket Connected($_socket)");
       DialogUtil.buildToast("Socket lost, please reconnect.");
@@ -64,32 +62,32 @@ class SenderMngr {
     if (_socket != null && !isLogined) {
       String uid = SPUtil.getString(Constants.KEY_LOGIN_UID);
       String token = SPUtil.getString(Constants.KEY_LOGIN_TOKEN);
-      List<int> list = MessageBuilder.login(_msgId, uid, token);
+      Int64 msgId = _getMsgId();
+      List<int> list = MessageBuilder.login(msgId, uid, token);
       _socket.add(list);
-      _msgMap.putIfAbsent(_msgId, () => list);
-      _msgId++;
+      _msgMap.putIfAbsent(msgId, () => list);
     } else {
       print("can't login. Login($isLogined), Socket Connected($_socket)");
     }
   }
 
   static void sendAllConvListReq() {
-    List<int> list = MessageBuilder.getAllConversationList(_msgId);
+    List<int> list = MessageBuilder.getAllConversationList(_getMsgId());
     _sendMsg(list);
   }
 
   static void sendDetailConvListReq(String uid) {
-    List<int> list = MessageBuilder.getDetailConversationList(_msgId, uid);
+    List<int> list = MessageBuilder.getDetailConversationList(_getMsgId(), uid);
     _sendMsg(list);
   }
 
   static void sendSingleMessageReq(MessageEntity entity) {
-    List<int> list = MessageBuilder.sendSingleMessage(_msgId, entity);
+    List<int> list = MessageBuilder.sendSingleMessage(_getMsgId(), entity);
     _sendMsg(list);
   }
 
   static void sendGroupMessageReq(MessageEntity entity, String groupId) {
-    List<int> list = MessageBuilder.sendGroupMessage(_msgId, groupId, entity);
+    List<int> list = MessageBuilder.sendGroupMessage(_getMsgId(), groupId, entity);
     _sendMsg(list);
   }
 
@@ -103,12 +101,12 @@ class SenderMngr {
   }
 
   static void sendPing() {
-    List<int> list = MessageBuilder.sendHeartBeat(_msgId, HeartBeatType.PING);
+    List<int> list = MessageBuilder.sendHeartBeat(_getMsgId(), HeartBeatType.PING);
     _sendMsg(list);
   }
 
   static void sendMessageEntityReq(String convId, int beginTime) {
-    List<int> list = MessageBuilder.getMessageList(_msgId, convId, beginTime);
+    List<int> list = MessageBuilder.getMessageList(_getMsgId(), convId, beginTime);
     _sendMsg(list);
   }
 
@@ -119,25 +117,23 @@ class SenderMngr {
   }
 
   static List<int> _decodeMessage(List<int> message) {
-    MessageDecoder _state = new MessageDecoder();
+    MessageDecoder _decoder = new MessageDecoder();
     List<int> decodeMsg;
     int i = 0;
     while (i < message.length) {
       var nextByte = message[i];
       if (nextByte == -1) return null;
-      decodeMsg = _state.handleInput(nextByte);
+      decodeMsg = _decoder.handleInput(nextByte);
       i++;
     }
-    print(i);
-    print(message.length);
     if (i < message.length) {
-      print("decode error.");
+      print("decode error. i=$i, len=$message.length");
       return null;
     }
     return decodeMsg;
   }
 
-  static void dataHandler(data) {
+  static void _dataHandler(data) {
     List<int> original;
     String myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
     //data => data.sublist(1) , skip the first length tag.  
@@ -207,7 +203,7 @@ class SenderMngr {
         break;
       case RavenMessage_Type.HisMessagesAck:
         if (_msgMap.containsKey(message.hisMessagesAck.id)) {
-          original = _msgMap.remove(message.hisMessagesAck.id);
+          _msgMap.remove(message.hisMessagesAck.id);
           //DB insert
           DataBaseApi.get().updateMessageEntities(message.hisMessagesAck.converId, 
               ObjectUtil.getMsgEntities(myUid, message.hisMessagesAck.messageList));
@@ -225,14 +221,18 @@ class SenderMngr {
     }
   }
 
-  static void errorHandler(Object error, StackTrace trace){
+  static void _errorHandler(Object error, StackTrace trace){
     print(error);
   }
 
-  static void doneHandler(){
+  static void _doneHandler(){
     print("socket done.");
     _socket?.destroy();
     _socket = null;
     isLogined = false;
+  }
+
+  static Int64 _getMsgId() {
+    return Int64(DateTime.now().millisecondsSinceEpoch);
   }
 }
