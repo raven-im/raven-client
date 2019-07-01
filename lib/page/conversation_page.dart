@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/base/base_state.dart';
 import 'package:myapp/database/db_api.dart';
+import 'package:myapp/entity/contact_entity.dart';
 import 'package:myapp/entity/conversation_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/sender_manager.dart';
@@ -183,30 +184,28 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
   }
   
   @override
-  void notify(Object type) {
+  void notify(Object type) async {
     if (type == InteractNative.PULL_CONVERSATION) {
       list.clear();
       map.clear();
       contactsMap.clear();
 
-      DataBaseApi.get().getConversationEntities().then((conversations) => {
-        DataBaseApi.get().getAllContactsEntities().then((contacts) {
-          
-          contacts.forEach((contact) => contactsMap[contact.userId] = contact);
-          conversations.forEach((entity) {
-            if (contactsMap.containsKey(entity.targetUid)) {
-              entity.name = contactsMap[entity.targetUid].userName;
-            }
-            list.insert(0, entity.targetUid);//TODO  group?
-            map[entity.targetUid] = entity;
-          });
-          if (this.mounted) {
-            setState(() {
-              isShowNoPage = conversations.length <= 0;
-            });
-          }
-      })
-      });  
+      List<ContactEntity> contacts = await DataBaseApi.get().getAllContactsEntities();
+      contacts.forEach((contact) => contactsMap[contact.userId] = contact);
+
+      List<ConversationEntity> conversations = await DataBaseApi.get().getConversationEntities();
+      conversations.forEach((entity) {
+        if (contactsMap.containsKey(entity.targetUid)) {
+          entity.name = contactsMap[entity.targetUid].userName;
+        }
+        list.insert(0, entity.targetUid);//TODO  group?
+        map[entity.targetUid] = entity;
+      });
+      if (this.mounted) {
+        setState(() {
+          isShowNoPage = conversations.length <= 0;
+        });
+      }
     }
   }
 }

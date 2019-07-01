@@ -39,7 +39,7 @@ class ObjectUtil {
       ConversationEntity entity = new ConversationEntity(
         id: info.converId,
         targetUid: targetId,
-        isUnreadCount: 0, //TODO
+        isUnreadCount: info.unCount.toInt(),
         lastMessage: info.lastContent.content,
         lastMsgType: info.lastContent.type.value,
         timestamp: info.lastContent.time.toInt(),
