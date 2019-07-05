@@ -37,6 +37,7 @@ dependencies:
   photo_view: ^0.2.4 #图片预览
   # permission_handler: ^3.1.0 #权限申请
   cached_network_image: ^0.8.0 #网络图片
+  sy_flutter_qiniu_storage: ^0.1.4 #七牛上传图片
 
   flukit:
       git:
