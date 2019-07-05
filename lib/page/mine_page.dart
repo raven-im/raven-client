@@ -43,11 +43,13 @@ class _MineState extends State<MinePage> with AutomaticKeepAliveClientMixin {
                 imageChild: _getHeadPortrait(), onImageClick: (res) {
               PopupWindowUtil.showPhotoChosen(context, onCallBack: (image) {
                 File file = image;
-                RestManager.get().updatePortrait(file, myUid)
+                RestManager.get().uploadImage(file)
                   .then((imgEntity) {
                     if (imgEntity == null) {
                       return;
                     }
+                    //update app server.
+                    RestManager.get().updateUserPortraitDB(myUid, imgEntity.url);
                     // set DB
                     String uid = SPUtil.getString(Constants.KEY_LOGIN_UID);
                     DataBaseApi.get().updatePortrait(imgEntity.url, uid).then((entities) {
@@ -94,11 +96,13 @@ class _MineState extends State<MinePage> with AutomaticKeepAliveClientMixin {
         onTap: () {
           PopupWindowUtil.showPhotoChosen(context, onCallBack: (image) {
                 File file = image;
-                RestManager.get().updatePortrait(file, myUid)
+                RestManager.get().uploadImage(file)
                   .then((imgEntity) {
                     if (imgEntity == null) {
                       return;
                     }
+                    //update app server.
+                    RestManager.get().updateUserPortraitDB(myUid, imgEntity.url);
                     // set DB
                     DataBaseApi.get().updatePortrait(imgEntity.url, myUid).then((entities) {
                       SPUtil.putString(Constants.KEY_LOGIN_ACCOUNT_PORTRAIT, imgEntity.url);

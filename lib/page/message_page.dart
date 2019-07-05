@@ -459,9 +459,8 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
 
   _buildImageMessage(File file, bool sendOriginalImage) {
     //TODO Full or compact
-    String token = SPUtil.getString(Constants.KEY_LOGIN_TOKEN);
     // upload file to File server and then send image message.
-    RestManager.get().uploadFile(file, token)
+    RestManager.get().uploadImage(file)
         .then((image) {
           if (image == null) {
             // TODO set image message state fail.
