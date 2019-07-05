@@ -14,7 +14,7 @@ class RestManager {
   // static const String APP_SERVER_URL = 'http://114.67.79.183:8080/api';
   static const String APP_SERVER_URL = 'http://10.12.9.186:8080/api';
   static const String IM_SERVER_URL = 'http://114.67.79.183:8060/raven-zuul/route';
-  static const String QINIU_URL = 'http://7xogjk.com1.z0.glb.clouddn.com/';
+  static const String QINIU_URL = 'http://pu5wwrylf.bkt.clouddn.com/';
 
   static const String GET_TOKEN = '/user/login';
   static const String GET_ACCESS_NODE = '/user/access';
