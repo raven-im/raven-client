@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:myapp/entity/content_entities/image_entity.dart';
 import 'package:myapp/entity/content_entities/image_token_entity.dart';
 import 'dart:convert';
-import 'package:path/path.dart' as path;
+// import 'package:path/path.dart' as path;
 import 'package:myapp/entity/rest_entity.dart';
 import 'package:myapp/entity/rest_list_entity.dart';
 import 'package:myapp/utils/constants.dart';

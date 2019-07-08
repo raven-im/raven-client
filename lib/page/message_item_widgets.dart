@@ -257,17 +257,23 @@ class MessageItemWidgets {
     ImgEntity imgEntity = ImgEntity.fromMap(data);
     // entity.content
     if (ObjectUtil.isNetUri(imgEntity.url)) {
-      image = Image.network(
-        imgEntity.url,
+      image = CachedNetworkImage(
         width: size,
         height: size,
         fit: BoxFit.fill,
+        imageUrl: imgEntity.url,
+        placeholder: (context, url) => new CircularProgressIndicator(
+          backgroundColor: Colors.yellow,
+        ),
+        errorWidget: (context, url, error) => new Icon(Icons.error),
       );
     }
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(8.0),
       child: Container(
+        height: size,
+        width: size,
         padding: EdgeInsets.all(0),
         color: entity.messageOwner == 1
             ? Colors.white
