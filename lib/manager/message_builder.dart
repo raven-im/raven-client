@@ -123,19 +123,31 @@ class MessageBuilder {
     return _protoToDelimitedBuffer(message);
   }
 
+  // For Socket version
   // for protobuf,   length + bytes.  so add the length tag for bytes.
+
+  // static List<int> _protoToDelimitedBuffer(RavenMessage message) {
+  //   var messageBuffer = new CodedBufferWriter();
+  //   message.writeToCodedBufferWriter(messageBuffer);
+
+  //   var delimiterBuffer = new CodedBufferWriter();
+  //   delimiterBuffer.writeInt32NoTag(messageBuffer.lengthInBytes);
+
+  //   var result = new Uint8List(
+  //       messageBuffer.lengthInBytes + delimiterBuffer.lengthInBytes);
+
+  //   delimiterBuffer.writeTo(result);
+  //   messageBuffer.writeTo(result, delimiterBuffer.lengthInBytes);
+  //   return result;
+  // }
+
+  // For web socket version.
   static List<int> _protoToDelimitedBuffer(RavenMessage message) {
     var messageBuffer = new CodedBufferWriter();
     message.writeToCodedBufferWriter(messageBuffer);
 
-    var delimiterBuffer = new CodedBufferWriter();
-    delimiterBuffer.writeInt32NoTag(messageBuffer.lengthInBytes);
-
-    var result = new Uint8List(
-        messageBuffer.lengthInBytes + delimiterBuffer.lengthInBytes);
-
-    delimiterBuffer.writeTo(result);
-    messageBuffer.writeTo(result, delimiterBuffer.lengthInBytes);
+    var result = new Uint8List(messageBuffer.lengthInBytes);
+    messageBuffer.writeTo(result);
     return result;
   }
 }

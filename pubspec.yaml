@@ -38,6 +38,7 @@ dependencies:
   # permission_handler: ^3.1.0 #权限申请
   cached_network_image: ^0.8.0 #网络图片
   sy_flutter_qiniu_storage: ^0.1.4 #七牛上传图片
+  web_socket_channel: ^1.0.9 # WebSocket
 
   flukit:
       git:

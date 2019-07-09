@@ -1,4 +1,5 @@
-import 'package:myapp/manager/sender_manager.dart';
+// import 'package:myapp/manager/sender_manager.dart';
+import 'package:myapp/manager/wssender_manager.dart';
 
 class MessageManager {
   static final MessageManager _conversaion = new MessageManager._internal();

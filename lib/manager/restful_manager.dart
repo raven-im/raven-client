@@ -16,7 +16,10 @@ class RestManager {
   static const String QINIU_URL = 'http://pu5wwrylf.bkt.clouddn.com/';
 
   static const String GET_TOKEN = '/user/login';
-  static const String GET_ACCESS_NODE = '/user/access';
+  // static const String GET_ACCESS_NODE = '/user/access';
+  
+  // for flutter web socket.
+  static const String GET_ACCESS_NODE = '/user/access/web'; 
   static const String GET_USER_LIST = '/user/list';
   static const UPLOAD_FILE = '/upload';
   static const QINIU_UPLOAD = '/qiniu_upload';
