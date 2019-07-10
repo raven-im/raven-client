@@ -46,9 +46,8 @@ class SenderMngr {
     });
   }
 
-  static void _sendMsg(List<int> msg) async {
+  static void _sendMsg(Int64 msgId, List<int> msg) async {
     if (isLogined && _socket != null) {
-      Int64 msgId = _getMsgId();
       print("sending message.  $msgId");
       _socket.add(msg);
       _msgMap.putIfAbsent(msgId, () => msg);
@@ -72,23 +71,27 @@ class SenderMngr {
   }
 
   static void sendAllConvListReq() {
-    List<int> list = MessageBuilder.getAllConversationList(_getMsgId());
-    _sendMsg(list);
+    Int64 msgId = _getMsgId();
+    List<int> list = MessageBuilder.getAllConversationList(msgId);
+    _sendMsg(msgId, list);
   }
 
   static void sendDetailConvListReq(String uid) {
-    List<int> list = MessageBuilder.getDetailConversationList(_getMsgId(), uid);
-    _sendMsg(list);
+    Int64 msgId = _getMsgId();
+    List<int> list = MessageBuilder.getDetailConversationList(msgId, uid);
+    _sendMsg(msgId, list);
   }
 
   static void sendSingleMessageReq(MessageEntity entity) {
-    List<int> list = MessageBuilder.sendSingleMessage(_getMsgId(), entity);
-    _sendMsg(list);
+    Int64 msgId = _getMsgId();
+    List<int> list = MessageBuilder.sendSingleMessage(msgId, entity);
+    _sendMsg(msgId, list);
   }
 
   static void sendGroupMessageReq(MessageEntity entity, String groupId) {
-    List<int> list = MessageBuilder.sendGroupMessage(_getMsgId(), groupId, entity);
-    _sendMsg(list);
+    Int64 msgId = _getMsgId();
+    List<int> list = MessageBuilder.sendGroupMessage(msgId, groupId, entity);
+    _sendMsg(msgId, list);
   }
 
   static void _sendPong(Int64 id) {
@@ -101,13 +104,15 @@ class SenderMngr {
   }
 
   static void sendPing() {
-    List<int> list = MessageBuilder.sendHeartBeat(_getMsgId(), HeartBeatType.PING);
-    _sendMsg(list);
+    Int64 msgId = _getMsgId();
+    List<int> list = MessageBuilder.sendHeartBeat(msgId, HeartBeatType.PING);
+    _sendMsg(msgId, list);
   }
 
   static void sendMessageEntityReq(String convId, int beginTime) {
-    List<int> list = MessageBuilder.getMessageList(_getMsgId(), convId, beginTime);
-    _sendMsg(list);
+    Int64 msgId = _getMsgId();
+    List<int> list = MessageBuilder.getMessageList(msgId, convId, beginTime);
+    _sendMsg(msgId, list);
   }
 
   static void release() {
