@@ -11,15 +11,15 @@ import 'package:sy_flutter_qiniu_storage/sy_flutter_qiniu_storage.dart';
 
 class RestManager {
   //TODO  through config file
-  static const String APP_SERVER_URL = 'http://114.67.79.183:8080/api';
-  static const String IM_SERVER_URL = 'http://114.67.79.183:8060/raven-zuul/route';
+  static const String APP_SERVER_URL = 'http://114.67.79.183/api';
+  static const String IM_SERVER_URL = 'http://114.67.79.183/raven';
   static const String QINIU_URL = 'http://pu5wwrylf.bkt.clouddn.com/';
 
-  static const String GET_TOKEN = '/user/login';
+  static const String USER_LOGIN = '/user/login';
   // static const String GET_ACCESS_NODE = '/user/access';
-  
+
   // for flutter web socket.
-  static const String GET_ACCESS_NODE = '/user/access/web'; 
+  static const String GET_ACCESS_NODE = '/admin/gateway/ws'; 
   static const String GET_USER_LIST = '/user/list';
   static const UPLOAD_FILE = '/upload';
   static const QINIU_UPLOAD = '/qiniu_upload';
@@ -35,7 +35,7 @@ class RestManager {
 
   Future<RestEntity> login(String username, String password) async {
 
-      Response response = await Dio().post(APP_SERVER_URL + GET_TOKEN,
+      Response response = await Dio().post(APP_SERVER_URL + USER_LOGIN,
         data: {"username": username, "password": password});
       print(response);
       var data = json.decode(response.toString());
