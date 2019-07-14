@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:myapp/base/base_state.dart';
 import 'package:myapp/database/db_api.dart';
-import 'package:myapp/entity/content_entities/image_entity.dart';
+import 'package:myapp/entity/content_entities/file_entity.dart';
 import 'package:myapp/entity/content_entities/text_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/message_manager.dart';
@@ -290,9 +290,9 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
         if (type == 1) {
           //相机取图片
           _willBuildImageMessage(file);
-        // } else if (type == 2) {
-        //   //相机拍视频
-        //   _buildVideoMessage(file);
+        } else if (type == 2) {
+          //相机拍视频
+          _buildVideoMessage(file);
         }
       });
     }));
@@ -396,7 +396,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
       if (entity.contentType == Constants.CONTENT_TYPE_IMAGE) {
         //点击了图片
         var data = json.decode(entity.content);
-        ImgEntity imgEntity = ImgEntity.fromMap(data);
+        FileEntity imgEntity = FileEntity.fromMap(data);
         Navigator.push(
             context,
             new CupertinoPageRoute<void>(
@@ -485,9 +485,36 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
           });
           _sendMessage(messageEntity);
         });
+    }
+
+    _buildVideoMessage(File file) {
+        // upload file to File server and then send image message.
+      RestManager.get().uploadImage(file)
+          .then((image) {
+            if (image == null) {
+              // TODO set image message state fail.
+              return;
+            }
+            String jsonImg = json.encode(image.toMap());
+            MessageEntity messageEntity = new MessageEntity(
+                contentType: Constants.CONTENT_TYPE_IMAGE,
+                fromUid: myUid,
+                targetUid: widget.targetUid,
+                convType: Constants.CONVERSATION_SINGLE, // TODO
+                content: jsonImg,
+                convId: widget.convId,
+                time: DateTime.now().millisecondsSinceEpoch.toString());
+            messageEntity.messageOwner = 0;
+            messageEntity.status = 0;
+            
+            setState(() {
+              _messageList.insert(0, messageEntity);
+              _controller.clear();
+            });
+            _sendMessage(messageEntity);
+          });
+    }
     
-    
-  }
   
   @override
   void dispose() {

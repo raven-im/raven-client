@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:myapp/database/db_config.dart';
 import 'package:myapp/entity/contact_entity.dart';
-import 'package:myapp/entity/content_entities/image_entity.dart';
+import 'package:myapp/entity/content_entities/file_entity.dart';
 import 'package:myapp/entity/content_entities/text_entity.dart';
 import 'package:myapp/entity/conversation_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
@@ -305,7 +305,7 @@ class DataBaseApi {
         lastMsg = text.content;
         break;
       case Constants.CONTENT_TYPE_IMAGE:
-        ImgEntity image = ImgEntity.fromMap(data);
+        FileEntity image = FileEntity.fromMap(data);
         lastMsg = image.name;
         break;
       default:
@@ -330,7 +330,7 @@ class DataBaseApi {
         lastMsg = text.content;
         break;
       case Constants.CONTENT_TYPE_IMAGE:
-        ImgEntity image = ImgEntity.fromMap(data);
+        FileEntity image = FileEntity.fromMap(data);
         lastMsg = image.name;
         break;
       default:

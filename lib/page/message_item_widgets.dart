@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:myapp/entity/content_entities/image_entity.dart';
+import 'package:myapp/entity/content_entities/file_entity.dart';
 import 'package:myapp/entity/content_entities/text_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/utils/constants.dart';
@@ -254,7 +254,7 @@ class MessageItemWidgets {
     Widget image;
 
     var data = json.decode(entity.content);
-    ImgEntity imgEntity = ImgEntity.fromMap(data);
+    FileEntity imgEntity = FileEntity.fromMap(data);
     // entity.content
     if (ObjectUtil.isNetUri(imgEntity.url)) {
       image = CachedNetworkImage(

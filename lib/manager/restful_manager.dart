@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:myapp/entity/content_entities/image_entity.dart';
-import 'package:myapp/entity/content_entities/image_token_entity.dart';
+import 'package:myapp/entity/content_entities/file_entity.dart';
+import 'package:myapp/entity/content_entities/token_entity.dart';
 import 'dart:convert';
 // import 'package:path/path.dart' as path;
 import 'package:myapp/entity/rest_entity.dart';
@@ -124,8 +124,8 @@ class RestManager {
   // }
 
 
-  Future<ImgEntity> uploadImage(File file) async {
-    ImgTokenEntity tokenEntity = await _getImageToken(file.path.split('.').last);
+  Future<FileEntity> uploadImage(File file) async {
+    TokenEntity tokenEntity = await _getFileToken(file.path.split('.').last);
     
     if (tokenEntity == null) {
       return null;
@@ -140,7 +140,7 @@ class RestManager {
     //上传文件
     bool result = await syStorage.upload(file.path, tokenEntity.token, tokenEntity.url);
     if (result) {
-      ImgEntity image = new ImgEntity(
+      FileEntity image = new FileEntity(
         name: tokenEntity.url,
         size: file.lengthSync(),
         url: QINIU_URL + tokenEntity.url); // async from File Server.
@@ -149,7 +149,7 @@ class RestManager {
     return null;
   }
 
-  Future<ImgTokenEntity> _getImageToken(String suffix) async {
+  Future<TokenEntity> _getFileToken(String suffix) async {
 
     Response response = await Dio().get(APP_SERVER_URL + QINIU_UPLOAD, queryParameters: {"suffix": suffix});
     
@@ -161,7 +161,7 @@ class RestManager {
       return null;
     }
     
-    ImgTokenEntity image = new ImgTokenEntity(
+    TokenEntity image = new TokenEntity(
       token: entity.data['token'],
       url: entity.data['url']); // async from File Server.
     return image;

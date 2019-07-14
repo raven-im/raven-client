@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ImgEntity {
+class FileEntity {
   static const String CONTENT_NAME = "name";
   static const String CONTENT_SIZE = "size";
   static const String CONTENT_URL = "url";
@@ -9,13 +9,13 @@ class ImgEntity {
   int size;
   String url;
 
-  ImgEntity({
+  FileEntity({
     this.name,
     this.size,
     @required this.url,
   });
 
-  ImgEntity.fromMap(Map<String, dynamic> map)
+  FileEntity.fromMap(Map<String, dynamic> map)
       : this(
           name: map[CONTENT_NAME],
           size: map[CONTENT_SIZE],
