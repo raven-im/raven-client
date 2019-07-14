@@ -461,7 +461,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
   _buildImageMessage(File file, bool sendOriginalImage) {
     //TODO Full or compact
     // upload file to File server and then send image message.
-    RestManager.get().uploadImage(file)
+    RestManager.get().uploadFile(file)
         .then((image) {
           if (image == null) {
             // TODO set image message state fail.
@@ -489,7 +489,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
 
     _buildVideoMessage(File file) {
         // upload file to File server and then send image message.
-      RestManager.get().uploadImage(file)
+      RestManager.get().uploadFile(file)
           .then((image) {
             if (image == null) {
               // TODO set image message state fail.

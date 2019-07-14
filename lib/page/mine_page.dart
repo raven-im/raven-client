@@ -43,7 +43,7 @@ class _MineState extends State<MinePage> with AutomaticKeepAliveClientMixin {
                 imageChild: _getHeadPortrait(), onImageClick: (res) {
               PopupWindowUtil.showPhotoChosen(context, onCallBack: (image) {
                 File file = image;
-                RestManager.get().uploadImage(file)
+                RestManager.get().uploadFile(file)
                   .then((imgEntity) {
                     if (imgEntity == null) {
                       return;
@@ -96,7 +96,7 @@ class _MineState extends State<MinePage> with AutomaticKeepAliveClientMixin {
         onTap: () {
           PopupWindowUtil.showPhotoChosen(context, onCallBack: (image) {
                 File file = image;
-                RestManager.get().uploadImage(file)
+                RestManager.get().uploadFile(file)
                   .then((imgEntity) {
                     if (imgEntity == null) {
                       return;

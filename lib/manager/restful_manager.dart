@@ -124,7 +124,7 @@ class RestManager {
   // }
 
 
-  Future<FileEntity> uploadImage(File file) async {
+  Future<FileEntity> uploadFile(File file) async {
     TokenEntity tokenEntity = await _getFileToken(file.path.split('.').last);
     
     if (tokenEntity == null) {
