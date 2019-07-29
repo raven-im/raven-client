@@ -27,6 +27,14 @@ class RestManager {
   static const PORTRAIT = '/portrait';
   static final RestManager _rest = new RestManager._internal();
 
+  //group operation api
+  static const GROUP_API_BASE = '/group';
+  static const CREATE_GROUP = GROUP_API_BASE + '/create';
+  static const JOIN_GROUP = GROUP_API_BASE + '/join';
+  static const QUIT_GROUP = GROUP_API_BASE + '/quit';
+  static const DISMISS_GROUP = GROUP_API_BASE + '/dismiss';
+  static const DETAIL_GROUP = GROUP_API_BASE + '/detail';
+
   static RestManager get() {
     return _rest;
   }
@@ -176,5 +184,86 @@ class RestManager {
       if (Constants.RSP_COMMON_SUCCESS != entity.code) {
         print("update portrait fail ." + entity.message);
       }
+  }
+
+  //group operation
+
+  /*
+   * result entity.  entity.data['groupId'], entity.data['converId'],entity.data['time']
+   * String groupId:  group id, use this group id for group operation,like join/dismiss etc.  
+     String converId: conversation id for further use .
+     Date time:  group create time
+   */
+  Future<RestEntity> createGroup(String name, String portrait, List<String> members) async {
+      Response response = await Dio().post(APP_SERVER_URL + CREATE_GROUP,
+        data: {"name": name, "portrait": portrait, "members": members});
+
+      var data = json.decode(response.toString());
+      RestEntity entity = RestEntity.fromMap(data);
+      return entity;
+  }
+
+  /*
+   * result entity.
+   * entity.code: 
+   * 10000, "success"
+   * 12001, "group id invalid."
+   * 12003, "member already in group."
+   */
+  Future<RestEntity> joinGroup(String groupId, List<String> members) async {
+      Response response = await Dio().post(APP_SERVER_URL + JOIN_GROUP,
+        data: {"groupId": groupId, "members": members});
+
+      var data = json.decode(response.toString());
+      RestEntity entity = RestEntity.fromMap(data);
+      return entity;
+  }
+
+  /*
+   * result entity.
+   * entity.code: 
+   * 10000, "success"
+   * 12001, "group id invalid."
+   * 12002, "member not in group."
+   */
+  Future<RestEntity> quitGroup(String groupId, List<String> members) async {
+      Response response = await Dio().post(APP_SERVER_URL + QUIT_GROUP,
+        data: {"groupId": groupId, "members": members});
+
+      var data = json.decode(response.toString());
+      RestEntity entity = RestEntity.fromMap(data);
+      return entity;
+  }
+
+  /*
+   * result entity.
+   * entity.code: 
+   * 10000, "success"
+   * 12001, "group id invalid."
+   */
+  Future<RestEntity> dismissGroup(String groupId) async {
+      Response response = await Dio().post(APP_SERVER_URL + DISMISS_GROUP,
+        data: {"groupId": groupId});
+
+      var data = json.decode(response.toString());
+      RestEntity entity = RestEntity.fromMap(data);
+      return entity;
+  }
+
+
+  /*
+   * result entity.  entity.data['name'], entity.data['members'],entity.data['time']
+   * String name:  group name  
+   * String portrait:  group portrait
+     List<String> members: group members .
+     Date time:  group update time.
+   */
+  Future<RestEntity> detailGroup(String groupId) async {
+      Response response = await Dio().post(APP_SERVER_URL + DETAIL_GROUP,
+        data: {"groupId": groupId});
+
+      var data = json.decode(response.toString());
+      RestEntity entity = RestEntity.fromMap(data);
+      return entity;
   }
 }
