@@ -5,6 +5,8 @@ import 'package:myapp/entity/contact_entity.dart';
 import 'package:myapp/entity/content_entities/file_entity.dart';
 import 'package:myapp/entity/content_entities/text_entity.dart';
 import 'package:myapp/entity/conversation_entity.dart';
+import 'package:myapp/entity/group_entity.dart';
+import 'package:myapp/entity/group_member_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/conversation_manager.dart';
 import 'package:myapp/utils/constants.dart';
@@ -66,6 +68,24 @@ class DataBaseApi {
           "${ConversationEntity.LAST_MESSAGE_TIME} TEXT,"
           "${ConversationEntity.LAST_MESSAGE_TYPE} INTEGER,"
           "${ConversationEntity.CONVERATION_TYPE} INTEGER"
+          ")");
+      await db.execute(
+          "CREATE TABLE IF NOT EXISTS ${DataBaseConfig.GROUP_TABLE} ("
+          "${GroupEntity.DB_ID} INTEGER PRIMARY KEY AUTOINCREMENT,"
+          "${GroupEntity.GROUP_ID} TEXT,"
+          "${GroupEntity.CONVERSATION_ID} TEXT,"
+          "${GroupEntity.NAME} TEXT,"
+          "${GroupEntity.PORTRAIT} TEST,"
+          "${GroupEntity.TIME} TEXT,"
+          "${GroupEntity.GROUP_OWNER} INTEGER,"
+          "${GroupEntity.STATUS} INTEGER"
+          ")");
+      await db.execute(
+          "CREATE TABLE IF NOT EXISTS ${DataBaseConfig.GROUP_MEMBERS_TABLE} ("
+          "${GroupMemberEntity.DB_ID} INTEGER PRIMARY KEY AUTOINCREMENT,"
+          "${GroupMemberEntity.GROUP_ID} TEXT,"
+          "${GroupMemberEntity.MEMBER_UID} TEXT,"
+          "${GroupMemberEntity.CONVERSATION_ID} TEXT"
           ")");
     });
   }
