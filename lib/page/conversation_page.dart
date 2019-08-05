@@ -15,6 +15,7 @@ import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/date_util.dart';
 import 'package:myapp/utils/dialog_util.dart';
 import 'package:myapp/utils/interact_vative.dart';
+import 'package:myapp/page/contacts_select_page.dart';
 
 class ConversationPage extends StatefulWidget {
   ConversationPage({Key key, this.rootContext}) : super(key: key);
@@ -43,6 +44,7 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
     _getData();
     _startRefresh();
     _popString.add('Reconnect');
+    _popString.add('Group Chat');
   }
 
   @override
@@ -88,11 +90,18 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
             onTap: () {
               MoreWidgets.buildDefaultMessagePop(context, _popString,
                   onItemClick: (res) {
+                    print("did tap :"+res);
                   switch (res) {
                     case 'one':
                       // socket reconnect.
                       DialogUtil.buildToast('Try Reconnect Done.');
                       SenderMngr.init();
+                      break;
+                    case 'two':
+                      Navigator.push(context, new MaterialPageRoute(builder: (ctx) {
+                          return ContactsSelectPage();
+                        }
+                      ));
                       break;
                 }
               });
