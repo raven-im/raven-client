@@ -166,7 +166,8 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
   }
 
   _body() {
-    return Column(children: <Widget>[
+    return SafeArea(
+      child: Column(children: <Widget>[
       Flexible(
           child: InkWell(
         child: _messageListView(),
@@ -254,7 +255,8 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
           : SizedBox(
               height: 0,
             )
-    ]);
+    ])
+    );
   }
 
   _hideKeyBoard() {
