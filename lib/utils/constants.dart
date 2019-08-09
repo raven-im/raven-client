@@ -23,3 +23,13 @@ class Constants {
 
   static const String DEFAULT_PORTRAIT = "https://api.adorable.io/avatars/285/1.png";
 }
+
+class PopMenuAction {
+  static const String UndefinedKey = "UndefinedKey";//点击空白响应
+
+  static const String ReconnectKey = "ReconnectKey";
+  static const String ReconnectValue = "Reconnect";
+
+  static const String GroupChatKey = "GroupChatKey";
+  static const String GroupChatValue = "Group Chat";
+}

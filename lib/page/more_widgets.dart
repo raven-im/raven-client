@@ -692,24 +692,25 @@ class MoreWidgets {
   /*
   * 右上角item长按弹出popupWindow
   */
-  static Future buildDefaultMessagePop(BuildContext context, List<String> texts,
+  static Future buildDefaultMessagePop(BuildContext context, Map<String,String> map,
       {OnItemClick onItemClick}) {
+    List<PopupMenuItem<String>> wList = new List();
+    map.keys.forEach((key) {
+      Widget popW = new PopupMenuItem<String>(
+            value: key ,
+            child: Text(map[key],
+                style: new TextStyle(fontSize: 16.0, color: Colors.black)),
+          );
+      wList.add(popW);
+    });
     return showMenu(
         context: context,
         position: RelativeRect.fromLTRB(double.infinity, 76, 0, 0),
-        items: <PopupMenuItem<String>>[
-          new PopupMenuItem<String>(
-            value: 'one',
-            child: Text(texts[0],
-                style: new TextStyle(fontSize: 16.0, color: Colors.black)),
-          ),
-          new PopupMenuItem<String>(
-            value: 'two',
-            child: Text(texts[1],
-                style: new TextStyle(fontSize: 16.0, color: Colors.black)),
-          ),
-        ]).then((res) {
+        items: wList).then((res) {
       if (null != onItemClick) {
+        if(null == res) {
+          res = PopMenuAction.UndefinedKey;
+        }
         onItemClick(res);
       }
     });

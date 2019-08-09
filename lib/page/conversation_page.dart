@@ -17,6 +17,8 @@ import 'package:myapp/utils/dialog_util.dart';
 import 'package:myapp/utils/interact_vative.dart';
 import 'package:myapp/page/contacts_select_page.dart';
 
+import 'item/conversation_item.dart';
+
 class ConversationPage extends StatefulWidget {
   ConversationPage({Key key, this.rootContext}) : super(key: key);
   final BuildContext rootContext;
@@ -27,11 +29,11 @@ class ConversationPage extends StatefulWidget {
   }
 }
 
-class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserver {
+class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserver  implements ConversationItemDelegate{
   var map = Map();
   var list = new List();
   var contactsMap = new Map();
-  var _popString = List<String>();
+  Map<String,String> _popMap;
   bool isShowNoPage = false;
   Timer _refreshTimer;
   AppLifecycleState currentState = AppLifecycleState.resumed;
@@ -43,8 +45,11 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
     WidgetsBinding.instance.addObserver(this);
     _getData();
     _startRefresh();
-    _popString.add('Reconnect');
-    _popString.add('Group Chat');
+
+    _popMap = {
+      PopMenuAction.ReconnectKey:PopMenuAction.ReconnectValue,
+      PopMenuAction.GroupChatKey:PopMenuAction.GroupChatValue
+    };
   }
 
   @override
@@ -88,16 +93,16 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
                   size: 22,
                 )),
             onTap: () {
-              MoreWidgets.buildDefaultMessagePop(context, _popString,
+              MoreWidgets.buildDefaultMessagePop(context, _popMap,
                   onItemClick: (res) {
-                    print("did tap :"+res);
+                  print("did tap :"+res);
                   switch (res) {
-                    case 'one':
+                    case PopMenuAction.ReconnectKey:
                       // socket reconnect.
                       DialogUtil.buildToast('Try Reconnect Done.');
                       SenderMngr.init();
                       break;
-                    case 'two':
+                    case PopMenuAction.GroupChatKey:
                       Navigator.push(context, new MaterialPageRoute(builder: (ctx) {
                           return ContactsSelectPage();
                         }
@@ -111,32 +116,8 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
   }
 
   Widget _itemWidget(int index) {
-    Widget res;
     ConversationEntity entity = map[list.elementAt(index).toString()];
-    String timeTmp = DateUtil.getDateStrByDateTime(DateUtil.getDateTimeByMs(entity.timestamp));
-    String time = DateUtil.formatDateTime(timeTmp, DateFormat.YEAR_MONTH_DAY, '/', '');
-
-    res = MoreWidgets.conversationListViewItem(
-        entity.name == null ? entity.targetUid : entity.name, 
-        entity.conversationType,
-        portrait: contactsMap[entity.targetUid].portrait,
-        content: entity.lastMessage,
-        time: time,
-        unread: entity.isUnreadCount, onItemClick: (res) {
-      if (entity.conversationType == Constants.CONVERSATION_SINGLE) {
-        //聊天消息，跳转聊天对话页面
-        Navigator.push(
-            context,
-            new CupertinoPageRoute<void>(
-                builder: (ctx) => MessagePage(
-                      title: entity.name == null ? entity.targetUid : entity.name,
-                      targetUid: entity.targetUid,
-                      convId: entity.id,
-                      targetUrl: contactsMap[entity.targetUid].portrait,
-                    )));
-      }
-    });
-    return res;
+    return ConversationItem(this, entity);
   }
 
   _getData() async {
@@ -217,5 +198,27 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
         });
       }
     }
+  }
+
+  @override
+  void didLongPressConversationItem(ConversationEntity entity) {
+    print("didLongPressConversationItem");
+  }
+
+  @override
+  void didTapConversationItem(ConversationEntity entity) {
+    print("didTapConversationItem");
+    if (entity.conversationType == Constants.CONVERSATION_SINGLE) {
+        //聊天消息，跳转聊天对话页面
+        Navigator.push(
+            context,
+            new CupertinoPageRoute<void>(
+                builder: (ctx) => MessagePage(
+                      title: entity.name == null ? entity.targetUid : entity.name,
+                      targetUid: entity.targetUid,
+                      convId: entity.id,
+                      targetUrl: contactsMap[entity.targetUid].portrait,
+                    )));
+      }
   }
 }
