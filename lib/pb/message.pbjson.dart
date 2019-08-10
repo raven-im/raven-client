@@ -178,7 +178,8 @@ const HisMessagesAck$json = const {
   '2': const [
     const {'1': 'id', '3': 1, '4': 1, '5': 4, '10': 'id'},
     const {'1': 'converId', '3': 2, '4': 1, '5': 9, '10': 'converId'},
-    const {'1': 'messageList', '3': 4, '4': 3, '5': 11, '6': '.com.raven.common.protos.MessageContent', '10': 'messageList'},
+    const {'1': 'messageList', '3': 3, '4': 3, '5': 11, '6': '.com.raven.common.protos.MessageContent', '10': 'messageList'},
+    const {'1': 'unReadCount', '3': 4, '4': 1, '5': 4, '10': 'unReadCount'},
   ],
 };
 
@@ -209,7 +210,7 @@ const ConverInfo$json = const {
     const {'1': 'type', '3': 2, '4': 1, '5': 14, '6': '.com.raven.common.protos.ConverType', '10': 'type'},
     const {'1': 'uidList', '3': 3, '4': 3, '5': 9, '10': 'uidList'},
     const {'1': 'groupId', '3': 4, '4': 1, '5': 9, '10': 'groupId'},
-    const {'1': 'unCount', '3': 5, '4': 1, '5': 4, '10': 'unCount'},
+    const {'1': 'readMsgId', '3': 5, '4': 1, '5': 4, '10': 'readMsgId'},
     const {'1': 'lastContent', '3': 6, '4': 1, '5': 11, '6': '.com.raven.common.protos.MessageContent', '10': 'lastContent'},
   ],
 };

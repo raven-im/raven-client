@@ -111,6 +111,19 @@ class MessageBuilder {
     return _protoToDelimitedBuffer(message);
   }
 
+  static List<int> sendMessageAck(UpDownMessage recvMsg) {
+    var message = new RavenMessage();
+    message.type = RavenMessage_Type.MessageAck;
+    var data = MessageAck();
+    data.id = recvMsg.id;
+    data.targetUid = recvMsg.targetUid;
+    data.converId = recvMsg.converId;
+    data.time = Int64(DateTime.now().millisecondsSinceEpoch);
+    data.code = Code.SUCCESS;
+    message.messageAck = data;
+    return _protoToDelimitedBuffer(message);
+  }
+
   static List<int> getMessageList(Int64 id, String convId, int beginTime) {
     var message = new RavenMessage();
     message.type = RavenMessage_Type.HisMessagesReq;

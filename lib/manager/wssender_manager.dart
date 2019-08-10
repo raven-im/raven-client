@@ -198,6 +198,10 @@ class SenderMngr {
         break;
       case RavenMessage_Type.UpDownMessage:
         print(" receive messages.");
+        // response to server with message ack 
+        List<int> msg = MessageBuilder.sendMessageAck(message.upDownMessage);
+        _channel.sink.add(msg);
+    
         //DB insert
         DataBaseApi.get().updateMessageEntity( 
             ObjectUtil.getMsgEntity(myUid, message.upDownMessage), 

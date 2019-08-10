@@ -488,7 +488,8 @@ class HisMessagesAck extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('HisMessagesAck', package: const $pb.PackageName('com.raven.common.protos'))
     ..a<Int64>(1, 'id', $pb.PbFieldType.OU6, Int64.ZERO)
     ..aOS(2, 'converId')
-    ..pc<MessageContent>(4, 'messageList', $pb.PbFieldType.PM,MessageContent.create)
+    ..pc<MessageContent>(3, 'messageList', $pb.PbFieldType.PM,MessageContent.create)
+    ..a<Int64>(4, 'unReadCount', $pb.PbFieldType.OU6, Int64.ZERO)
     ..hasRequiredFields = false
   ;
 
@@ -515,6 +516,11 @@ class HisMessagesAck extends $pb.GeneratedMessage {
   void clearConverId() => clearField(2);
 
   $core.List<MessageContent> get messageList => $_getList(2);
+
+  Int64 get unReadCount => $_getI64(3);
+  set unReadCount(Int64 v) { $_setInt64(3, v); }
+  $core.bool hasUnReadCount() => $_has(3);
+  void clearUnReadCount() => clearField(4);
 }
 
 class ConverReq extends $pb.GeneratedMessage {
@@ -604,7 +610,7 @@ class ConverInfo extends $pb.GeneratedMessage {
     ..e<ConverType>(2, 'type', $pb.PbFieldType.OE, ConverType.SINGLE, ConverType.valueOf, ConverType.values)
     ..pPS(3, 'uidList')
     ..aOS(4, 'groupId')
-    ..a<Int64>(5, 'unCount', $pb.PbFieldType.OU6, Int64.ZERO)
+    ..a<Int64>(5, 'readMsgId', $pb.PbFieldType.OU6, Int64.ZERO)
     ..a<MessageContent>(6, 'lastContent', $pb.PbFieldType.OM, MessageContent.getDefault, MessageContent.create)
     ..hasRequiredFields = false
   ;
@@ -638,10 +644,10 @@ class ConverInfo extends $pb.GeneratedMessage {
   $core.bool hasGroupId() => $_has(3);
   void clearGroupId() => clearField(4);
 
-  Int64 get unCount => $_getI64(4);
-  set unCount(Int64 v) { $_setInt64(4, v); }
-  $core.bool hasUnCount() => $_has(4);
-  void clearUnCount() => clearField(5);
+  Int64 get readMsgId => $_getI64(4);
+  set readMsgId(Int64 v) { $_setInt64(4, v); }
+  $core.bool hasReadMsgId() => $_has(4);
+  void clearReadMsgId() => clearField(5);
 
   MessageContent get lastContent => $_getN(5);
   set lastContent(MessageContent v) { setField(6, v); }
