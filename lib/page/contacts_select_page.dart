@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/database/db_api.dart';
 import 'package:myapp/entity/contact_entity.dart';
+import 'package:myapp/entity/rest_entity.dart';
+import 'package:myapp/manager/restful_manager.dart';
 import 'package:myapp/page/more_widgets.dart';
 import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/sp_util.dart';
@@ -78,11 +80,25 @@ class _ContactsSelectPageState extends State<ContactsSelectPage> {
     );
   }
 
+  void _createGroup() async {
+    RestEntity entity = await RestManager.get().createGroup("testGroup", "https://b-ssl.duitang.com/uploads/item/201805/13/20180513224039_tgfwu.png", selectUserIds);
+    print("create result :"+entity.message);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Select Member"),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.more_horiz),
+              tooltip: 'CreateGroup',
+              onPressed: () {
+                _createGroup();
+              }, 
+            )
+        ],
       ),
       body: ListView.builder(
         scrollDirection: Axis.vertical,
