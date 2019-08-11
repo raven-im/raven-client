@@ -86,7 +86,7 @@ const RavenMessage_Type$json = const {
     const {'1': 'HisMessagesReq', '2': 6},
     const {'1': 'HisMessagesAck', '2': 7},
     const {'1': 'NotifyMessage', '2': 8},
-    const {'1': 'ConverReq', '2': 11},
+    const {'1': 'ConverReq', '2': 9},
     const {'1': 'ConverAck', '2': 10},
   ],
 };
@@ -129,7 +129,7 @@ const UpDownMessage$json = const {
     const {'1': 'groupId', '3': 5, '4': 1, '5': 9, '10': 'groupId'},
     const {'1': 'converId', '3': 6, '4': 1, '5': 9, '10': 'converId'},
     const {'1': 'converType', '3': 7, '4': 1, '5': 14, '6': '.com.raven.common.protos.ConverType', '10': 'converType'},
-    const {'1': 'content', '3': 9, '4': 1, '5': 11, '6': '.com.raven.common.protos.MessageContent', '10': 'content'},
+    const {'1': 'content', '3': 8, '4': 1, '5': 11, '6': '.com.raven.common.protos.MessageContent', '10': 'content'},
   ],
 };
 

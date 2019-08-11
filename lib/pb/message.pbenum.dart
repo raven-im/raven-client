@@ -109,7 +109,7 @@ class RavenMessage_Type extends $pb.ProtobufEnum {
   static const RavenMessage_Type HisMessagesReq = RavenMessage_Type._(6, 'HisMessagesReq');
   static const RavenMessage_Type HisMessagesAck = RavenMessage_Type._(7, 'HisMessagesAck');
   static const RavenMessage_Type NotifyMessage = RavenMessage_Type._(8, 'NotifyMessage');
-  static const RavenMessage_Type ConverReq = RavenMessage_Type._(11, 'ConverReq');
+  static const RavenMessage_Type ConverReq = RavenMessage_Type._(9, 'ConverReq');
   static const RavenMessage_Type ConverAck = RavenMessage_Type._(10, 'ConverAck');
 
   static const $core.List<RavenMessage_Type> values = <RavenMessage_Type> [

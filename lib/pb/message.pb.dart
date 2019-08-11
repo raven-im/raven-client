@@ -259,7 +259,7 @@ class UpDownMessage extends $pb.GeneratedMessage {
     ..aOS(5, 'groupId')
     ..aOS(6, 'converId')
     ..e<ConverType>(7, 'converType', $pb.PbFieldType.OE, ConverType.SINGLE, ConverType.valueOf, ConverType.values)
-    ..a<MessageContent>(9, 'content', $pb.PbFieldType.OM, MessageContent.getDefault, MessageContent.create)
+    ..a<MessageContent>(8, 'content', $pb.PbFieldType.OM, MessageContent.getDefault, MessageContent.create)
     ..hasRequiredFields = false
   ;
 
@@ -311,9 +311,9 @@ class UpDownMessage extends $pb.GeneratedMessage {
   void clearConverType() => clearField(7);
 
   MessageContent get content => $_getN(7);
-  set content(MessageContent v) { setField(9, v); }
+  set content(MessageContent v) { setField(8, v); }
   $core.bool hasContent() => $_has(7);
-  void clearContent() => clearField(9);
+  void clearContent() => clearField(8);
 }
 
 class HeartBeat extends $pb.GeneratedMessage {
