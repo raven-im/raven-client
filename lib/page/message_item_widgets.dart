@@ -183,6 +183,9 @@ class MessageItemWidgets {
   *  头像
   */
   static Widget _headPortrait(String url, int owner) {
+    if(url == null) {
+      url = "";
+    }
     return ClipRRect(
         borderRadius: BorderRadius.circular(6.0),
         child: url.isEmpty

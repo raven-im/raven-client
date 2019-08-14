@@ -26,7 +26,7 @@ class ContactManager {
         res.add(new ContactEntity(
           userId: item['id'],
           userName: item['name'],
-          portrait: item['portrait'],
+          portrait: null,// item['portrait'],
           status: item['state'],
           mobile: item['mobile'],
           ));

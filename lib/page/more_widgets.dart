@@ -43,7 +43,7 @@ class MoreWidgets {
       double padding = 8.0,
       double imageSize = 38.0}) {
     String url;
-    if (portraitUrl == '' || portraitUrl.length <= 0) {
+    if (portraitUrl == '' || portraitUrl == null || portraitUrl.length <= 0) {
       url = Constants.DEFAULT_PORTRAIT;
     } else {
       url = portraitUrl;
