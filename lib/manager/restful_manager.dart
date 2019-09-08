@@ -11,8 +11,8 @@ import 'package:sy_flutter_qiniu_storage/sy_flutter_qiniu_storage.dart';
 
 class RestManager {
   //TODO  through config file
-  static const String APP_SERVER_URL = 'http://114.67.79.183/api';
-  static const String IM_SERVER_URL = 'http://114.67.79.183/raven';
+  static const String APP_SERVER_URL = 'http://raven-im.xyz:8084/api';
+  static const String IM_SERVER_URL = 'http://raven-im.xyz:8084/raven';
   static const String QINIU_URL = 'http://pu5wwrylf.bkt.clouddn.com/';
 
   static const String USER_LOGIN = '/user/login';
