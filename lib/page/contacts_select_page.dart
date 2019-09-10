@@ -30,17 +30,19 @@ class _ContactsSelectPageState extends State<ContactsSelectPage> {
   @override
   void initState() {
     super.initState();
-    _getContacts();
+    String myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
+    //for Group chat,  list index 0 used as the Group owner.
+    selectUserIds.add(myUid);
+    _getContacts(myUid);
   }
 
-  _getContacts() {
-    String myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
+  _getContacts(String exceptUid) {
     DataBaseApi.get().getAllContactsEntities().then((entities) {
       if (entities.length > 0) {
         setState(() {
           contactsList.clear();
           entities.forEach((entity) {
-            if (entity.userId != myUid) {
+            if (entity.userId != exceptUid) {
               contactsList.insert(0, entity);
             }
           });
@@ -53,7 +55,7 @@ class _ContactsSelectPageState extends State<ContactsSelectPage> {
     String userId = contactsList[index].userId;
     if(selectUserIds.contains(userId)) {
       selectUserIds.remove(userId);
-    }else {
+    } else {
       selectUserIds.add(userId);
     }
     setState(() {
