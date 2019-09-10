@@ -31,6 +31,7 @@ import 'package:myapp/utils/sp_util.dart';
 class MessagePage extends StatefulWidget {
   final String title;
   final String targetUid;
+  final int convType;
   String convId;
   final String targetUrl;
 
@@ -38,6 +39,7 @@ class MessagePage extends StatefulWidget {
       {Key key,
       @required this.title,
       @required this.targetUid,
+      @required this.convType,
       @required this.convId,
       @required this.targetUrl,
       })
@@ -45,11 +47,17 @@ class MessagePage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return MessageState();
+    return MessageState(this.title,this.targetUid,this.convType,this.convId,this.targetUrl);
   }
 }
 
 class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
+
+  final String title;
+  final String targetUid;
+  final int convType;
+  final String convId;
+  final String targetUrl;
   
   bool _isShowSend = false; //是否显示发送按钮
   bool _isShowTools = false; //是否显示工具栏
@@ -59,6 +67,10 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
   List<MessageEntity> _messageList = new List();
   ScrollController _scrollController = new ScrollController();
   String myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
+
+  MessageState(this.title, this.targetUid, this.convType, this.convId, this.targetUrl){
+
+  }
 
   @override
   void initState() {
@@ -423,7 +435,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
         contentType: Constants.CONTENT_TYPE_TEXT,
         fromUid: myUid,
         targetUid: widget.targetUid,
-        convType: Constants.CONVERSATION_SINGLE,
+        convType: this.convType,
         content: jsonText,
         convId: widget.convId,
         time: DateTime.now().millisecondsSinceEpoch.toString());
@@ -443,6 +455,8 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
         messageEntity.status = 1;
       });
     }
+    print("_sendMessage "+messageEntity.toMap().toString());
+    print("_sendMessage +"+this.targetUrl+";;"+this.convId+";;"+this.convType.toString());
     SenderMngr.sendSingleMessageReq(messageEntity);
   }
 
@@ -472,7 +486,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
               contentType: Constants.CONTENT_TYPE_IMAGE,
               fromUid: myUid,
               targetUid: widget.targetUid,
-              convType: Constants.CONVERSATION_SINGLE, // TODO
+              convType: this.convType, // TODO
               content: jsonImg,
               convId: widget.convId,
               time: DateTime.now().millisecondsSinceEpoch.toString());
@@ -500,7 +514,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
                 contentType: Constants.CONTENT_TYPE_IMAGE,
                 fromUid: myUid,
                 targetUid: widget.targetUid,
-                convType: Constants.CONVERSATION_SINGLE, // TODO
+                convType: this.convType, // TODO
                 content: jsonImg,
                 convId: widget.convId,
                 time: DateTime.now().millisecondsSinceEpoch.toString());
