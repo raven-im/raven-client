@@ -37,6 +37,20 @@ class ObjectUtil {
           targetId = id;
         }
       });
+
+      int type;
+      switch (info.type) {
+        case ConverType.SINGLE:
+          type = Constants.CONVERSATION_SINGLE;
+          break;
+        case ConverType.GROUP:
+          type = Constants.CONVERSATION_GROUP;
+          break;
+        default:
+          type = Constants.CONVERSATION_SINGLE;
+          break;
+      }
+
       ConversationEntity entity = new ConversationEntity(
         id: info.converId,
         targetUid: targetId,
@@ -44,7 +58,7 @@ class ObjectUtil {
         lastMessage: info.lastContent.content,
         lastMsgType: info.lastContent.type.value,
         timestamp: info.lastContent.time.toInt(),
-        conversationType: Constants.CONVERSATION_SINGLE); //TODO group
+        conversationType: type);
       list.add(entity);
     });
     return list;
