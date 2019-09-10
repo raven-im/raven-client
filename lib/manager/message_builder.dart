@@ -56,19 +56,15 @@ class MessageBuilder {
     return _protoToDelimitedBuffer(message);
   }
 
-  static List<int> sendGroupMessage(Int64 id, String groupId, MessageEntity entity) {
+  static List<int> sendGroupMessage(Int64 id, MessageEntity entity) {
     var message = new RavenMessage();
     message.type = RavenMessage_Type.UpDownMessage;
     var data = UpDownMessage();
     // data.id = Int64(id);  server set
     data.cid = id;
     data.fromUid = entity.fromUid;
-    data.targetUid = entity.targetUid;
     data.converType = ConverType.GROUP;
-    if (entity.convId != null) {
-      data.converId = entity.convId;
-    }
-    data.groupId = groupId;
+    data.groupId = entity.targetUid;
     data.content = _getMessageContent(entity);
     message.upDownMessage = data;
     return _protoToDelimitedBuffer(message);

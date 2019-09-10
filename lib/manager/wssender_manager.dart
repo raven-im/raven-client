@@ -87,9 +87,9 @@ class SenderMngr {
     _sendMsg(msgId, list);
   }
 
-  static void sendGroupMessageReq(MessageEntity entity, String groupId) {
+  static void sendGroupMessageReq(MessageEntity entity) {
     Int64 msgId = _getMsgId();
-    List<int> list = MessageBuilder.sendGroupMessage(msgId, groupId, entity);
+    List<int> list = MessageBuilder.sendGroupMessage(msgId, entity);
     _sendMsg(msgId, list);
   }
 
