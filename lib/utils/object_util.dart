@@ -44,7 +44,7 @@ class ObjectUtil {
         lastMessage: info.lastContent.content,
         lastMsgType: info.lastContent.type.value,
         timestamp: info.lastContent.time.toInt(),
-        conversationType:  info.type.value);
+        conversationType: Constants.CONVERSATION_SINGLE); //TODO group
       list.add(entity);
     });
     return list;
@@ -64,7 +64,7 @@ class ObjectUtil {
       isUnreadCount: 0, //TODO
       lastMessage: info.lastContent.content,
       timestamp: info.lastContent.time.toInt(),
-      conversationType:  info.type.value);
+      conversationType: Constants.CONVERSATION_SINGLE); //TODO group
     list.add(entity);
     return list;
   }
@@ -105,14 +105,10 @@ class ObjectUtil {
   }
 
   static MessageEntity getMsgEntityByAck(String myUid, UpDownMessage oriMsg, MessageAck ack) {
-    print("getMsgEntityByAck "+oriMsg.converId+" type:"+oriMsg.converType.value.toString());
-    int convType = Constants.CONVERSATION_SINGLE;
-    if(oriMsg.converType.value == ConverType.GROUP.value) {
-      convType = Constants.CONVERSATION_GROUP;
-    }
+
     MessageEntity entity = new MessageEntity(
       msgId: ack.id.toInt(),
-      convType: convType, //TODO Group?
+      convType: Constants.CONVERSATION_SINGLE, //TODO Group?
       fromUid: oriMsg.fromUid,
       targetUid: oriMsg.targetUid, //??
       contentType: oriMsg.content.type.value, //??

@@ -27,8 +27,7 @@ class ConversationPage extends StatefulWidget {
   }
 }
 
-class Conversation extends BaseState<ConversationPage>
-    with WidgetsBindingObserver {
+class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserver {
   var map = Map();
   var list = new List();
   var contactsMap = new Map();
@@ -36,7 +35,7 @@ class Conversation extends BaseState<ConversationPage>
   bool isShowNoPage = false;
   Timer _refreshTimer;
   AppLifecycleState currentState = AppLifecycleState.resumed;
-  GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>(); //TODO
+  GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();//TODO
 
   @override
   void initState() {
@@ -91,19 +90,19 @@ class Conversation extends BaseState<ConversationPage>
             onTap: () {
               MoreWidgets.buildDefaultMessagePop(context, _popString,
                   onItemClick: (res) {
-                print("did tap :" + res);
-                switch (res) {
-                  case 'one':
-                    // socket reconnect.
-                    DialogUtil.buildToast('Try Reconnect Done.');
-                    SenderMngr.init();
-                    break;
-                  case 'two':
-                    Navigator.push(context,
-                        new MaterialPageRoute(builder: (ctx) {
-                      return ContactsSelectPage();
-                    }));
-                    break;
+                    print("did tap :"+res);
+                  switch (res) {
+                    case 'one':
+                      // socket reconnect.
+                      DialogUtil.buildToast('Try Reconnect Done.');
+                      SenderMngr.init();
+                      break;
+                    case 'two':
+                      Navigator.push(context, new MaterialPageRoute(builder: (ctx) {
+                          return ContactsSelectPage();
+                        }
+                      ));
+                      break;
                 }
               });
             })
@@ -114,32 +113,26 @@ class Conversation extends BaseState<ConversationPage>
   Widget _itemWidget(int index) {
     Widget res;
     ConversationEntity entity = map[list.elementAt(index).toString()];
-    String timeTmp = DateUtil.getDateStrByDateTime(
-        DateUtil.getDateTimeByMs(entity.timestamp));
-    String time =
-        DateUtil.formatDateTime(timeTmp, DateFormat.YEAR_MONTH_DAY, '/', '');
+    String timeTmp = DateUtil.getDateStrByDateTime(DateUtil.getDateTimeByMs(entity.timestamp));
+    String time = DateUtil.formatDateTime(timeTmp, DateFormat.YEAR_MONTH_DAY, '/', '');
 
     res = MoreWidgets.conversationListViewItem(
-        entity.name == null ? entity.targetUid : entity.name,
+        entity.name == null ? entity.targetUid : entity.name, 
         entity.conversationType,
         portrait: contactsMap[entity.targetUid].portrait,
         content: entity.lastMessage,
         time: time,
         unread: entity.isUnreadCount, onItemClick: (res) {
-          print("跳转聊天对话页面 "+entity.conversationType.toString());
-      if (entity.conversationType == Constants.CONVERSATION_SINGLE ||
-          entity.conversationType == Constants.CONVERSATION_GROUP) {
+      if (entity.conversationType == Constants.CONVERSATION_SINGLE) {
         //聊天消息，跳转聊天对话页面
         Navigator.push(
             context,
             new CupertinoPageRoute<void>(
                 builder: (ctx) => MessagePage(
-                      title:
-                          entity.name == null ? entity.targetUid : entity.name,
+                      title: entity.name == null ? entity.targetUid : entity.name,
                       targetUid: entity.targetUid,
                       convId: entity.id,
                       targetUrl: contactsMap[entity.targetUid].portrait,
-                      convType: entity.conversationType,
                     )));
       }
     });
@@ -166,7 +159,8 @@ class Conversation extends BaseState<ConversationPage>
 
   _handleTime(Timer timer) {
     //当APP在前台，且当前页是0（即本页），则刷新
-    if (null != currentState && currentState != AppLifecycleState.paused) {
+    if (null != currentState &&
+        currentState != AppLifecycleState.paused) {
       setState(() {
         print('refresh data');
       });
@@ -195,8 +189,10 @@ class Conversation extends BaseState<ConversationPage>
   }
 
   @override
-  void updateData(MessageEntity entity) {}
+  void updateData(MessageEntity entity) {
 
+  }
+  
   @override
   void notify(Object type) async {
     if (type == InteractNative.PULL_CONVERSATION) {
@@ -204,17 +200,15 @@ class Conversation extends BaseState<ConversationPage>
       map.clear();
       contactsMap.clear();
 
-      List<ContactEntity> contacts =
-          await DataBaseApi.get().getAllContactsEntities();
+      List<ContactEntity> contacts = await DataBaseApi.get().getAllContactsEntities();
       contacts.forEach((contact) => contactsMap[contact.userId] = contact);
 
-      List<ConversationEntity> conversations =
-          await DataBaseApi.get().getConversationEntities();
+      List<ConversationEntity> conversations = await DataBaseApi.get().getConversationEntities();
       conversations.forEach((entity) {
         if (contactsMap.containsKey(entity.targetUid)) {
           entity.name = contactsMap[entity.targetUid].userName;
         }
-        list.insert(0, entity.targetUid); //TODO  group?
+        list.insert(0, entity.targetUid);//TODO  group?
         map[entity.targetUid] = entity;
       });
       if (this.mounted) {

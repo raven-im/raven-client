@@ -106,7 +106,6 @@ class Contacts extends State<ContactsPage> with AutomaticKeepAliveClientMixin {
                     targetUid: _list[index].userId,
                     targetUrl: _list[index].portrait,
                     convId: _map[_list[index].userId],
-                    convType: Constants.CONVERSATION_SINGLE,
                   )));
       },
       
