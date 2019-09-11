@@ -2,6 +2,7 @@
 import 'package:fixnum/fixnum.dart';
 import 'dart:io';
 import 'package:myapp/database/db_api.dart';
+import 'package:myapp/entity/conversation_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/conversation_manager.dart';
 import 'package:myapp/manager/message_builder.dart';
@@ -138,7 +139,7 @@ class SenderMngr {
     return decodeMsg;
   }
 
-  static void _dataHandler(data) {
+  static void _dataHandler(data) async {
     List<int> original;
     String myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
     //data => data.sublist(1) , skip the first length tag.  
@@ -188,17 +189,21 @@ class SenderMngr {
           original = _msgMap.remove(message.converAck.id);
         } else {
           print("error: ${message.converAck.id} contains? ${_msgMap.containsKey(message.converAck.id)}");
+          return;
         } 
         if (message.converAck.code == Code.SUCCESS) {
+          List<ConversationEntity> entities;
           if (message.converAck.converList.isNotEmpty) {
-            DataBaseApi.get()
-                .updateConversationEntities(
-                  ObjectUtil.getConvEntities(myUid, message.converAck.converList));
+            entities = ObjectUtil.getConvEntities(myUid, message.converAck.converList);
           } else if (message.converAck.converInfo.converId != "") {
-            DataBaseApi.get()
-                .updateConversationEntities(
-                  ObjectUtil.getConvEntity(myUid, message.converAck.converInfo));
+            List<ConverInfo> list = new List();
+            list.add(message.converAck.converInfo);
+            entities = ObjectUtil.getConvEntities(myUid, list);
           }
+          await DataBaseApi.get().updateConversationEntities(entities);
+          await DataBaseApi.get().updateGroupInfo(entities);
+          //notify Pull conversation.
+          InteractNative.getAppEventSink().add(InteractNative.PULL_CONVERSATION);
         } else {
           print("error: conversation ack: $message.converAck.code ");
         }

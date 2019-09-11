@@ -31,29 +31,34 @@ class ObjectUtil {
   static List<ConversationEntity> getConvEntities(String myUid, List<ConverInfo> convList) {
     List<ConversationEntity> list = new List();
     convList.forEach((info) {
-      String targetId;
-      info.uidList.forEach((id){
-        if (id != myUid) {
-          targetId = id;
-        }
-      });
-
+      String targetUid;
       int type;
       switch (info.type) {
         case ConverType.SINGLE:
           type = Constants.CONVERSATION_SINGLE;
+          info.uidList.forEach((id){
+            if (id != myUid) {
+              targetUid = id;
+            }
+          });
           break;
         case ConverType.GROUP:
           type = Constants.CONVERSATION_GROUP;
+          targetUid = info.groupId;
           break;
         default:
           type = Constants.CONVERSATION_SINGLE;
+          info.uidList.forEach((id){
+            if (id != myUid) {
+              targetUid = id;
+            }
+          });
           break;
       }
 
       ConversationEntity entity = new ConversationEntity(
         id: info.converId,
-        targetUid: targetId,
+        targetUid: targetUid,
         isUnreadCount: info.readMsgId.toInt(), //TODO  unread count
         lastMessage: info.lastContent.content,
         lastMsgType: info.lastContent.type.value,
@@ -64,24 +69,6 @@ class ObjectUtil {
     return list;
   }
 
-  static List<ConversationEntity> getConvEntity(String myUid, ConverInfo info) {
-    List<ConversationEntity> list = new List();
-    String targetId;
-    info.uidList.forEach((id){
-      if (id != myUid) {
-        targetId = id;
-      }
-    });
-    ConversationEntity entity = new ConversationEntity(
-      id: info.converId,
-      targetUid: targetId,
-      isUnreadCount: 0, //TODO
-      lastMessage: info.lastContent.content,
-      timestamp: info.lastContent.time.toInt(),
-      conversationType: Constants.CONVERSATION_SINGLE); //TODO group
-    list.add(entity);
-    return list;
-  }
   static List<MessageEntity> getMsgEntities(String myUid, List<MessageContent> msgList) {
     List<MessageEntity> list = new List();
     msgList.forEach((msg) {

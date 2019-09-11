@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:myapp/entity/content_entities/file_entity.dart';
 import 'package:myapp/entity/content_entities/token_entity.dart';
+import 'package:myapp/entity/group_entity.dart';
 import 'dart:convert';
 // import 'package:path/path.dart' as path;
 import 'package:myapp/entity/rest_entity.dart';
@@ -210,13 +211,13 @@ class RestManager {
    * 12001, "group id invalid."
    * 12003, "member already in group."
    */
-  Future<RestEntity> joinGroup(String groupId, List<String> members) async {
+  Future<int> joinGroup(String groupId, List<String> members) async {
       Response response = await Dio().post(APP_SERVER_URL + JOIN_GROUP,
         data: {"groupId": groupId, "members": members});
 
       var data = json.decode(response.toString());
       RestEntity entity = RestEntity.fromMap(data);
-      return entity;
+      return entity.code;
   }
 
   /*
@@ -226,13 +227,13 @@ class RestManager {
    * 12001, "group id invalid."
    * 12002, "member not in group."
    */
-  Future<RestEntity> quitGroup(String groupId, List<String> members) async {
+  Future<int> quitGroup(String groupId, List<String> members) async {
       Response response = await Dio().post(APP_SERVER_URL + QUIT_GROUP,
         data: {"groupId": groupId, "members": members});
 
       var data = json.decode(response.toString());
       RestEntity entity = RestEntity.fromMap(data);
-      return entity;
+      return entity.code;
   }
 
   /*
@@ -241,29 +242,34 @@ class RestManager {
    * 10000, "success"
    * 12001, "group id invalid."
    */
-  Future<RestEntity> dismissGroup(String groupId) async {
+  Future<int> dismissGroup(String groupId) async {
       Response response = await Dio().post(APP_SERVER_URL + DISMISS_GROUP,
         data: {"groupId": groupId});
 
       var data = json.decode(response.toString());
       RestEntity entity = RestEntity.fromMap(data);
-      return entity;
+      return entity.code;
   }
 
-
-  /*
-   * result entity.  entity.data['name'], entity.data['members'],entity.data['time']
-   * String name:  group name  
-   * String portrait:  group portrait
-     List<String> members: group members .
-     Date time:  group update time.
-   */
-  Future<RestEntity> detailGroup(String groupId) async {
+  Future<GroupEntity> detailGroup(String groupId) async {
       Response response = await Dio().post(APP_SERVER_URL + DETAIL_GROUP,
         data: {"groupId": groupId});
 
       var data = json.decode(response.toString());
       RestEntity entity = RestEntity.fromMap(data);
-      return entity;
+
+      if (Constants.RSP_COMMON_SUCCESS == entity.code) {
+        return GroupEntity(
+          conversationId: entity.data['conversationId'],
+          groupId: entity.data['groupId'],
+          name: entity.data['name'],
+          portrait: entity.data['portrait'],
+          groupOwner: entity.data['ownerUid'],
+          status: entity.data['status'],
+          time: entity.data['time'],
+          members: entity.data['members'],
+          );
+      }
+      return null;
   }
 }

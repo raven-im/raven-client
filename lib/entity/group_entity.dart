@@ -12,6 +12,7 @@ class GroupEntity {
   static const String TIME = "time";
   static const String GROUP_OWNER = "owner";
   static const String STATUS = "status"; //状态:存活，消除
+  static const String MEMBERS = "members";
 
   String
       groupId,
@@ -22,6 +23,7 @@ class GroupEntity {
       time
       ;
   int status;
+  List members;
 
   GroupEntity(
       {
@@ -32,6 +34,7 @@ class GroupEntity {
       this.portrait,
       this.time,
       this.status = 0,
+      this.members,
       });
 
   GroupEntity.fromMap(Map<String, dynamic> map)
@@ -43,6 +46,7 @@ class GroupEntity {
           time: map[TIME],
           groupOwner: map[GROUP_OWNER],
           status: map[STATUS],
+          members: map[MEMBERS],
         );
 
   // Currently not used
@@ -55,6 +59,7 @@ class GroupEntity {
       TIME: time,
       GROUP_OWNER: groupOwner,
       STATUS: status,
+      MEMBERS: members
     };
   }
 }

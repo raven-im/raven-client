@@ -9,6 +9,7 @@ import 'package:myapp/entity/group_entity.dart';
 import 'package:myapp/entity/group_member_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/conversation_manager.dart';
+import 'package:myapp/manager/restful_manager.dart';
 import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/interact_vative.dart';
 import 'package:path/path.dart';
@@ -99,6 +100,8 @@ class DataBaseApi {
   Future clearDB() async {
     var db = await _init();
     await db.execute(
+        "DELETE FROM  ${DataBaseConfig.GROUP_TABLE}; "
+        "DELETE FROM  ${DataBaseConfig.GROUP_MEMBERS_TABLE}; "
         "DELETE FROM  ${DataBaseConfig.CONTACTS_TABLE}; "
         "DELETE FROM  ${DataBaseConfig.MESSAGES_TABLE}; "
         "DELETE FROM  ${DataBaseConfig.CONVERSATIONS_TABLE}; ");
@@ -223,6 +226,7 @@ class DataBaseApi {
       if (isExist) {
         // otherwise update the conversation.
         updateConversationEntity(entity.convId, entity);
+        InteractNative.getAppEventSink().add(InteractNative.PULL_CONVERSATION);
       } else {
         //if conversation id not exsists,  request the conversation from server.
         ConversationManager.get().requestConverEntity(entity.convId);
@@ -297,8 +301,6 @@ class DataBaseApi {
 
   Future updateConversationEntity(String convId, MessageEntity entity) async {
     await _updateConversationEntity(convId, entity);
-    InteractNative.getAppEventSink().add(InteractNative.PULL_CONVERSATION);
-    return null;
   }
 
   Future updateConversationEntities(List<ConversationEntity> entities) async {
@@ -309,10 +311,7 @@ class DataBaseApi {
           _updateConversationsEntity(item);
         }
       }
-      //notify Pull conversation.
-      InteractNative.getAppEventSink().add(InteractNative.PULL_CONVERSATION);
     });
-    return null;
   }
 
   Future _updateConversationEntity(String convId, MessageEntity entity) async {
@@ -375,4 +374,60 @@ class DataBaseApi {
           entity.conversationType,
         ]);
   }
+
+  //group.
+  Future updateGroupInfo(List<ConversationEntity> entities) async {
+    entities.forEach((item) {
+      if (item.conversationType == Constants.CONVERSATION_GROUP) {
+          RestManager.get().detailGroup(item.targetUid).then((entity) {
+            _updateGroupInfo(entity);
+            entity.members.forEach((member) {
+              _updateGroupMemberInfo(GroupMemberEntity(
+                groupId: entity.groupId,
+                conversationId: entity.conversationId,
+                member: member,
+              ));
+            });
+            
+          });
+        }
+      });
+  }
+
+  Future _updateGroupInfo(GroupEntity entity) async {
+    var db = await _init();
+    await db.rawUpdate(
+        'INSERT OR REPLACE INTO '
+        '${DataBaseConfig.GROUP_TABLE} '
+        '(${GroupEntity.GROUP_ID},${GroupEntity.CONVERSATION_ID},'
+        '${GroupEntity.NAME},${GroupEntity.PORTRAIT},'
+        '${GroupEntity.TIME},'
+        '${GroupEntity.GROUP_OWNER},${GroupEntity.STATUS}) '
+        ' VALUES(?,?,?,?,?,?,?)',
+        [
+          entity.groupId,
+          entity.conversationId,
+          entity.name,
+          entity.portrait,
+          entity.time,
+          entity.groupOwner,
+          entity.status,
+        ]);
+  }
+
+  Future _updateGroupMemberInfo(GroupMemberEntity entity) async {
+    var db = await _init();
+    
+    await db.rawUpdate(
+      'INSERT OR REPLACE INTO '
+      '${DataBaseConfig.GROUP_MEMBERS_TABLE} '
+      '(${GroupMemberEntity.GROUP_ID},${GroupMemberEntity.CONVERSATION_ID},'
+      '${GroupMemberEntity.MEMBER_UID}) '
+      ' VALUES(?,?,?)',
+      [
+        entity.groupId,
+        entity.conversationId,
+        entity.member,
+    ]);
+  } 
 }

@@ -205,9 +205,14 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
 
       List<ConversationEntity> conversations = await DataBaseApi.get().getConversationEntities();
       conversations.forEach((entity) {
-        if (contactsMap.containsKey(entity.targetUid)) {
-          entity.name = contactsMap[entity.targetUid].userName;
+        if (entity.conversationType == Constants.CONVERSATION_SINGLE) {
+          if (contactsMap.containsKey(entity.targetUid)) {
+            entity.name = contactsMap[entity.targetUid].userName;
+          }
+        } else if (entity.conversationType == Constants.CONVERSATION_GROUP){
+
         }
+
         list.insert(0, entity.targetUid);//TODO  group?
         map[entity.targetUid] = entity;
       });
