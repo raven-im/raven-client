@@ -377,21 +377,21 @@ class DataBaseApi {
 
   //group.
   Future updateGroupInfo(List<ConversationEntity> entities) async {
-    entities.forEach((item) {
-      if (item.conversationType == Constants.CONVERSATION_GROUP) {
-          RestManager.get().detailGroup(item.targetUid).then((entity) {
-            _updateGroupInfo(entity);
-            entity.members.forEach((member) {
-              _updateGroupMemberInfo(GroupMemberEntity(
-                groupId: entity.groupId,
-                conversationId: entity.conversationId,
-                member: member,
-              ));
-            });
-            
-          });
-        }
+    var groups = entities
+      .where((f) => f.conversationType == Constants.CONVERSATION_GROUP)
+      .map((f) => f.targetUid)
+      .toList();
+    List<GroupEntity> groupEntities = await RestManager.get().detailsGroup(groups);
+    groupEntities.forEach((entity) {
+      _updateGroupInfo(entity);
+      entity.members.forEach((member) {
+        _updateGroupMemberInfo(GroupMemberEntity(
+          groupId: entity.groupId,
+          conversationId: entity.conversationId,
+          member: member,
+        ));
       });
+    });
   }
 
   Future _updateGroupInfo(GroupEntity entity) async {
@@ -429,5 +429,26 @@ class DataBaseApi {
         entity.conversationId,
         entity.member,
     ]);
-  } 
+  }
+
+  Future<List<GroupEntity>> getAllGroupEntities() async {
+    var db = await _init();
+    var result =
+        await db.rawQuery('SELECT * FROM ${DataBaseConfig.GROUP_TABLE}');
+    List<GroupEntity> res = [];
+    for (Map<String, dynamic> item in result) {
+      res.add(GroupEntity.fromMap(item));
+    }
+    for (GroupEntity entity in res) {
+      var tmpResult = await db.rawQuery('SELECT * FROM ${DataBaseConfig.GROUP_MEMBERS_TABLE} '
+        'where ${GroupEntity.GROUP_ID} = "${entity.groupId}"');
+      for (Map<String, dynamic> member in tmpResult) {
+        if (entity.members == null) {
+          entity.members = [];
+        }
+        entity.members.add(GroupMemberEntity.fromMap(member).member);
+      }
+    }
+    return res;
+  }
 }

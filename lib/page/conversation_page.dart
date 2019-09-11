@@ -6,6 +6,7 @@ import 'package:myapp/base/base_state.dart';
 import 'package:myapp/database/db_api.dart';
 import 'package:myapp/entity/contact_entity.dart';
 import 'package:myapp/entity/conversation_entity.dart';
+import 'package:myapp/entity/group_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 // import 'package:myapp/manager/sender_manager.dart';
 import 'package:myapp/manager/wssender_manager.dart';
@@ -31,6 +32,7 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
   var map = Map();
   var list = new List();
   var contactsMap = new Map();
+  var groupMap = new Map();
   var _popString = List<String>();
   bool isShowNoPage = false;
   Timer _refreshTimer;
@@ -115,26 +117,33 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
     ConversationEntity entity = map[list.elementAt(index).toString()];
     String timeTmp = DateUtil.getDateStrByDateTime(DateUtil.getDateTimeByMs(entity.timestamp));
     String time = DateUtil.formatDateTime(timeTmp, DateFormat.YEAR_MONTH_DAY, '/', '');
-
+    String portrait = Constants.DEFAULT_PORTRAIT;
+    
+    if (entity.conversationType == Constants.CONVERSATION_SINGLE 
+        && contactsMap.containsKey(entity.targetUid) 
+        && contactsMap[entity.targetUid] != null) {
+      portrait = contactsMap[entity.targetUid].portrait;
+    } else if (entity.conversationType == Constants.CONVERSATION_GROUP && groupMap.containsKey(entity.targetUid) && groupMap[entity.targetUid] != null) {
+      portrait = groupMap[entity.targetUid].portrait;
+    }
     res = MoreWidgets.conversationListViewItem(
         entity.name == null ? entity.targetUid : entity.name, 
         entity.conversationType,
-        portrait: contactsMap[entity.targetUid].portrait,
+        portrait: portrait,
         content: entity.lastMessage,
         time: time,
         unread: entity.isUnreadCount, onItemClick: (res) {
-      if (entity.conversationType == Constants.CONVERSATION_SINGLE) {
-        //聊天消息，跳转聊天对话页面
-        Navigator.push(
-            context,
-            new CupertinoPageRoute<void>(
-                builder: (ctx) => MessagePage(
-                      title: entity.name == null ? entity.targetUid : entity.name,
-                      targetUid: entity.targetUid,
-                      convId: entity.id,
-                      targetUrl: contactsMap[entity.targetUid].portrait,
-                    )));
-      }
+          //聊天消息，跳转聊天对话页面
+          Navigator.push(
+              context,
+              new CupertinoPageRoute<void>(
+                  builder: (ctx) => MessagePage(
+                        title: entity.name == null ? entity.targetUid : entity.name,
+                        targetUid: entity.targetUid,
+                        convId: entity.id,
+                        targetUrl: portrait,
+                      )));
+      
     });
     return res;
   }
@@ -145,6 +154,7 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
       list.clear();
       map.clear();
       contactsMap.clear();
+      groupMap.clear();
       isShowNoPage = true;
     });
   }
@@ -199,9 +209,13 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
       list.clear();
       map.clear();
       contactsMap.clear();
+      groupMap.clear();
 
       List<ContactEntity> contacts = await DataBaseApi.get().getAllContactsEntities();
       contacts.forEach((contact) => contactsMap[contact.userId] = contact);
+
+      List<GroupEntity> groups = await DataBaseApi.get().getAllGroupEntities();
+      groups.forEach((group) => groupMap[group.groupId] = group);
 
       List<ConversationEntity> conversations = await DataBaseApi.get().getConversationEntities();
       conversations.forEach((entity) {
@@ -210,10 +224,12 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
             entity.name = contactsMap[entity.targetUid].userName;
           }
         } else if (entity.conversationType == Constants.CONVERSATION_GROUP){
-
+          if (groupMap.containsKey(entity.targetUid)) {
+            entity.name = groupMap[entity.targetUid].name;
+          }
         }
 
-        list.insert(0, entity.targetUid);//TODO  group?
+        list.insert(0, entity.targetUid);//group: GroupId,  single:  target user id.
         map[entity.targetUid] = entity;
       });
       if (this.mounted) {

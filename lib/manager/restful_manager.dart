@@ -35,6 +35,7 @@ class RestManager {
   static const QUIT_GROUP = GROUP_API_BASE + '/quit';
   static const DISMISS_GROUP = GROUP_API_BASE + '/dismiss';
   static const DETAIL_GROUP = GROUP_API_BASE + '/detail';
+  static const DETAILS_GROUP = GROUP_API_BASE + '/details';
 
   static RestManager get() {
     return _rest;
@@ -271,5 +272,30 @@ class RestManager {
           );
       }
       return null;
+  }
+
+  Future<List<GroupEntity>> detailsGroup(List<String> groups) async {
+      List<GroupEntity> result = [];
+      Response response = await Dio().post(APP_SERVER_URL + DETAILS_GROUP,
+        data: {"groups": groups});
+
+      var data = json.decode(response.toString());
+      RestListEntity entity = RestListEntity.fromMap(data);
+
+      if (Constants.RSP_COMMON_SUCCESS == entity.code) {
+        entity.data.forEach((data) {
+          result.add(GroupEntity(
+          conversationId: data['conversationId'],
+          groupId: data['groupId'],
+          name: data['name'],
+          portrait: data['portrait'],
+          groupOwner: data['ownerUid'],
+          status: data['status'],
+          time: data['time'],
+          members: data['members'],
+          ));
+        });
+      }
+      return result;
   }
 }
