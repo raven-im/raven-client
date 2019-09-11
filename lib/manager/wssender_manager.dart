@@ -182,7 +182,6 @@ class SenderMngr {
           await DataBaseApi.get().updateGroupInfo(entities);
           //notify Pull conversation.
           await new Future.delayed(new Duration(milliseconds: 1000));
-          print("request UI update");
           InteractNative.getAppEventSink().add(InteractNative.PULL_CONVERSATION);
         } else {
           print("error: conversation ack: $message.converAck.code ");

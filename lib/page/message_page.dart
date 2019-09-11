@@ -33,6 +33,7 @@ class MessagePage extends StatefulWidget {
   final String targetUid;
   String convId;
   final String targetUrl;
+  final int convType;
 
   MessagePage(
       {Key key,
@@ -40,6 +41,7 @@ class MessagePage extends StatefulWidget {
       @required this.targetUid,
       @required this.convId,
       @required this.targetUrl,
+      @required this.convType,
       })
       : super(key: key);
 
@@ -423,7 +425,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
         contentType: Constants.CONTENT_TYPE_TEXT,
         fromUid: myUid,
         targetUid: widget.targetUid,
-        convType: Constants.CONVERSATION_SINGLE,
+        convType: widget.convType,
         content: jsonText,
         convId: widget.convId,
         time: DateTime.now().millisecondsSinceEpoch.toString());
@@ -443,7 +445,14 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
         messageEntity.status = 1;
       });
     }
-    SenderMngr.sendSingleMessageReq(messageEntity);
+    if (widget.convType == Constants.CONVERSATION_SINGLE) {
+      SenderMngr.sendSingleMessageReq(messageEntity);
+    } else if (widget.convType == Constants.CONVERSATION_GROUP) {
+      SenderMngr.sendGroupMessageReq(messageEntity);
+    } else {
+      print("error conversation type ${widget.convType}");
+    }
+    
   }
 
   _willBuildImageMessage(File imageFile) {

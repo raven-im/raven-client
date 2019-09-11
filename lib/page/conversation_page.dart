@@ -142,6 +142,7 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
                         targetUid: entity.targetUid,
                         convId: entity.id,
                         targetUrl: portrait,
+                        convType: entity.conversationType,
                       )));
       
     });
