@@ -92,10 +92,10 @@ class ObjectUtil {
 
     MessageEntity entity = new MessageEntity(
       msgId: msg.id.toInt(),
-      convType: Constants.CONVERSATION_SINGLE, //TODO Group?
+      convType: msg.converType.value,
       fromUid: msg.fromUid,
-      targetUid: msg.targetUid, //??
-      contentType: msg.content.type.value, //??
+      targetUid: msg.targetUid,
+      contentType: msg.content.type.value,
       content: msg.content.content,
       time: msg.content.time.toString(),
       status: 0,
@@ -109,10 +109,10 @@ class ObjectUtil {
 
     MessageEntity entity = new MessageEntity(
       msgId: ack.id.toInt(),
-      convType: Constants.CONVERSATION_SINGLE, //TODO Group?
+      convType: oriMsg.converType.value,
       fromUid: oriMsg.fromUid,
-      targetUid: oriMsg.targetUid, //??
-      contentType: oriMsg.content.type.value, //??
+      targetUid: oriMsg.targetUid,
+      contentType: oriMsg.content.type.value,
       content: oriMsg.content.content,
       time: ack.time.toString(),
       status: 0,

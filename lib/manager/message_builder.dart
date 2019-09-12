@@ -65,6 +65,7 @@ class MessageBuilder {
     data.fromUid = entity.fromUid;
     data.converType = ConverType.GROUP;
     data.groupId = entity.targetUid;
+    data.converId = entity.convId;
     data.content = _getMessageContent(entity);
     message.upDownMessage = data;
     return _protoToDelimitedBuffer(message);
