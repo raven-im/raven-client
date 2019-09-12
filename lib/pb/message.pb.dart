@@ -488,8 +488,9 @@ class HisMessagesAck extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('HisMessagesAck', package: const $pb.PackageName('com.raven.common.protos'))
     ..a<Int64>(1, 'id', $pb.PbFieldType.OU6, Int64.ZERO)
     ..aOS(2, 'converId')
-    ..pc<MessageContent>(3, 'messageList', $pb.PbFieldType.PM,MessageContent.create)
-    ..a<Int64>(4, 'unReadCount', $pb.PbFieldType.OU6, Int64.ZERO)
+    ..e<ConverType>(3, 'convType', $pb.PbFieldType.OE, ConverType.SINGLE, ConverType.valueOf, ConverType.values)
+    ..pc<MessageContent>(4, 'messageList', $pb.PbFieldType.PM,MessageContent.create)
+    ..a<Int64>(5, 'unReadCount', $pb.PbFieldType.OU6, Int64.ZERO)
     ..hasRequiredFields = false
   ;
 
@@ -515,12 +516,17 @@ class HisMessagesAck extends $pb.GeneratedMessage {
   $core.bool hasConverId() => $_has(1);
   void clearConverId() => clearField(2);
 
-  $core.List<MessageContent> get messageList => $_getList(2);
+  ConverType get convType => $_getN(2);
+  set convType(ConverType v) { setField(3, v); }
+  $core.bool hasConvType() => $_has(2);
+  void clearConvType() => clearField(3);
 
-  Int64 get unReadCount => $_getI64(3);
-  set unReadCount(Int64 v) { $_setInt64(3, v); }
-  $core.bool hasUnReadCount() => $_has(3);
-  void clearUnReadCount() => clearField(4);
+  $core.List<MessageContent> get messageList => $_getList(3);
+
+  Int64 get unReadCount => $_getI64(4);
+  set unReadCount(Int64 v) { $_setInt64(4, v); }
+  $core.bool hasUnReadCount() => $_has(4);
+  void clearUnReadCount() => clearField(5);
 }
 
 class ConverReq extends $pb.GeneratedMessage {

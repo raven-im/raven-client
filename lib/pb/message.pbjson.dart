@@ -178,8 +178,9 @@ const HisMessagesAck$json = const {
   '2': const [
     const {'1': 'id', '3': 1, '4': 1, '5': 4, '10': 'id'},
     const {'1': 'converId', '3': 2, '4': 1, '5': 9, '10': 'converId'},
-    const {'1': 'messageList', '3': 3, '4': 3, '5': 11, '6': '.com.raven.common.protos.MessageContent', '10': 'messageList'},
-    const {'1': 'unReadCount', '3': 4, '4': 1, '5': 4, '10': 'unReadCount'},
+    const {'1': 'convType', '3': 3, '4': 1, '5': 14, '6': '.com.raven.common.protos.ConverType', '10': 'convType'},
+    const {'1': 'messageList', '3': 4, '4': 3, '5': 11, '6': '.com.raven.common.protos.MessageContent', '10': 'messageList'},
+    const {'1': 'unReadCount', '3': 5, '4': 1, '5': 4, '10': 'unReadCount'},
   ],
 };
 

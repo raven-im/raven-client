@@ -69,14 +69,14 @@ class ObjectUtil {
     return list;
   }
 
-  static List<MessageEntity> getMsgEntities(String myUid, List<MessageContent> msgList) {
+  static List<MessageEntity> getMsgEntities(String myUid, int convType, String convId, List<MessageContent> msgList) {
     List<MessageEntity> list = new List();
     msgList.forEach((msg) {
       MessageEntity entity = new MessageEntity(
         msgId: msg.id.toInt(),
-        convType: Constants.CONVERSATION_SINGLE, //TODO Group?
+        convType: convType,
         fromUid: msg.uid,
-        targetUid: myUid, //??
+        targetUid: convId,
         contentType: msg.type.value,
         content: msg.content,
         time: msg.time.toString(),

@@ -103,25 +103,23 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
 
   void _pullMsgAndDisplay() {
     _messageList.clear();
-    DataBaseApi.get().getMessagesEntities(widget.convId).then((messages) => {
+    DataBaseApi.get().getMessagesEntities(widget.convId).then((messages) {
       DataBaseApi.get().getAllContactsEntities().then((contacts) {
         messages.forEach((messge) {
-          if (myUid == messge.targetUid || widget.targetUid == messge.targetUid) {
-              // for me.
-              contacts.forEach((contact) {
-                  if (contact.userId == messge.fromUid) {
-                    messge.senderName = contact.userName;
-                  }
-                });
-              _messageList.insert(0, messge);
-            }
+          // for me.
+          contacts.forEach((contact) {
+              if (contact.userId == messge.fromUid) {
+                messge.senderName = contact.userName;
+              }
+            });
+          _messageList.insert(0, messge);
         });
         if (this.mounted) {
           setState(() {
             
           });
         }
-    })
+    });
     });
   }
   @override
@@ -538,26 +536,25 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
       return;
     }
     DataBaseApi.get().getAllContactsEntities().then((contacts) {
-      
-      if (myUid == entity.targetUid || widget.targetUid == entity.targetUid) {
-            // for me.
-            contacts.forEach((contact) {
-                if (contact.userId == entity.fromUid) {
-                  entity.senderName = contact.userName;
-                }
-              });
-            if (widget.convId == null) {
-              widget.convId = entity.convId;
-            }
-
-            _messageList.insert(0, entity);
-            if (this.mounted) {
-              setState(() {
-                
-              });
-            }
+        
+      // for me.
+      contacts.forEach((contact) {
+          if (contact.userId == entity.fromUid) {
+            entity.senderName = contact.userName;
           }
-      });
+        });
+      if (widget.convId == null) {
+        widget.convId = entity.convId;
+      }
+
+      _messageList.insert(0, entity);
+      if (this.mounted) {
+        setState(() {
+          
+        });
+      }
+      
+    });
   }
 
   @override

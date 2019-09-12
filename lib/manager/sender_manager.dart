@@ -216,7 +216,8 @@ class SenderMngr {
           _msgMap.remove(message.hisMessagesAck.id);
           //DB insert
           DataBaseApi.get().updateMessageEntities(message.hisMessagesAck.converId, 
-              ObjectUtil.getMsgEntities(myUid, message.hisMessagesAck.messageList));
+              ObjectUtil.getMsgEntities(myUid, message.hisMessagesAck.convType.value, 
+                message.hisMessagesAck.converId,message.hisMessagesAck.messageList));
         } else {
           print("error: ${message.hisMessagesAck.id} contains? ${_msgMap.containsKey(message.hisMessagesAck.id)}");
         }
