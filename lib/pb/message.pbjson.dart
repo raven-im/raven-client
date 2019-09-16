@@ -52,6 +52,14 @@ const OperationType$json = const {
   ],
 };
 
+const NotifyType$json = const {
+  '1': 'NotifyType',
+  '2': const [
+    const {'1': 'USER', '2': 0},
+    const {'1': 'CONVERSATION', '2': 1},
+  ],
+};
+
 const RavenMessage$json = const {
   '1': 'RavenMessage',
   '2': const [
@@ -220,10 +228,13 @@ const NotifyMessage$json = const {
   '1': 'NotifyMessage',
   '2': const [
     const {'1': 'id', '3': 1, '4': 1, '5': 4, '10': 'id'},
-    const {'1': 'type', '3': 2, '4': 1, '5': 9, '10': 'type'},
+    const {'1': 'type', '3': 2, '4': 1, '5': 14, '6': '.com.raven.common.protos.NotifyType', '10': 'type'},
     const {'1': 'targetUid', '3': 3, '4': 1, '5': 9, '10': 'targetUid'},
-    const {'1': 'content', '3': 4, '4': 1, '5': 9, '10': 'content'},
-    const {'1': 'time', '3': 5, '4': 1, '5': 4, '10': 'time'},
+    const {'1': 'converId', '3': 4, '4': 1, '5': 9, '10': 'converId'},
+    const {'1': 'convType', '3': 5, '4': 1, '5': 14, '6': '.com.raven.common.protos.ConverType', '10': 'convType'},
+    const {'1': 'content', '3': 6, '4': 1, '5': 9, '10': 'content'},
+    const {'1': 'time', '3': 7, '4': 1, '5': 4, '10': 'time'},
+    const {'1': 'fromUid', '3': 8, '4': 1, '5': 9, '10': 'fromUid'},
   ],
 };
 

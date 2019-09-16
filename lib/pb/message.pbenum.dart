@@ -99,6 +99,21 @@ class OperationType extends $pb.ProtobufEnum {
   const OperationType._($core.int v, $core.String n) : super(v, n);
 }
 
+class NotifyType extends $pb.ProtobufEnum {
+  static const NotifyType USER = NotifyType._(0, 'USER');
+  static const NotifyType CONVERSATION = NotifyType._(1, 'CONVERSATION');
+
+  static const $core.List<NotifyType> values = <NotifyType> [
+    USER,
+    CONVERSATION,
+  ];
+
+  static final $core.Map<$core.int, NotifyType> _byValue = $pb.ProtobufEnum.initByValue(values);
+  static NotifyType valueOf($core.int value) => _byValue[value];
+
+  const NotifyType._($core.int v, $core.String n) : super(v, n);
+}
+
 class RavenMessage_Type extends $pb.ProtobufEnum {
   static const RavenMessage_Type Login = RavenMessage_Type._(0, 'Login');
   static const RavenMessage_Type LoginAck = RavenMessage_Type._(1, 'LoginAck');

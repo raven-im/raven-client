@@ -78,7 +78,29 @@ class MessageItemWidgets {
 
   static Widget _chatItemWidget(
       MessageEntity entity, String targetProtrait, OnItemClick onResend, OnItemClick onItemClick) {
-    if (entity.messageOwner == 1) {
+    
+    if (entity.type == Constants.NOTIFICATION) {
+      return Container(
+        // margin: EdgeInsets.only(left: 10, right: 90, bottom: 30, top: 4),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(width: 10),
+            new Expanded(
+                child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(height: 5),
+                GestureDetector(
+                  child: _contentWidget(entity),
+                ),
+              ],
+            )),
+          ],
+        ),
+      );
+    }
+    else if (entity.messageOwner == 1) {
       //对方的消息
       
       return Container(
@@ -209,6 +231,10 @@ class MessageItemWidgets {
   */
   static Widget _contentWidget(MessageEntity entity) {
     Widget widget;
+    if (entity.type == Constants.NOTIFICATION) {
+      widget = buildNotificationWidget(entity);
+      return widget;
+    }
     switch (entity.contentType) {
       case Constants.CONTENT_TYPE_TEXT:
         widget = buildTextWidget(entity);
@@ -246,6 +272,22 @@ class MessageItemWidgets {
         child: Text(
           text.content,
           style: TextStyle(fontSize: 16, color: Colors.black),
+        ),
+      ),
+    );
+  }
+
+  static Widget buildNotificationWidget(MessageEntity entity) {
+    var data = json.decode(entity.content);
+    TextEntity text = TextEntity.fromMap(data);
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8.0),
+      child: Container(
+        padding: EdgeInsets.only(left: 10, right: 10, top: 6, bottom: 6),
+        color: Colors.grey,
+        child: Text(
+          text.content,
+          style: TextStyle(fontSize: 12, color: Colors.white),
         ),
       ),
     );

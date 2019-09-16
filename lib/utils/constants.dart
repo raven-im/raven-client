@@ -18,6 +18,8 @@ class Constants {
   static const int CONTENT_TYPE_VOICE = 2;
   static const int CONTENT_TYPE_VIDEO = 3;
 
+  static const int PLAIN_MESSAGE = 0;
+  static const int NOTIFICATION = 1;
   /* response code from */
   static const int RSP_COMMON_SUCCESS = 10000;
 

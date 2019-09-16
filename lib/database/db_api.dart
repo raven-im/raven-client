@@ -57,6 +57,7 @@ class DataBaseApi {
           "${MessageEntity.CONVERSATION_ID} TEXT,"
           "${MessageEntity.TIME} TEXT,"
           "${MessageEntity.MESSAGE_OWNER} INTEGER,"
+          "${MessageEntity.TYPE} INTEGER,"
           "${MessageEntity.STATUS} INTEGER"
           ")");
       await db.execute(
@@ -243,8 +244,9 @@ class DataBaseApi {
         '${MessageEntity.IS_UNREAD},${MessageEntity.FROM_UID},'
         '${MessageEntity.TARGET_UID},${MessageEntity.CONTENT},'
         '${MessageEntity.CONTENT_TYPE},${MessageEntity.CONVERSATION_ID},'
-        '${MessageEntity.TIME},${MessageEntity.MESSAGE_OWNER}, ${MessageEntity.STATUS})'
-        ' VALUES(?,?,?,?,?,?,?,?,?,?,?)',
+        '${MessageEntity.TIME},${MessageEntity.MESSAGE_OWNER}, ${MessageEntity.STATUS},'
+        '${MessageEntity.TYPE})'
+        ' VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
         [
           entity.msgId,
           entity.convType,
@@ -257,6 +259,7 @@ class DataBaseApi {
           entity.time,
           entity.messageOwner,
           entity.status,
+          entity.type
         ]);
   }
 

@@ -82,6 +82,7 @@ class ObjectUtil {
         time: msg.time.toString(),
         status: 0,
         messageOwner: myUid == msg.uid ? 0 : 1,
+        type: Constants.PLAIN_MESSAGE,
       );
       list.add(entity);
     });
@@ -101,6 +102,25 @@ class ObjectUtil {
       status: 0,
       messageOwner: myUid == msg.fromUid ? 0 : 1,
       convId: msg.converId,
+      type: Constants.PLAIN_MESSAGE,
+    );
+    return entity;
+  }
+
+  static MessageEntity getNotifyEntity(String myUid, NotifyMessage msg) {
+
+    MessageEntity entity = new MessageEntity(
+      msgId: msg.id.toInt(),
+      convType: msg.convType.value,
+      fromUid: msg.fromUid,
+      targetUid: msg.targetUid,
+      contentType: MessageType.TEXT.value, // notify only support text.
+      content: msg.content,
+      time: msg.time.toString(),
+      status: 0,
+      messageOwner: myUid == msg.fromUid ? 0 : 1,
+      convId: msg.converId,
+      type: Constants.NOTIFICATION,
     );
     return entity;
   }
@@ -117,7 +137,8 @@ class ObjectUtil {
       time: ack.time.toString(),
       status: 0,
       messageOwner: myUid == oriMsg.fromUid ? 0 : 1,
-      convId: ack.converId
+      convId: ack.converId,
+      type: Constants.PLAIN_MESSAGE,
     );
     return entity;
   }

@@ -16,6 +16,7 @@ class MessageEntity {
   static const String TIME = "time"; //消息发送时间，不可以为空
   static const String MESSAGE_OWNER = "message_owner"; //消息发送方，0自己,1对方
   static const String STATUS = "status"; //状态
+  static const String TYPE = "type"; //消息类型，0为普通消息，1为通知消息
 
   String 
       fromUid,
@@ -25,7 +26,7 @@ class MessageEntity {
       senderName,
       time;
   int convType, status, msgId, contentType;
-  int isUnread, messageOwner, isUnreadCount;
+  int isUnread, messageOwner, isUnreadCount, type;
 
   MessageEntity(
       {
@@ -41,7 +42,8 @@ class MessageEntity {
       this.isUnread = 0,
       this.messageOwner = 1,
       this.senderName,
-      this.isUnreadCount = 0
+      this.isUnreadCount = 0,
+      this.type = 0,
       });
 
   MessageEntity.fromMap(Map<String, dynamic> map)
@@ -57,6 +59,7 @@ class MessageEntity {
           isUnread: map[IS_UNREAD],
           messageOwner: map[MESSAGE_OWNER],
           status: map[STATUS],
+          type: map[TYPE],
         );
 
   // Currently not used
@@ -73,6 +76,7 @@ class MessageEntity {
       IS_UNREAD: isUnread,
       MESSAGE_OWNER: messageOwner,
       STATUS: status,
+      TYPE: type,
     };
   }
 }

@@ -212,6 +212,11 @@ class SenderMngr {
             ObjectUtil.getMsgEntity(myUid, message.upDownMessage), 
             true);
         break;
+      case RavenMessage_Type.NotifyMessage:
+        DataBaseApi.get().updateMessageEntity( 
+            ObjectUtil.getNotifyEntity(myUid, message.notifyMessage), 
+            true);
+        break;
     }
   }
 

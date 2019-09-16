@@ -664,10 +664,13 @@ class ConverInfo extends $pb.GeneratedMessage {
 class NotifyMessage extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('NotifyMessage', package: const $pb.PackageName('com.raven.common.protos'))
     ..a<Int64>(1, 'id', $pb.PbFieldType.OU6, Int64.ZERO)
-    ..aOS(2, 'type')
+    ..e<NotifyType>(2, 'type', $pb.PbFieldType.OE, NotifyType.USER, NotifyType.valueOf, NotifyType.values)
     ..aOS(3, 'targetUid')
-    ..aOS(4, 'content')
-    ..a<Int64>(5, 'time', $pb.PbFieldType.OU6, Int64.ZERO)
+    ..aOS(4, 'converId')
+    ..e<ConverType>(5, 'convType', $pb.PbFieldType.OE, ConverType.SINGLE, ConverType.valueOf, ConverType.values)
+    ..aOS(6, 'content')
+    ..a<Int64>(7, 'time', $pb.PbFieldType.OU6, Int64.ZERO)
+    ..aOS(8, 'fromUid')
     ..hasRequiredFields = false
   ;
 
@@ -688,8 +691,8 @@ class NotifyMessage extends $pb.GeneratedMessage {
   $core.bool hasId() => $_has(0);
   void clearId() => clearField(1);
 
-  $core.String get type => $_getS(1, '');
-  set type($core.String v) { $_setString(1, v); }
+  NotifyType get type => $_getN(1);
+  set type(NotifyType v) { setField(2, v); }
   $core.bool hasType() => $_has(1);
   void clearType() => clearField(2);
 
@@ -698,14 +701,29 @@ class NotifyMessage extends $pb.GeneratedMessage {
   $core.bool hasTargetUid() => $_has(2);
   void clearTargetUid() => clearField(3);
 
-  $core.String get content => $_getS(3, '');
-  set content($core.String v) { $_setString(3, v); }
-  $core.bool hasContent() => $_has(3);
-  void clearContent() => clearField(4);
+  $core.String get converId => $_getS(3, '');
+  set converId($core.String v) { $_setString(3, v); }
+  $core.bool hasConverId() => $_has(3);
+  void clearConverId() => clearField(4);
 
-  Int64 get time => $_getI64(4);
-  set time(Int64 v) { $_setInt64(4, v); }
-  $core.bool hasTime() => $_has(4);
-  void clearTime() => clearField(5);
+  ConverType get convType => $_getN(4);
+  set convType(ConverType v) { setField(5, v); }
+  $core.bool hasConvType() => $_has(4);
+  void clearConvType() => clearField(5);
+
+  $core.String get content => $_getS(5, '');
+  set content($core.String v) { $_setString(5, v); }
+  $core.bool hasContent() => $_has(5);
+  void clearContent() => clearField(6);
+
+  Int64 get time => $_getI64(6);
+  set time(Int64 v) { $_setInt64(6, v); }
+  $core.bool hasTime() => $_has(6);
+  void clearTime() => clearField(7);
+
+  $core.String get fromUid => $_getS(7, '');
+  set fromUid($core.String v) { $_setString(7, v); }
+  $core.bool hasFromUid() => $_has(7);
+  void clearFromUid() => clearField(8);
 }
 
