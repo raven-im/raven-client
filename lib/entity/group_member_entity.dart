@@ -9,25 +9,18 @@ class GroupMemberEntity {
   static const String MEMBER_UID = "member_id";
   static const String CONVERSATION_ID = "conversation_id";
 
-  String
-      groupId,
-      conversationId,
-      member
-      ;
+  String groupId, conversationId, member;
 
   GroupMemberEntity(
-      {
-      @required this.groupId,
+      {@required this.groupId,
       @required this.conversationId,
-      @required this.member
-      });
+      @required this.member});
 
   GroupMemberEntity.fromMap(Map<String, dynamic> map)
       : this(
-          groupId: map[GROUP_ID],
-          conversationId: map[CONVERSATION_ID],
-          member: map[MEMBER_UID]
-        );
+            groupId: map[GROUP_ID],
+            conversationId: map[CONVERSATION_ID],
+            member: map[MEMBER_UID]);
 
   // Currently not used
   Map<String, dynamic> toMap() {
@@ -38,4 +31,3 @@ class GroupMemberEntity {
     };
   }
 }
-

@@ -17,10 +17,8 @@ import 'package:myapp/utils/sp_util.dart';
 *  主页
 */
 class MainPage extends StatelessWidget {
-
   final bool isShowLogin;
   MainPage({Key key, this.isShowLogin}) : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +53,7 @@ class _MyHomePageState extends BaseState<MyHomePage> {
           style: new TextStyle(fontSize: 12.0, color: Colors.grey));
     }
   }
-  
+
   void initData() {
     /*
      * 3个子界面
@@ -77,7 +75,8 @@ class _MyHomePageState extends BaseState<MyHomePage> {
         DataBaseApi.get().getContactsEntity(myUid).then((entity) {
           SPUtil.putString(Constants.KEY_LOGIN_ACCOUNT, entity.userName);
           SPUtil.putString(Constants.KEY_LOGIN_ACCOUNT_MOBILE, entity.mobile);
-          SPUtil.putString(Constants.KEY_LOGIN_ACCOUNT_PORTRAIT, entity.portrait);
+          SPUtil.putString(
+              Constants.KEY_LOGIN_ACCOUNT_PORTRAIT, entity.portrait);
         });
       }
     });
@@ -104,13 +103,11 @@ class _MyHomePageState extends BaseState<MyHomePage> {
             // primaryColor: primaryColor,
             // primarySwatch: primarySwatch,
             platform: TargetPlatform.android),
-        
-        
         home: Stack(children: <Widget>[
           Offstage(offstage: !_isShowLogin, child: LoginPage()),
           Offstage(
-              offstage: _isShowLogin,
-              child: new Scaffold(
+            offstage: _isShowLogin,
+            child: new Scaffold(
                 body: new PageView.builder(
                   onPageChanged: _pageChange,
                   controller: _pageController,
@@ -148,12 +145,13 @@ class _MyHomePageState extends BaseState<MyHomePage> {
                   onTap: (index) {
                     _pageController.jumpToPage(index);
                     if (_tabIndex == 0) {
-                      InteractNative.getAppEventSink().add(InteractNative.PULL_CONVERSATION);
+                      InteractNative.getAppEventSink()
+                          .add(InteractNative.PULL_CONVERSATION);
                     }
                   },
-                )
-              ),
-          )]));
+                )),
+          )
+        ]));
   }
 
   void _pageChange(int index) {
@@ -167,17 +165,17 @@ class _MyHomePageState extends BaseState<MyHomePage> {
 
   @override
   void notify(Object type) {
-  if (type == InteractNative.CHANGE_PAGE_TO_MAIN) {
-    setState(() {
-      if (null != _pageList) {
-        _pageList.clear();
-        initData();
-      } else {
-        initData();
-      }
-      _isShowLogin = false;
-    });
-  } else if (type == InteractNative.CHANGE_PAGE_TO_LOGIN) {
+    if (type == InteractNative.CHANGE_PAGE_TO_MAIN) {
+      setState(() {
+        if (null != _pageList) {
+          _pageList.clear();
+          initData();
+        } else {
+          initData();
+        }
+        _isShowLogin = false;
+      });
+    } else if (type == InteractNative.CHANGE_PAGE_TO_LOGIN) {
       setState(() {
         _isShowLogin = true;
       });
@@ -185,7 +183,5 @@ class _MyHomePageState extends BaseState<MyHomePage> {
   }
 
   @override
-  void updateData(MessageEntity entity) {
-    
-  }
+  void updateData(MessageEntity entity) {}
 }

@@ -22,7 +22,6 @@ class FileEntity {
           url: map[CONTENT_URL],
         );
 
-
   Map<String, dynamic> toMap() {
     return {
       CONTENT_NAME: name,

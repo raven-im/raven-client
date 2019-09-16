@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:myapp/page/more_widgets.dart';
 import 'package:myapp/utils/functions.dart';
@@ -49,7 +47,8 @@ class PopupWindowUtil {
   /*
   * 选择拍照片、拍视频
   */
-  static Future showCameraChosen(BuildContext context, {OnCallBackWithType onCallBack}) {
+  static Future showCameraChosen(BuildContext context,
+      {OnCallBackWithType onCallBack}) {
     return showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {

@@ -38,8 +38,7 @@ class SPUtil {
   }
 
   static bool getBool(String key) {
-    if (_prefs == null) 
-      return false;
+    if (_prefs == null) return false;
     return _prefs.getBool(key);
   }
 
@@ -120,4 +119,3 @@ class SPUtil {
     }
   }
 }
-

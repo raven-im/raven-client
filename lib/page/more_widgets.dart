@@ -10,8 +10,7 @@ class MoreWidgets {
   *  生成常用的AppBar
   */
   static Widget buildAppBar(BuildContext context, String text,
-      {
-      double fontSize: 20.0,
+      {double fontSize: 20.0,
       double height: 50.0,
       double elevation: 0.5,
       Widget leading,
@@ -39,9 +38,7 @@ class MoreWidgets {
   *  生成ContactsListView的item
   */
   static Widget buildListViewItem(String portraitUrl, String text,
-      {
-      double padding = 8.0,
-      double imageSize = 38.0}) {
+      {double padding = 8.0, double imageSize = 38.0}) {
     String url;
     if (portraitUrl == '' || portraitUrl == null || portraitUrl.length <= 0) {
       url = Constants.DEFAULT_PORTRAIT;
@@ -58,16 +55,16 @@ class MoreWidgets {
                 height: 15.0,
               ),
               ClipRRect(
-                borderRadius: BorderRadius.circular(6.0),
-                child: CachedNetworkImage(
-                  width: imageSize,
-                  height: imageSize,
-                  fit: BoxFit.fill,
-                  imageUrl: url,
-                  placeholder: (context, url) => new CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => new Icon(Icons.face),
-                )
-              ),
+                  borderRadius: BorderRadius.circular(6.0),
+                  child: CachedNetworkImage(
+                    width: imageSize,
+                    height: imageSize,
+                    fit: BoxFit.fill,
+                    imageUrl: url,
+                    placeholder: (context, url) =>
+                        new CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => new Icon(Icons.face),
+                  )),
               SizedBox(
                 width: 15.0,
               ),
@@ -94,10 +91,8 @@ class MoreWidgets {
   /*
   *  生成消息-ListView的item
   */
-  static Widget conversationListViewItem(
-    String text, int contentType,
-      {
-      String portrait = '',
+  static Widget conversationListViewItem(String text, int contentType,
+      {String portrait = '',
       int unread = 0,
       String content = '',
       String time = '',
@@ -130,16 +125,20 @@ class MoreWidgets {
                                 height: 25,
                               ),
                               ClipRRect(
-                                borderRadius: BorderRadius.circular(8.0),
-                                child: CachedNetworkImage(
-                                  width: 30,
-                                  height: 30,
-                                  fit: BoxFit.fill,
-                                  placeholder: (context, url) => new CircularProgressIndicator(),
-                                  imageUrl: portrait == null || portrait.length <= 0 ? Constants.DEFAULT_PORTRAIT : portrait,
-                                  errorWidget: (context, url, error) => new Icon(Icons.mobile_screen_share),
-                                )
-                              ),
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child: CachedNetworkImage(
+                                    width: 30,
+                                    height: 30,
+                                    fit: BoxFit.fill,
+                                    placeholder: (context, url) =>
+                                        new CircularProgressIndicator(),
+                                    imageUrl:
+                                        portrait == null || portrait.length <= 0
+                                            ? Constants.DEFAULT_PORTRAIT
+                                            : portrait,
+                                    errorWidget: (context, url, error) =>
+                                        new Icon(Icons.mobile_screen_share),
+                                  )),
                             ]),
                         unread > 0
                             ? CircleAvatar(
@@ -169,8 +168,8 @@ class MoreWidgets {
                           maxLines: 1,
                           softWrap: true,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              fontSize: 20.0, color: Colors.black87),
+                          style:
+                              TextStyle(fontSize: 20.0, color: Colors.black87),
                         ),
                         SizedBox(
                           height: 3.0,
@@ -180,8 +179,7 @@ class MoreWidgets {
                           maxLines: 1,
                           softWrap: true,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              fontSize: 16.0, color: Colors.grey),
+                          style: TextStyle(fontSize: 16.0, color: Colors.grey),
                         ),
                       ],
                     ),
@@ -348,8 +346,7 @@ class MoreWidgets {
                           maxLines: 1,
                           softWrap: true,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              fontSize: 22.0, color: Colors.black),
+                          style: TextStyle(fontSize: 22.0, color: Colors.black),
                         ),
                         SizedBox(
                           height: 5.0,
@@ -359,8 +356,7 @@ class MoreWidgets {
                           maxLines: 1,
                           softWrap: true,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              fontSize: 14.0, color: Colors.grey),
+                          style: TextStyle(fontSize: 14.0, color: Colors.grey),
                         ),
                       ],
                     ),
@@ -435,8 +431,7 @@ class MoreWidgets {
                   Switch(
                       value: value,
                       activeColor: Colors.red, //激活时原点的颜色。
-                      activeTrackColor:
-                          Colors.yellow, //激活时横条的颜色。
+                      activeTrackColor: Colors.yellow, //激活时横条的颜色。
                       onChanged: (isCheck) {
                         if (null != onSwitch) {
                           onSwitch(isCheck);
@@ -493,8 +488,8 @@ class MoreWidgets {
                           maxLines: 1,
                           softWrap: true,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              fontSize: 16.0, color: Colors.black26),
+                          style:
+                              TextStyle(fontSize: 16.0, color: Colors.black26),
                         ),
                         SizedBox(
                           height: 3.0,
@@ -504,8 +499,8 @@ class MoreWidgets {
                           maxLines: 1,
                           softWrap: true,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              fontSize: 14.0, color: Colors.black38),
+                          style:
+                              TextStyle(fontSize: 14.0, color: Colors.black38),
                         ),
                         SizedBox(
                           height: ObjectUtil.isEmpty(note) ? 0 : 3.0,
@@ -572,14 +567,12 @@ class MoreWidgets {
                                     child: Container(
                                       padding: EdgeInsets.fromLTRB(0, 4, 0, 4),
                                       decoration: new BoxDecoration(
-                                          color:
-                                              Colors.white12,
+                                          color: Colors.white12,
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(4.0)),
                                           border: new Border.all(
                                               width: 0.5,
-                                              color:
-                                                  Colors.white12)),
+                                              color: Colors.white12)),
                                       alignment: Alignment.center,
                                       child: Text(
                                         '拒绝',
@@ -609,8 +602,7 @@ class MoreWidgets {
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(4.0)),
                                     border: new Border.all(
-                                        width: 0.5,
-                                        color: Colors.grey)),
+                                        width: 0.5, color: Colors.grey)),
                                 alignment: Alignment.center,
                                 child: Text(
                                   status != 0 ? statusText : '同意',
@@ -679,8 +671,7 @@ class MoreWidgets {
             value: 'three',
             child: Text(texts[2],
                 maxLines: 1,
-                style: new TextStyle(
-                    fontSize: 16.0, color: Colors.yellow)),
+                style: new TextStyle(fontSize: 16.0, color: Colors.yellow)),
           ),
         ]).then((res) {
       if (null != onItemClick) {

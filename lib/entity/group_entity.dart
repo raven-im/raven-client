@@ -14,28 +14,20 @@ class GroupEntity {
   static const String STATUS = "status"; //状态:存活，消除
   static const String MEMBERS = "members";
 
-  String
-      groupId,
-      groupOwner,
-      conversationId,
-      name,
-      portrait,
-      time
-      ;
+  String groupId, groupOwner, conversationId, name, portrait, time;
   int status;
   List members;
 
-  GroupEntity(
-      {
-      @required this.groupId,
-      this.groupOwner,
-      @required this.conversationId,
-      this.name,
-      this.portrait,
-      this.time,
-      this.status = 0,
-      this.members,
-      });
+  GroupEntity({
+    @required this.groupId,
+    this.groupOwner,
+    @required this.conversationId,
+    this.name,
+    this.portrait,
+    this.time,
+    this.status = 0,
+    this.members,
+  });
 
   GroupEntity.fromMap(Map<String, dynamic> map)
       : this(
@@ -63,4 +55,3 @@ class GroupEntity {
     };
   }
 }
-

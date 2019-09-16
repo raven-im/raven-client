@@ -35,15 +35,14 @@ class MessagePage extends StatefulWidget {
   final String targetUrl;
   final int convType;
 
-  MessagePage(
-      {Key key,
-      @required this.title,
-      @required this.targetUid,
-      @required this.convId,
-      @required this.targetUrl,
-      @required this.convType,
-      })
-      : super(key: key);
+  MessagePage({
+    Key key,
+    @required this.title,
+    @required this.targetUid,
+    @required this.convId,
+    @required this.targetUrl,
+    @required this.convType,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -52,7 +51,6 @@ class MessagePage extends StatefulWidget {
 }
 
 class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
-  
   bool _isShowSend = false; //是否显示发送按钮
   bool _isShowTools = false; //是否显示工具栏
   List<Widget> _guideToolsList = new List();
@@ -92,7 +90,8 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
       DataBaseApi.get().getMessagesEntities(widget.convId).then((messages) {
         if (messages.length > 0) {
           DataBaseApi.get().getLatestMessageTime(widget.convId).then((time) {
-            MessageManager.get().requestMessageEntities(widget.convId, time + 1);
+            MessageManager.get()
+                .requestMessageEntities(widget.convId, time + 1);
           });
         } else {
           MessageManager.get().requestMessageEntities(widget.convId, 0);
@@ -108,20 +107,19 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
         messages.forEach((messge) {
           // for me.
           contacts.forEach((contact) {
-              if (contact.userId == messge.fromUid) {
-                messge.senderName = contact.userName;
-              }
-            });
+            if (contact.userId == messge.fromUid) {
+              messge.senderName = contact.userName;
+            }
+          });
           _messageList.insert(0, messge);
         });
         if (this.mounted) {
-          setState(() {
-            
-          });
+          setState(() {});
         }
-    });
+      });
     });
   }
+
   @override
   Widget build(BuildContext context) {
     Widget widgets = MaterialApp(
@@ -158,7 +156,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
             onTap: () {
               // MoreWidgets.buildDefaultMessagePop(context, _popString,
               //     onItemClick: (res) {
-                
+
               // });
             })
       ],
@@ -202,7 +200,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
               //     onPressed: () {
               //       _hideKeyBoard();
               //       setState(() {
-                      
+
               //       });
               //     }),
               _isShowSend
@@ -265,13 +263,13 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
     Widget widget;
     if (_isShowTools) {
       widget = _toolsWidget();
-    // } else if (_isShowFace) {
-    //   widget = _faceWidget();
-    // } else if (_isShowVoice) {
-    //   widget = _voiceWidget();
+      // } else if (_isShowFace) {
+      //   widget = _faceWidget();
+      // } else if (_isShowVoice) {
+      //   widget = _voiceWidget();
     }
     return widget;
-  } 
+  }
 
   _toolsWidget() {
     if (_guideToolsList.length > 0) {
@@ -304,7 +302,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
     _widgets.add(MoreWidgets.buildIcon(Icons.favorite, 'Favorites'));
     _guideToolsList.add(GridView.count(
         crossAxisCount: 4, padding: EdgeInsets.all(0.0), children: _widgets));
-    
+
     return Swiper(
         autoStart: false,
         circular: false,
@@ -319,7 +317,6 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
   /*输入框*/
   _enterWidget() {
     return new Material(
-      
       borderRadius: BorderRadius.circular(8.0),
       shadowColor: Colors.grey,
       color: Colors.blueGrey[100],
@@ -380,16 +377,15 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
         ));
   }
 
-  Future<Null> _onRefresh() async {
-  }
+  Future<Null> _onRefresh() async {}
 
   Widget _messageListViewItem(int index) {
     //list最后一条消息（时间上是最老的），是没有下一条了
     MessageEntity _nextEntity =
         (index == _messageList.length - 1) ? null : _messageList[index + 1];
     MessageEntity _entity = _messageList[index];
-    return MessageItemWidgets.buildChatListItem(_nextEntity, _entity, widget.targetUrl,
-        onResend: (reSendEntity) {
+    return MessageItemWidgets.buildChatListItem(
+        _nextEntity, _entity, widget.targetUrl, onResend: (reSendEntity) {
       _onResend(reSendEntity); //重发
     }, onItemClick: (onClickEntity) async {
       MessageEntity entity = onClickEntity;
@@ -406,7 +402,6 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
       }
     });
   }
-
 
   //重发
   _onResend(MessageEntity entity) {
@@ -450,15 +445,14 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
     } else {
       print("error conversation type ${widget.convType}");
     }
-    
   }
 
   _willBuildImageMessage(File imageFile) {
     if (imageFile == null || imageFile.path.isEmpty) {
       return;
     }
-    DialogUtil.showBaseDialog(context, 'Full Image？',
-        right: 'Yes', left: 'No', rightClick: (res) {
+    DialogUtil.showBaseDialog(context, 'Full Image？', right: 'Yes', left: 'No',
+        rightClick: (res) {
       _buildImageMessage(imageFile, true);
     }, leftClick: (res) {
       _buildImageMessage(imageFile, false);
@@ -468,61 +462,58 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
   _buildImageMessage(File file, bool sendOriginalImage) {
     //TODO Full or compact
     // upload file to File server and then send image message.
-    RestManager.get().uploadFile(file)
-        .then((image) {
-          if (image == null) {
-            // TODO set image message state fail.
-            return;
-          }
-          String jsonImg = json.encode(image.toMap());
-          MessageEntity messageEntity = new MessageEntity(
-              contentType: Constants.CONTENT_TYPE_IMAGE,
-              fromUid: myUid,
-              targetUid: widget.targetUid,
-              convType: Constants.CONVERSATION_SINGLE, // TODO
-              content: jsonImg,
-              convId: widget.convId,
-              time: DateTime.now().millisecondsSinceEpoch.toString());
-          messageEntity.messageOwner = 0;
-          messageEntity.status = 0;
-          
-          setState(() {
-            _messageList.insert(0, messageEntity);
-            _controller.clear();
-          });
-          _sendMessage(messageEntity);
-        });
-    }
+    RestManager.get().uploadFile(file).then((image) {
+      if (image == null) {
+        // TODO set image message state fail.
+        return;
+      }
+      String jsonImg = json.encode(image.toMap());
+      MessageEntity messageEntity = new MessageEntity(
+          contentType: Constants.CONTENT_TYPE_IMAGE,
+          fromUid: myUid,
+          targetUid: widget.targetUid,
+          convType: Constants.CONVERSATION_SINGLE, // TODO
+          content: jsonImg,
+          convId: widget.convId,
+          time: DateTime.now().millisecondsSinceEpoch.toString());
+      messageEntity.messageOwner = 0;
+      messageEntity.status = 0;
 
-    _buildVideoMessage(File file) {
-        // upload file to File server and then send image message.
-      RestManager.get().uploadFile(file)
-          .then((image) {
-            if (image == null) {
-              // TODO set image message state fail.
-              return;
-            }
-            String jsonImg = json.encode(image.toMap());
-            MessageEntity messageEntity = new MessageEntity(
-                contentType: Constants.CONTENT_TYPE_IMAGE,
-                fromUid: myUid,
-                targetUid: widget.targetUid,
-                convType: Constants.CONVERSATION_SINGLE, // TODO
-                content: jsonImg,
-                convId: widget.convId,
-                time: DateTime.now().millisecondsSinceEpoch.toString());
-            messageEntity.messageOwner = 0;
-            messageEntity.status = 0;
-            
-            setState(() {
-              _messageList.insert(0, messageEntity);
-              _controller.clear();
-            });
-            _sendMessage(messageEntity);
-          });
-    }
-    
-  
+      setState(() {
+        _messageList.insert(0, messageEntity);
+        _controller.clear();
+      });
+      _sendMessage(messageEntity);
+    });
+  }
+
+  _buildVideoMessage(File file) {
+    // upload file to File server and then send image message.
+    RestManager.get().uploadFile(file).then((image) {
+      if (image == null) {
+        // TODO set image message state fail.
+        return;
+      }
+      String jsonImg = json.encode(image.toMap());
+      MessageEntity messageEntity = new MessageEntity(
+          contentType: Constants.CONTENT_TYPE_IMAGE,
+          fromUid: myUid,
+          targetUid: widget.targetUid,
+          convType: Constants.CONVERSATION_SINGLE, // TODO
+          content: jsonImg,
+          convId: widget.convId,
+          time: DateTime.now().millisecondsSinceEpoch.toString());
+      messageEntity.messageOwner = 0;
+      messageEntity.status = 0;
+
+      setState(() {
+        _messageList.insert(0, messageEntity);
+        _controller.clear();
+      });
+      _sendMessage(messageEntity);
+    });
+  }
+
   @override
   void dispose() {
     print("message page dispose");
@@ -536,24 +527,20 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
       return;
     }
     DataBaseApi.get().getAllContactsEntities().then((contacts) {
-        
       // for me.
       contacts.forEach((contact) {
-          if (contact.userId == entity.fromUid) {
-            entity.senderName = contact.userName;
-          }
-        });
+        if (contact.userId == entity.fromUid) {
+          entity.senderName = contact.userName;
+        }
+      });
       if (widget.convId == null) {
         widget.convId = entity.convId;
       }
 
       _messageList.insert(0, entity);
       if (this.mounted) {
-        setState(() {
-          
-        });
+        setState(() {});
       }
-      
     });
   }
 

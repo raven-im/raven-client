@@ -18,7 +18,6 @@ class TokenEntity {
           url: map[CONTENT_URL],
         );
 
-
   Map<String, dynamic> toMap() {
     return {
       CONTENT_TOKEN: token,

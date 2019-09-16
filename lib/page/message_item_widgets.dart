@@ -16,8 +16,7 @@ import 'package:myapp/utils/sp_util.dart';
 */
 class MessageItemWidgets {
   static Widget buildChatListItem(
-      MessageEntity nextEntity, MessageEntity entity, 
-      String targetProtrait,
+      MessageEntity nextEntity, MessageEntity entity, String targetProtrait,
       {OnItemClick onResend, OnItemClick onItemClick}) {
     bool _isShowTime = true;
     var showTime; //最终显示的时间
@@ -76,9 +75,8 @@ class MessageItemWidgets {
     );
   }
 
-  static Widget _chatItemWidget(
-      MessageEntity entity, String targetProtrait, OnItemClick onResend, OnItemClick onItemClick) {
-    
+  static Widget _chatItemWidget(MessageEntity entity, String targetProtrait,
+      OnItemClick onResend, OnItemClick onItemClick) {
     if (entity.type == Constants.NOTIFICATION) {
       return Container(
         // margin: EdgeInsets.only(left: 10, right: 90, bottom: 30, top: 4),
@@ -99,10 +97,9 @@ class MessageItemWidgets {
           ],
         ),
       );
-    }
-    else if (entity.messageOwner == 1) {
+    } else if (entity.messageOwner == 1) {
       //对方的消息
-      
+
       return Container(
         margin: EdgeInsets.only(left: 10, right: 90, bottom: 30, top: 4),
         child: Row(
@@ -115,7 +112,9 @@ class MessageItemWidgets {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  entity.senderName == null? entity.fromUid : entity.senderName,
+                  entity.senderName == null
+                      ? entity.fromUid
+                      : entity.senderName,
                   style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
                 SizedBox(height: 5),
@@ -137,7 +136,8 @@ class MessageItemWidgets {
       );
     } else {
       //自己的消息
-      String myPortraitUrl = SPUtil.getString(Constants.KEY_LOGIN_ACCOUNT_PORTRAIT);
+      String myPortraitUrl =
+          SPUtil.getString(Constants.KEY_LOGIN_ACCOUNT_PORTRAIT);
       return Container(
         margin: EdgeInsets.only(left: 90, right: 10, bottom: 30, top: 4),
         child: Row(
@@ -182,8 +182,8 @@ class MessageItemWidgets {
                                 width: 12.0,
                                 height: 12.0,
                                 child: CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation(
-                                      Colors.green),
+                                  valueColor:
+                                      AlwaysStoppedAnimation(Colors.green),
                                   strokeWidth: 2,
                                 )),
                           )
@@ -205,24 +205,23 @@ class MessageItemWidgets {
   *  头像
   */
   static Widget _headPortrait(String url, int owner) {
-    if(url == null) {
+    if (url == null) {
       url = "";
     }
     return ClipRRect(
         borderRadius: BorderRadius.circular(6.0),
         child: url.isEmpty
-            ? owner == 1
-              ? new Icon(Icons.face)
-              : new Icon(Icons.computer)
+            ? owner == 1 ? new Icon(Icons.face) : new Icon(Icons.computer)
             : (ObjectUtil.isNetUri(url)
                 ? CachedNetworkImage(
-                  width: 44,
-                  height: 44,
-                  fit: BoxFit.fill,
-                  imageUrl: url,
-                  placeholder: (context, url) => new CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => new Icon(Icons.error),
-                )
+                    width: 44,
+                    height: 44,
+                    fit: BoxFit.fill,
+                    imageUrl: url,
+                    placeholder: (context, url) =>
+                        new CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => new Icon(Icons.error),
+                  )
                 : Image.asset(url, width: 44, height: 44)));
   }
 
@@ -294,7 +293,6 @@ class MessageItemWidgets {
   }
 
   static Widget buildImageWidget(MessageEntity entity) {
-
     double size = 120;
     Widget image;
 

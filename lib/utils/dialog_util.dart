@@ -35,8 +35,7 @@ class DialogUtil {
   * 普通dialog
   */
   static showBaseDialog(BuildContext context, String content,
-      {
-      String left = 'OK',
+      {String left = 'OK',
       String right = 'Cancel',
       OnItemClick leftClick,
       OnItemClick rightClick}) {
@@ -48,7 +47,8 @@ class DialogUtil {
                     side: BorderSide.none,
                     borderRadius: BorderRadius.all(Radius.circular(10))),
                 contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-                content: new Text(content, style: new TextStyle(fontSize: 20.0)),
+                content:
+                    new Text(content, style: new TextStyle(fontSize: 20.0)),
                 actions: <Widget>[
                   ObjectUtil.isEmpty(left)
                       ? SizedBox(
@@ -58,7 +58,8 @@ class DialogUtil {
                       : FlatButton(
                           child: new Text(
                             left,
-                            style: TextStyle(color: Colors.black, fontSize: 16.0),
+                            style:
+                                TextStyle(color: Colors.black, fontSize: 16.0),
                           ),
                           onPressed: () {
                             Navigator.of(context).pop();
@@ -66,7 +67,8 @@ class DialogUtil {
                               leftClick(null);
                             }
                           },
-                          shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(20.0)),
+                          shape: new RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0)),
                         ),
                   ObjectUtil.isEmpty(right)
                       ? SizedBox(
@@ -76,7 +78,8 @@ class DialogUtil {
                       : FlatButton(
                           child: new Text(
                             right,
-                            style: TextStyle(color: Colors.black, fontSize: 16.0),
+                            style:
+                                TextStyle(color: Colors.black, fontSize: 16.0),
                           ),
                           onPressed: () {
                             Navigator.of(context).pop();
@@ -84,7 +87,8 @@ class DialogUtil {
                               rightClick(null);
                             }
                           },
-                          shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(20.0)),
+                          shape: new RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0)),
                         )
                 ]));
   }

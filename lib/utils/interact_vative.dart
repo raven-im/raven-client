@@ -3,7 +3,6 @@ import 'package:myapp/entity/message_entity.dart';
 import 'package:rxdart/rxdart.dart';
 
 class InteractNative {
-
   static BehaviorSubject<Object> _appEvent = BehaviorSubject<Object>();
 
   static BehaviorSubject<MessageEntity> _messageEvent =
@@ -13,7 +12,7 @@ class InteractNative {
   static const int PULL_CONVERSATION = 2;
   static const int CHANGE_PAGE_TO_MAIN = 3;
   static const int CHANGE_PAGE_TO_LOGIN = 4;
-  
+
   /*
   * 自定义通信
   */
@@ -58,7 +57,6 @@ class InteractNative {
     return _appEvent.stream;
   }
 
-  
   /*
   *  退出登录时，需要关闭
   */

@@ -12,7 +12,7 @@ import 'package:myapp/page/more_widgets.dart';
 import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/sp_util.dart';
 
-class ContactsSelectPage extends StatefulWidget{
+class ContactsSelectPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _ContactsSelectPageState();
@@ -20,7 +20,6 @@ class ContactsSelectPage extends StatefulWidget{
 }
 
 class _ContactsSelectPageState extends State<ContactsSelectPage> {
-
   List<ContactEntity> contactsList = new List();
 
   List<String> selectUserIds = new List();
@@ -53,19 +52,17 @@ class _ContactsSelectPageState extends State<ContactsSelectPage> {
 
   _selectUser(int index) {
     String userId = contactsList[index].userId;
-    if(selectUserIds.contains(userId)) {
+    if (selectUserIds.contains(userId)) {
       selectUserIds.remove(userId);
     } else {
       selectUserIds.add(userId);
     }
-    setState(() {
-      
-    });
-  }  
+    setState(() {});
+  }
 
   Widget _buildWidget(int index) {
     Widget image = Image.asset('assets/images/contacts_normal.png');
-    if(selectUserIds.contains(contactsList[index].userId)) {
+    if (selectUserIds.contains(contactsList[index].userId)) {
       image = Image.asset('assets/images/contacts_selected.png');
     }
     return Container(
@@ -81,7 +78,8 @@ class _ContactsSelectPageState extends State<ContactsSelectPage> {
               child: image,
             ),
             Expanded(
-              child: MoreWidgets.buildListViewItem(contactsList[index].portrait, contactsList[index].userName),
+              child: MoreWidgets.buildListViewItem(
+                  contactsList[index].portrait, contactsList[index].userName),
             )
           ],
         ),
@@ -90,9 +88,12 @@ class _ContactsSelectPageState extends State<ContactsSelectPage> {
   }
 
   void _createGroup() async {
-    RestEntity entity = await RestManager.get().createGroup("testGroup", "https://b-ssl.duitang.com/uploads/item/201805/13/20180513224039_tgfwu.png", selectUserIds);
-    print("create result :"+entity.toMap().toString());
-    if(entity.code == 10000) {
+    RestEntity entity = await RestManager.get().createGroup(
+        "testGroup",
+        "https://b-ssl.duitang.com/uploads/item/201805/13/20180513224039_tgfwu.png",
+        selectUserIds);
+    print("create result :" + entity.toMap().toString());
+    if (entity.code == 10000) {
       String groupId = entity.data["groupId"];
       // String converId = entity.data["converId"];
 
@@ -121,19 +122,19 @@ class _ContactsSelectPageState extends State<ContactsSelectPage> {
         title: Text("Select Member"),
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.more_horiz),
-              tooltip: 'CreateGroup',
-              onPressed: () {
-                _createGroup();
-              }, 
-            )
+            icon: Icon(Icons.more_horiz),
+            tooltip: 'CreateGroup',
+            onPressed: () {
+              _createGroup();
+            },
+          )
         ],
       ),
       body: ListView.builder(
         scrollDirection: Axis.vertical,
         itemCount: contactsList.length,
-        itemBuilder: (BuildContext context,int index) {
-          if(contactsList.length <= 0) {
+        itemBuilder: (BuildContext context, int index) {
+          if (contactsList.length <= 0) {
             return Container();
           }
           return _buildWidget(index);

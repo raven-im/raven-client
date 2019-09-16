@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:myapp/database/db_api.dart';
 import 'package:myapp/entity/conversation_entity.dart';
@@ -11,7 +10,6 @@ import 'package:myapp/utils/interact_vative.dart';
 import 'package:myapp/utils/sp_util.dart';
 
 class ObjectUtil {
-  
   static bool isNotEmpty(Object object) {
     return !isEmpty(object);
   }
@@ -28,7 +26,8 @@ class ObjectUtil {
     return false;
   }
 
-  static List<ConversationEntity> getConvEntities(String myUid, List<ConverInfo> convList) {
+  static List<ConversationEntity> getConvEntities(
+      String myUid, List<ConverInfo> convList) {
     List<ConversationEntity> list = new List();
     convList.forEach((info) {
       String targetUid;
@@ -36,7 +35,7 @@ class ObjectUtil {
       switch (info.type) {
         case ConverType.SINGLE:
           type = Constants.CONVERSATION_SINGLE;
-          info.uidList.forEach((id){
+          info.uidList.forEach((id) {
             if (id != myUid) {
               targetUid = id;
             }
@@ -48,7 +47,7 @@ class ObjectUtil {
           break;
         default:
           type = Constants.CONVERSATION_SINGLE;
-          info.uidList.forEach((id){
+          info.uidList.forEach((id) {
             if (id != myUid) {
               targetUid = id;
             }
@@ -57,19 +56,20 @@ class ObjectUtil {
       }
 
       ConversationEntity entity = new ConversationEntity(
-        id: info.converId,
-        targetUid: targetUid,
-        isUnreadCount: info.readMsgId.toInt(), //TODO  unread count
-        lastMessage: info.lastContent.content,
-        lastMsgType: info.lastContent.type.value,
-        timestamp: info.lastContent.time.toInt(),
-        conversationType: type);
+          id: info.converId,
+          targetUid: targetUid,
+          isUnreadCount: info.readMsgId.toInt(), //TODO  unread count
+          lastMessage: info.lastContent.content,
+          lastMsgType: info.lastContent.type.value,
+          timestamp: info.lastContent.time.toInt(),
+          conversationType: type);
       list.add(entity);
     });
     return list;
   }
 
-  static List<MessageEntity> getMsgEntities(String myUid, int convType, String convId, List<MessageContent> msgList) {
+  static List<MessageEntity> getMsgEntities(
+      String myUid, int convType, String convId, List<MessageContent> msgList) {
     List<MessageEntity> list = new List();
     msgList.forEach((msg) {
       MessageEntity entity = new MessageEntity(
@@ -90,7 +90,6 @@ class ObjectUtil {
   }
 
   static MessageEntity getMsgEntity(String myUid, UpDownMessage msg) {
-
     MessageEntity entity = new MessageEntity(
       msgId: msg.id.toInt(),
       convType: msg.converType.value,
@@ -108,7 +107,6 @@ class ObjectUtil {
   }
 
   static MessageEntity getNotifyEntity(String myUid, NotifyMessage msg) {
-
     MessageEntity entity = new MessageEntity(
       msgId: msg.id.toInt(),
       convType: msg.convType.value,
@@ -125,8 +123,8 @@ class ObjectUtil {
     return entity;
   }
 
-  static MessageEntity getMsgEntityByAck(String myUid, UpDownMessage oriMsg, MessageAck ack) {
-
+  static MessageEntity getMsgEntityByAck(
+      String myUid, UpDownMessage oriMsg, MessageAck ack) {
     MessageEntity entity = new MessageEntity(
       msgId: ack.id.toInt(),
       convType: oriMsg.converType.value,
@@ -161,7 +159,7 @@ class ObjectUtil {
     SPUtil.remove(Constants.KEY_ACCESS_NODE_PORT);
     SPUtil.remove(Constants.KEY_LOGIN_ACCOUNT_MOBILE);
     SPUtil.remove(Constants.KEY_LOGIN_ACCOUNT_PORTRAIT);
-    
+
     //DB delete.
     DataBaseApi.get().clearDB().then((_) => DataBaseApi.get().close());
     //socket disconnect.

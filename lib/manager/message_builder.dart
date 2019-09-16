@@ -6,8 +6,7 @@ import 'package:myapp/utils/constants.dart';
 import 'package:protobuf/protobuf.dart';
 
 class MessageBuilder {
-
-  static List<int> login(Int64 id, String uid, String token){
+  static List<int> login(Int64 id, String uid, String token) {
     var message = RavenMessage();
     message.type = RavenMessage_Type.Login;
     var data = Login();

@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/page/main_page.dart';
@@ -18,7 +17,7 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   bool isLogin = false;
   TimerUtil _timerUtil;
-  
+
   @override
   void initState() {
     super.initState();

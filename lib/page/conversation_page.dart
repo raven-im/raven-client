@@ -28,7 +28,8 @@ class ConversationPage extends StatefulWidget {
   }
 }
 
-class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserver {
+class Conversation extends BaseState<ConversationPage>
+    with WidgetsBindingObserver {
   var map = Map();
   var list = new List();
   var contactsMap = new Map();
@@ -37,7 +38,7 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
   bool isShowNoPage = false;
   Timer _refreshTimer;
   AppLifecycleState currentState = AppLifecycleState.resumed;
-  GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();//TODO
+  GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>(); //TODO
 
   @override
   void initState() {
@@ -92,19 +93,19 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
             onTap: () {
               MoreWidgets.buildDefaultMessagePop(context, _popString,
                   onItemClick: (res) {
-                    print("did tap :"+res);
-                  switch (res) {
-                    case 'one':
-                      // socket reconnect.
-                      DialogUtil.buildToast('Try Reconnect Done.');
-                      SenderMngr.init();
-                      break;
-                    case 'two':
-                      Navigator.push(context, new MaterialPageRoute(builder: (ctx) {
-                          return ContactsSelectPage();
-                        }
-                      ));
-                      break;
+                print("did tap :" + res);
+                switch (res) {
+                  case 'one':
+                    // socket reconnect.
+                    DialogUtil.buildToast('Try Reconnect Done.');
+                    SenderMngr.init();
+                    break;
+                  case 'two':
+                    Navigator.push(context,
+                        new MaterialPageRoute(builder: (ctx) {
+                      return ContactsSelectPage();
+                    }));
+                    break;
                 }
               });
             })
@@ -115,36 +116,39 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
   Widget _itemWidget(int index) {
     Widget res;
     ConversationEntity entity = map[list.elementAt(index).toString()];
-    String timeTmp = DateUtil.getDateStrByDateTime(DateUtil.getDateTimeByMs(entity.timestamp));
-    String time = DateUtil.formatDateTime(timeTmp, DateFormat.YEAR_MONTH_DAY, '/', '');
+    String timeTmp = DateUtil.getDateStrByDateTime(
+        DateUtil.getDateTimeByMs(entity.timestamp));
+    String time =
+        DateUtil.formatDateTime(timeTmp, DateFormat.YEAR_MONTH_DAY, '/', '');
     String portrait = Constants.DEFAULT_PORTRAIT;
-    
-    if (entity.conversationType == Constants.CONVERSATION_SINGLE 
-        && contactsMap.containsKey(entity.targetUid) 
-        && contactsMap[entity.targetUid] != null) {
+
+    if (entity.conversationType == Constants.CONVERSATION_SINGLE &&
+        contactsMap.containsKey(entity.targetUid) &&
+        contactsMap[entity.targetUid] != null) {
       portrait = contactsMap[entity.targetUid].portrait;
-    } else if (entity.conversationType == Constants.CONVERSATION_GROUP && groupMap.containsKey(entity.targetUid) && groupMap[entity.targetUid] != null) {
+    } else if (entity.conversationType == Constants.CONVERSATION_GROUP &&
+        groupMap.containsKey(entity.targetUid) &&
+        groupMap[entity.targetUid] != null) {
       portrait = groupMap[entity.targetUid].portrait;
     }
     res = MoreWidgets.conversationListViewItem(
-        entity.name == null ? entity.targetUid : entity.name, 
+        entity.name == null ? entity.targetUid : entity.name,
         entity.conversationType,
         portrait: portrait,
         content: entity.lastMessage,
         time: time,
         unread: entity.isUnreadCount, onItemClick: (res) {
-          //聊天消息，跳转聊天对话页面
-          Navigator.push(
-              context,
-              new CupertinoPageRoute<void>(
-                  builder: (ctx) => MessagePage(
-                        title: entity.name == null ? entity.targetUid : entity.name,
-                        targetUid: entity.targetUid,
-                        convId: entity.id,
-                        targetUrl: portrait,
-                        convType: entity.conversationType,
-                      )));
-      
+      //聊天消息，跳转聊天对话页面
+      Navigator.push(
+          context,
+          new CupertinoPageRoute<void>(
+              builder: (ctx) => MessagePage(
+                    title: entity.name == null ? entity.targetUid : entity.name,
+                    targetUid: entity.targetUid,
+                    convId: entity.id,
+                    targetUrl: portrait,
+                    convType: entity.conversationType,
+                  )));
     });
     return res;
   }
@@ -170,8 +174,7 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
 
   _handleTime(Timer timer) {
     //当APP在前台，且当前页是0（即本页），则刷新
-    if (null != currentState &&
-        currentState != AppLifecycleState.paused) {
+    if (null != currentState && currentState != AppLifecycleState.paused) {
       setState(() {
         print('refresh data');
       });
@@ -200,10 +203,8 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
   }
 
   @override
-  void updateData(MessageEntity entity) {
+  void updateData(MessageEntity entity) {}
 
-  }
-  
   @override
   void notify(Object type) async {
     if (type == InteractNative.PULL_CONVERSATION) {
@@ -212,25 +213,28 @@ class Conversation extends BaseState<ConversationPage> with WidgetsBindingObserv
       contactsMap.clear();
       groupMap.clear();
 
-      List<ContactEntity> contacts = await DataBaseApi.get().getAllContactsEntities();
+      List<ContactEntity> contacts =
+          await DataBaseApi.get().getAllContactsEntities();
       contacts.forEach((contact) => contactsMap[contact.userId] = contact);
 
       List<GroupEntity> groups = await DataBaseApi.get().getAllGroupEntities();
       groups.forEach((group) => groupMap[group.groupId] = group);
 
-      List<ConversationEntity> conversations = await DataBaseApi.get().getConversationEntities();
+      List<ConversationEntity> conversations =
+          await DataBaseApi.get().getConversationEntities();
       conversations.forEach((entity) {
         if (entity.conversationType == Constants.CONVERSATION_SINGLE) {
           if (contactsMap.containsKey(entity.targetUid)) {
             entity.name = contactsMap[entity.targetUid].userName;
           }
-        } else if (entity.conversationType == Constants.CONVERSATION_GROUP){
+        } else if (entity.conversationType == Constants.CONVERSATION_GROUP) {
           if (groupMap.containsKey(entity.targetUid)) {
             entity.name = groupMap[entity.targetUid].name;
           }
         }
 
-        list.insert(0, entity.targetUid);//group: GroupId,  single:  target user id.
+        list.insert(
+            0, entity.targetUid); //group: GroupId,  single:  target user id.
         map[entity.targetUid] = entity;
       });
       if (this.mounted) {

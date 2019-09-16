@@ -18,33 +18,26 @@ class MessageEntity {
   static const String STATUS = "status"; //状态
   static const String TYPE = "type"; //消息类型，0为普通消息，1为通知消息
 
-  String 
-      fromUid,
-      targetUid,
-      convId,
-      content,
-      senderName,
-      time;
+  String fromUid, targetUid, convId, content, senderName, time;
   int convType, status, msgId, contentType;
   int isUnread, messageOwner, isUnreadCount, type;
 
-  MessageEntity(
-      {
-      this.msgId,
-      @required this.convType,
-      @required this.fromUid,
-      @required this.targetUid,
-      @required this.contentType,
-      @required this.content,
-      @required this.time,
-      this.status = 0,
-      this.convId,
-      this.isUnread = 0,
-      this.messageOwner = 1,
-      this.senderName,
-      this.isUnreadCount = 0,
-      this.type = 0,
-      });
+  MessageEntity({
+    this.msgId,
+    @required this.convType,
+    @required this.fromUid,
+    @required this.targetUid,
+    @required this.contentType,
+    @required this.content,
+    @required this.time,
+    this.status = 0,
+    this.convId,
+    this.isUnread = 0,
+    this.messageOwner = 1,
+    this.senderName,
+    this.isUnreadCount = 0,
+    this.type = 0,
+  });
 
   MessageEntity.fromMap(Map<String, dynamic> map)
       : this(
@@ -80,4 +73,3 @@ class MessageEntity {
     };
   }
 }
-

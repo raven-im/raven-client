@@ -1,4 +1,3 @@
-
 import 'package:fixnum/fixnum.dart';
 import 'dart:io';
 import 'package:myapp/database/db_api.dart';
@@ -15,19 +14,18 @@ import 'package:myapp/utils/object_util.dart';
 import 'package:myapp/utils/sp_util.dart';
 
 class SenderMngr {
-
   static bool isLogined = false;
   // client message list.
   static Map<Int64, List<int>> _msgMap = new Map<Int64, List<int>>();
   static Socket _socket;
-  
+
   static init() async {
     if (_socket != null) {
       print("socket already connected.");
       return;
     }
 
-    String ip = SPUtil.getString(Constants.KEY_ACCESS_NODE_IP)?? null;
+    String ip = SPUtil.getString(Constants.KEY_ACCESS_NODE_IP) ?? null;
     int port = SPUtil.getInt(Constants.KEY_ACCESS_NODE_PORT) ?? 0;
     if (ip == null && port == 0) {
       print("socket ip&port not set yet.");
@@ -38,10 +36,8 @@ class SenderMngr {
     print("socket connect to $ip:$port");
     Socket.connect(ip, port).then((Socket sock) {
       _socket = sock;
-      _socket.listen(_dataHandler, 
-          onError: _errorHandler, 
-          onDone: _doneHandler, 
-          cancelOnError: false);
+      _socket.listen(_dataHandler,
+          onError: _errorHandler, onDone: _doneHandler, cancelOnError: false);
       // socket connected, login.
       _loginReq();
     });
@@ -53,7 +49,8 @@ class SenderMngr {
       _socket.add(msg);
       _msgMap.putIfAbsent(msgId, () => msg);
     } else {
-      print(" can't send message. Login($isLogined), Socket Connected($_socket)");
+      print(
+          " can't send message. Login($isLogined), Socket Connected($_socket)");
       DialogUtil.buildToast("Socket lost, please reconnect.");
     }
   }
@@ -142,7 +139,7 @@ class SenderMngr {
   static void _dataHandler(data) async {
     List<int> original;
     String myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
-    //data => data.sublist(1) , skip the first length tag.  
+    //data => data.sublist(1) , skip the first length tag.
     // protobuf,  length + bytes
     List<int> decodeMsg = _decodeMessage(data);
     if (decodeMsg == null) {
@@ -156,15 +153,17 @@ class SenderMngr {
         if (_msgMap.containsKey(message.loginAck.id)) {
           original = _msgMap.remove(message.loginAck.id);
         } else {
-          print("error: ${message.loginAck.id} contains? ${_msgMap.containsKey(message.loginAck.id)}");
-        } 
+          print(
+              "error: ${message.loginAck.id} contains? ${_msgMap.containsKey(message.loginAck.id)}");
+        }
         if (message.loginAck.code == Code.SUCCESS) {
           isLogined = true;
           print("IM Login success");
           // pull conversation from DB.
-          InteractNative.getAppEventSink().add(InteractNative.PULL_CONVERSATION);
+          InteractNative.getAppEventSink()
+              .add(InteractNative.PULL_CONVERSATION);
           // request server to update db.
-          ConversationManager.get().requestConverEntities(); 
+          ConversationManager.get().requestConverEntities();
         } else {
           print("error: login ack: $message.loginAck.code ");
         }
@@ -173,13 +172,16 @@ class SenderMngr {
         if (_msgMap.containsKey(message.messageAck.cid)) {
           original = _msgMap.remove(message.messageAck.cid);
         } else {
-          print("error: ${message.messageAck.cid} contains? ${_msgMap.containsKey(message.messageAck.cid)}");
-        } 
+          print(
+              "error: ${message.messageAck.cid} contains? ${_msgMap.containsKey(message.messageAck.cid)}");
+        }
         if (message.messageAck.code == Code.SUCCESS) {
-          RavenMessage originalMsg = RavenMessage.fromBuffer(_decodeMessage(original));
+          RavenMessage originalMsg =
+              RavenMessage.fromBuffer(_decodeMessage(original));
           DataBaseApi.get().updateMessageEntity(
-            ObjectUtil.getMsgEntityByAck(myUid, originalMsg.upDownMessage, message.messageAck),
-            false);
+              ObjectUtil.getMsgEntityByAck(
+                  myUid, originalMsg.upDownMessage, message.messageAck),
+              false);
         } else {
           print("error: message ack: $message.messageAck.code ");
         }
@@ -188,13 +190,15 @@ class SenderMngr {
         if (_msgMap.containsKey(message.converAck.id)) {
           original = _msgMap.remove(message.converAck.id);
         } else {
-          print("error: ${message.converAck.id} contains? ${_msgMap.containsKey(message.converAck.id)}");
+          print(
+              "error: ${message.converAck.id} contains? ${_msgMap.containsKey(message.converAck.id)}");
           return;
-        } 
+        }
         if (message.converAck.code == Code.SUCCESS) {
           List<ConversationEntity> entities;
           if (message.converAck.converList.isNotEmpty) {
-            entities = ObjectUtil.getConvEntities(myUid, message.converAck.converList);
+            entities =
+                ObjectUtil.getConvEntities(myUid, message.converAck.converList);
           } else if (message.converAck.converInfo.converId != "") {
             List<ConverInfo> list = new List();
             list.add(message.converAck.converInfo);
@@ -203,7 +207,8 @@ class SenderMngr {
           await DataBaseApi.get().updateConversationEntities(entities);
           await DataBaseApi.get().updateGroupInfo(entities);
           //notify Pull conversation.
-          InteractNative.getAppEventSink().add(InteractNative.PULL_CONVERSATION);
+          InteractNative.getAppEventSink()
+              .add(InteractNative.PULL_CONVERSATION);
         } else {
           print("error: conversation ack: $message.converAck.code ");
         }
@@ -215,28 +220,32 @@ class SenderMngr {
         if (_msgMap.containsKey(message.hisMessagesAck.id)) {
           _msgMap.remove(message.hisMessagesAck.id);
           //DB insert
-          DataBaseApi.get().updateMessageEntities(message.hisMessagesAck.converId, 
-              ObjectUtil.getMsgEntities(myUid, message.hisMessagesAck.convType.value, 
-                message.hisMessagesAck.converId,message.hisMessagesAck.messageList));
+          DataBaseApi.get().updateMessageEntities(
+              message.hisMessagesAck.converId,
+              ObjectUtil.getMsgEntities(
+                  myUid,
+                  message.hisMessagesAck.convType.value,
+                  message.hisMessagesAck.converId,
+                  message.hisMessagesAck.messageList));
         } else {
-          print("error: ${message.hisMessagesAck.id} contains? ${_msgMap.containsKey(message.hisMessagesAck.id)}");
+          print(
+              "error: ${message.hisMessagesAck.id} contains? ${_msgMap.containsKey(message.hisMessagesAck.id)}");
         }
         break;
       case RavenMessage_Type.UpDownMessage:
         print(" receive messages.");
         //DB insert
-        DataBaseApi.get().updateMessageEntity( 
-            ObjectUtil.getMsgEntity(myUid, message.upDownMessage), 
-            true);
+        DataBaseApi.get().updateMessageEntity(
+            ObjectUtil.getMsgEntity(myUid, message.upDownMessage), true);
         break;
     }
   }
 
-  static void _errorHandler(Object error, StackTrace trace){
+  static void _errorHandler(Object error, StackTrace trace) {
     print(error);
   }
 
-  static void _doneHandler(){
+  static void _doneHandler() {
     print("socket done.");
     _socket?.destroy();
     _socket = null;

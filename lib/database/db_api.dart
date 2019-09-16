@@ -16,7 +16,6 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-
 class DataBaseApi {
   static final DataBaseApi _messageDataBase = new DataBaseApi._internal();
 
@@ -29,9 +28,7 @@ class DataBaseApi {
   Future<Database> _init() async {
     // Get a location using path_provider
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(
-        documentsDirectory.path,
-        DataBaseConfig.DATABASE_NAME);
+    String path = join(documentsDirectory.path, DataBaseConfig.DATABASE_NAME);
     return await openDatabase(path, version: DataBaseConfig.VERSION_CODE,
         onCreate: (Database db, int version) async {
       // When creating the db, create the table
@@ -71,17 +68,17 @@ class DataBaseApi {
           "${ConversationEntity.LAST_MESSAGE_TYPE} INTEGER,"
           "${ConversationEntity.CONVERATION_TYPE} INTEGER"
           ")");
-      await db.execute(
-          "CREATE TABLE IF NOT EXISTS ${DataBaseConfig.GROUP_TABLE} ("
-          "${GroupEntity.DB_ID} INTEGER PRIMARY KEY AUTOINCREMENT,"
-          "${GroupEntity.GROUP_ID} TEXT,"
-          "${GroupEntity.CONVERSATION_ID} TEXT,"
-          "${GroupEntity.NAME} TEXT,"
-          "${GroupEntity.PORTRAIT} TEST,"
-          "${GroupEntity.TIME} TEXT,"
-          "${GroupEntity.GROUP_OWNER} INTEGER,"
-          "${GroupEntity.STATUS} INTEGER"
-          ")");
+      await db
+          .execute("CREATE TABLE IF NOT EXISTS ${DataBaseConfig.GROUP_TABLE} ("
+              "${GroupEntity.DB_ID} INTEGER PRIMARY KEY AUTOINCREMENT,"
+              "${GroupEntity.GROUP_ID} TEXT,"
+              "${GroupEntity.CONVERSATION_ID} TEXT,"
+              "${GroupEntity.NAME} TEXT,"
+              "${GroupEntity.PORTRAIT} TEST,"
+              "${GroupEntity.TIME} TEXT,"
+              "${GroupEntity.GROUP_OWNER} INTEGER,"
+              "${GroupEntity.STATUS} INTEGER"
+              ")");
       await db.execute(
           "CREATE TABLE IF NOT EXISTS ${DataBaseConfig.GROUP_MEMBERS_TABLE} ("
           "${GroupMemberEntity.DB_ID} INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -100,8 +97,7 @@ class DataBaseApi {
 
   Future clearDB() async {
     var db = await _init();
-    await db.execute(
-        "DELETE FROM  ${DataBaseConfig.GROUP_TABLE}; "
+    await db.execute("DELETE FROM  ${DataBaseConfig.GROUP_TABLE}; "
         "DELETE FROM  ${DataBaseConfig.GROUP_MEMBERS_TABLE}; "
         "DELETE FROM  ${DataBaseConfig.CONTACTS_TABLE}; "
         "DELETE FROM  ${DataBaseConfig.MESSAGES_TABLE}; "
@@ -113,7 +109,7 @@ class DataBaseApi {
     var db = await _init();
     var result =
         await db.rawQuery('SELECT * FROM ${DataBaseConfig.CONTACTS_TABLE} '
-        'where ${ContactEntity.USER_ID} = "$uid"');
+            'where ${ContactEntity.USER_ID} = "$uid"');
     List<ContactEntity> res = [];
     for (Map<String, dynamic> item in result) {
       res.add(new ContactEntity.fromMap(item));
@@ -164,10 +160,9 @@ class DataBaseApi {
 
   Future updatePortrait(String url, String uid) async {
     var db = await _init();
-    await db.rawUpdate(
-      'UPDATE ${DataBaseConfig.CONTACTS_TABLE} SET '
-      ' ${ContactEntity.PORTRAIT} = "$url" '
-      'where ${ContactEntity.USER_ID} = "$uid"');
+    await db.rawUpdate('UPDATE ${DataBaseConfig.CONTACTS_TABLE} SET '
+        ' ${ContactEntity.PORTRAIT} = "$url" '
+        'where ${ContactEntity.USER_ID} = "$uid"');
   }
   // Messages
 
@@ -176,7 +171,7 @@ class DataBaseApi {
     var db = await _init();
     var result =
         await db.rawQuery('SELECT * FROM ${DataBaseConfig.MESSAGES_TABLE} '
-        'where ${MessageEntity.CONVERSATION_ID} = "$convId"');
+            'where ${MessageEntity.CONVERSATION_ID} = "$convId"');
     List<MessageEntity> res = [];
     for (Map<String, dynamic> item in result) {
       res.add(new MessageEntity.fromMap(item));
@@ -187,8 +182,8 @@ class DataBaseApi {
   // get all messages that belongs to that conversation.
   Future<int> getLatestMessageTime(String convId) async {
     var db = await _init();
-    var result =
-        await db.rawQuery('SELECT ${MessageEntity.TIME} FROM ${DataBaseConfig.MESSAGES_TABLE} '
+    var result = await db.rawQuery(
+        'SELECT ${MessageEntity.TIME} FROM ${DataBaseConfig.MESSAGES_TABLE} '
         ' order by ${MessageEntity.TIME} desc');
     List<int> res = [];
     for (Map<String, dynamic> item in result) {
@@ -197,7 +192,8 @@ class DataBaseApi {
     return res.first;
   }
 
-  Future updateMessageEntities(String convId, List<MessageEntity> entities) async {
+  Future updateMessageEntities(
+      String convId, List<MessageEntity> entities) async {
     // if (entities.length <= 0) {
     //   return null;
     // }
@@ -208,7 +204,7 @@ class DataBaseApi {
       for (MessageEntity item in entities) {
         if (!msgList.contains(item.msgId)) {
           item.convId = convId;
-          _updateMessagesEntity(item);// ?? TODO async.
+          _updateMessagesEntity(item); // ?? TODO async.
         }
       }
       InteractNative.getAppEventSink().add(InteractNative.PULL_MESSAGE);
@@ -268,9 +264,8 @@ class DataBaseApi {
   // get all conversation.
   Future<List<ConversationEntity>> getConversationEntities() async {
     var db = await _init();
-    var result =
-        await db.rawQuery('SELECT * FROM ${DataBaseConfig.CONVERSATIONS_TABLE} '
-        );
+    var result = await db
+        .rawQuery('SELECT * FROM ${DataBaseConfig.CONVERSATIONS_TABLE} ');
     List<ConversationEntity> res = [];
     for (Map<String, dynamic> item in result) {
       res.add(new ConversationEntity.fromMap(item));
@@ -280,9 +275,9 @@ class DataBaseApi {
 
   Future<String> getConversationIdByUserid(String uid) async {
     var db = await _init();
-    var result =
-        await db.rawQuery('SELECT id FROM ${DataBaseConfig.CONVERSATIONS_TABLE} '
-          'where ${ConversationEntity.TARGET_UID} = "$uid"');
+    var result = await db
+        .rawQuery('SELECT id FROM ${DataBaseConfig.CONVERSATIONS_TABLE} '
+            'where ${ConversationEntity.TARGET_UID} = "$uid"');
     List<String> res = [];
     for (Map<String, dynamic> item in result) {
       res.add(item[ConversationEntity.CON_ID]);
@@ -292,9 +287,9 @@ class DataBaseApi {
 
   Future<bool> isConversationIdExist(String convId) async {
     var db = await _init();
-    var result =
-        await db.rawQuery('SELECT id FROM ${DataBaseConfig.CONVERSATIONS_TABLE} '
-          'where ${ConversationEntity.CON_ID} = "$convId"');
+    var result = await db
+        .rawQuery('SELECT id FROM ${DataBaseConfig.CONVERSATIONS_TABLE} '
+            'where ${ConversationEntity.CON_ID} = "$convId"');
     List<String> res = [];
     for (Map<String, dynamic> item in result) {
       res.add(item[ConversationEntity.CON_ID]);
@@ -333,9 +328,8 @@ class DataBaseApi {
       default:
         break;
     }
-    
-    await db.rawUpdate(
-        'UPDATE ${DataBaseConfig.CONVERSATIONS_TABLE} SET '
+
+    await db.rawUpdate('UPDATE ${DataBaseConfig.CONVERSATIONS_TABLE} SET '
         ' ${ConversationEntity.LAST_MESSAGE} = "$lastMsg", '
         ' ${ConversationEntity.LAST_MESSAGE_TIME} = "${entity.time}" '
         'where ${ConversationEntity.CON_ID} = "$convId"');
@@ -343,7 +337,7 @@ class DataBaseApi {
 
   Future _updateConversationsEntity(ConversationEntity entity) async {
     var db = await _init();
-    
+
     String lastMsg = "default";
     var data = json.decode(entity.lastMessage);
     switch (entity.lastMsgType) {
@@ -381,10 +375,11 @@ class DataBaseApi {
   //group.
   Future updateGroupInfo(List<ConversationEntity> entities) async {
     var groups = entities
-      .where((f) => f.conversationType == Constants.CONVERSATION_GROUP)
-      .map((f) => f.targetUid)
-      .toList();
-    List<GroupEntity> groupEntities = await RestManager.get().detailsGroup(groups);
+        .where((f) => f.conversationType == Constants.CONVERSATION_GROUP)
+        .map((f) => f.targetUid)
+        .toList();
+    List<GroupEntity> groupEntities =
+        await RestManager.get().detailsGroup(groups);
     groupEntities.forEach((entity) {
       _updateGroupInfo(entity);
       entity.members.forEach((member) {
@@ -420,18 +415,18 @@ class DataBaseApi {
 
   Future _updateGroupMemberInfo(GroupMemberEntity entity) async {
     var db = await _init();
-    
+
     await db.rawUpdate(
-      'INSERT OR REPLACE INTO '
-      '${DataBaseConfig.GROUP_MEMBERS_TABLE} '
-      '(${GroupMemberEntity.GROUP_ID},${GroupMemberEntity.CONVERSATION_ID},'
-      '${GroupMemberEntity.MEMBER_UID}) '
-      ' VALUES(?,?,?)',
-      [
-        entity.groupId,
-        entity.conversationId,
-        entity.member,
-    ]);
+        'INSERT OR REPLACE INTO '
+        '${DataBaseConfig.GROUP_MEMBERS_TABLE} '
+        '(${GroupMemberEntity.GROUP_ID},${GroupMemberEntity.CONVERSATION_ID},'
+        '${GroupMemberEntity.MEMBER_UID}) '
+        ' VALUES(?,?,?)',
+        [
+          entity.groupId,
+          entity.conversationId,
+          entity.member,
+        ]);
   }
 
   Future<List<GroupEntity>> getAllGroupEntities() async {
@@ -443,8 +438,9 @@ class DataBaseApi {
       res.add(GroupEntity.fromMap(item));
     }
     for (GroupEntity entity in res) {
-      var tmpResult = await db.rawQuery('SELECT * FROM ${DataBaseConfig.GROUP_MEMBERS_TABLE} '
-        'where ${GroupEntity.GROUP_ID} = "${entity.groupId}"');
+      var tmpResult = await db
+          .rawQuery('SELECT * FROM ${DataBaseConfig.GROUP_MEMBERS_TABLE} '
+              'where ${GroupEntity.GROUP_ID} = "${entity.groupId}"');
       for (Map<String, dynamic> member in tmpResult) {
         if (entity.members == null) {
           entity.members = [];

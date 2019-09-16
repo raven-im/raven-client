@@ -26,10 +26,10 @@ class ContactManager {
         res.add(new ContactEntity(
           userId: item['id'],
           userName: item['name'],
-          portrait: null,// item['portrait'],
+          portrait: null, // item['portrait'],
           status: item['state'],
           mobile: item['mobile'],
-          ));
+        ));
       });
     }
     return res;

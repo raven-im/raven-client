@@ -1,6 +1,7 @@
 import 'package:flukit/flukit.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
+
 /*
 *  图片查看
 */
@@ -22,25 +23,25 @@ class PhotoViewPage extends StatelessWidget {
     }
     return Container(
         child: GestureDetector(
-          child: Swiper(
-              autoStart: false,
-              circular: false,
-              indicator: CircleSwiperIndicator(
-                  radius: 4.0,
-                  padding: EdgeInsets.only(bottom: 20.0),
-                  itemColor: Colors.grey,
-                  itemActiveColor: Colors.white),
-              children: _listWidget),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ));
+      child: Swiper(
+          autoStart: false,
+          circular: false,
+          indicator: CircleSwiperIndicator(
+              radius: 4.0,
+              padding: EdgeInsets.only(bottom: 20.0),
+              itemColor: Colors.grey,
+              itemActiveColor: Colors.white),
+          children: _listWidget),
+      onTap: () {
+        Navigator.pop(context);
+      },
+    ));
   }
 
   Widget _itemWidget(String url) {
     return PhotoView(
       imageProvider:
-      url.startsWith("http") ? NetworkImage(url) : AssetImage(url),
+          url.startsWith("http") ? NetworkImage(url) : AssetImage(url),
     );
   }
 }

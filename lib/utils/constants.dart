@@ -23,5 +23,6 @@ class Constants {
   /* response code from */
   static const int RSP_COMMON_SUCCESS = 10000;
 
-  static const String DEFAULT_PORTRAIT = "https://api.adorable.io/avatars/285/1.png";
+  static const String DEFAULT_PORTRAIT =
+      "https://api.adorable.io/avatars/285/1.png";
 }

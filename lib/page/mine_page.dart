@@ -16,8 +16,7 @@ import 'package:myapp/utils/sp_util.dart';
 *  我的
 */
 class MinePage extends StatefulWidget {
-  MinePage({Key key, this.rootContext})
-      : super(key: key);
+  MinePage({Key key, this.rootContext}) : super(key: key);
   final BuildContext rootContext;
 
   @override
@@ -38,27 +37,29 @@ class _MineState extends State<MinePage> with AutomaticKeepAliveClientMixin {
         body: ListView(
           children: <Widget>[
             MoreWidgets.mineListViewItem1(
-                SPUtil.getString(Constants.KEY_LOGIN_ACCOUNT)??"Me",
+                SPUtil.getString(Constants.KEY_LOGIN_ACCOUNT) ?? "Me",
                 content: SPUtil.getString(Constants.KEY_LOGIN_ACCOUNT_MOBILE),
                 imageChild: _getHeadPortrait(), onImageClick: (res) {
               PopupWindowUtil.showPhotoChosen(context, onCallBack: (image) {
                 File file = image;
-                RestManager.get().uploadFile(file)
-                  .then((imgEntity) {
-                    if (imgEntity == null) {
-                      return;
-                    }
-                    //update app server.
-                    RestManager.get().updateUserPortraitDB(myUid, imgEntity.url);
-                    // set DB
-                    String uid = SPUtil.getString(Constants.KEY_LOGIN_UID);
-                    DataBaseApi.get().updatePortrait(imgEntity.url, uid).then((entities) {
-                      SPUtil.putString(Constants.KEY_LOGIN_ACCOUNT_PORTRAIT, imgEntity.url);
-                    });
-                    setState(() {
-                      imageChild = image;
-                    });
+                RestManager.get().uploadFile(file).then((imgEntity) {
+                  if (imgEntity == null) {
+                    return;
+                  }
+                  //update app server.
+                  RestManager.get().updateUserPortraitDB(myUid, imgEntity.url);
+                  // set DB
+                  String uid = SPUtil.getString(Constants.KEY_LOGIN_UID);
+                  DataBaseApi.get()
+                      .updatePortrait(imgEntity.url, uid)
+                      .then((entities) {
+                    SPUtil.putString(
+                        Constants.KEY_LOGIN_ACCOUNT_PORTRAIT, imgEntity.url);
                   });
+                  setState(() {
+                    imageChild = image;
+                  });
+                });
               });
             }),
             MoreWidgets.buildDivider(),
@@ -73,7 +74,8 @@ class _MineState extends State<MinePage> with AutomaticKeepAliveClientMixin {
             MoreWidgets.buildDivider(),
             MoreWidgets.defaultListViewItem(Icons.exit_to_app, 'Logout',
                 textColor: Colors.black, isDivider: false, onItemClick: (res) {
-              DialogUtil.showBaseDialog(context, 'Sure to logout？', leftClick: (res) {
+              DialogUtil.showBaseDialog(context, 'Sure to logout？',
+                  leftClick: (res) {
                 _logOut();
               });
             }),
@@ -95,23 +97,25 @@ class _MineState extends State<MinePage> with AutomaticKeepAliveClientMixin {
             )),
         onTap: () {
           PopupWindowUtil.showPhotoChosen(context, onCallBack: (image) {
-                File file = image;
-                RestManager.get().uploadFile(file)
-                  .then((imgEntity) {
-                    if (imgEntity == null) {
-                      return;
-                    }
-                    //update app server.
-                    RestManager.get().updateUserPortraitDB(myUid, imgEntity.url);
-                    // set DB
-                    DataBaseApi.get().updatePortrait(imgEntity.url, myUid).then((entities) {
-                      SPUtil.putString(Constants.KEY_LOGIN_ACCOUNT_PORTRAIT, imgEntity.url);
-                    });
-                    setState(() {
-                      imageChild = image;
-                    });
-                  });
+            File file = image;
+            RestManager.get().uploadFile(file).then((imgEntity) {
+              if (imgEntity == null) {
+                return;
+              }
+              //update app server.
+              RestManager.get().updateUserPortraitDB(myUid, imgEntity.url);
+              // set DB
+              DataBaseApi.get()
+                  .updatePortrait(imgEntity.url, myUid)
+                  .then((entities) {
+                SPUtil.putString(
+                    Constants.KEY_LOGIN_ACCOUNT_PORTRAIT, imgEntity.url);
               });
+              setState(() {
+                imageChild = image;
+              });
+            });
+          });
         });
     actions.add(widget);
     return actions;

@@ -44,23 +44,22 @@ class Contacts extends State<ContactsPage> with AutomaticKeepAliveClientMixin {
       if (entities.length > 0) {
         setState(() {
           _list.clear();
-          
+
           entities.forEach((entity) {
             if (entity.userId != myUid) {
               _list.insert(0, entity);
-              DataBaseApi.get().getConversationIdByUserid(entity.userId).then(
-                (convId) {
-                  if (convId != " ") {
-                    _map[entity.userId] = convId;
-                  }
+              DataBaseApi.get()
+                  .getConversationIdByUserid(entity.userId)
+                  .then((convId) {
+                if (convId != " ") {
+                  _map[entity.userId] = convId;
                 }
-              );
+              });
             }
           });
         });
       }
     });
-    
   }
 
   Widget layout(BuildContext context) {
@@ -88,9 +87,7 @@ class Contacts extends State<ContactsPage> with AutomaticKeepAliveClientMixin {
                   Icons.more_horiz,
                   size: 22,
                 )),
-            onTap: () {
-              
-            })
+            onTap: () {})
       ],
     );
   }
@@ -99,20 +96,19 @@ class Contacts extends State<ContactsPage> with AutomaticKeepAliveClientMixin {
     return InkWell(
       onTap: () {
         Navigator.push(
-          context,
-          new CupertinoPageRoute<void>(
-              builder: (ctx) => MessagePage(
-                    title: _list[index].userName,
-                    targetUid: _list[index].userId,
-                    targetUrl: _list[index].portrait,
-                    convId: _map[_list[index].userId],
-                    convType: Constants.CONVERSATION_SINGLE,
-                  )));
+            context,
+            new CupertinoPageRoute<void>(
+                builder: (ctx) => MessagePage(
+                      title: _list[index].userName,
+                      targetUid: _list[index].userId,
+                      targetUrl: _list[index].portrait,
+                      convId: _map[_list[index].userId],
+                      convType: Constants.CONVERSATION_SINGLE,
+                    )));
       },
-      
-      child: MoreWidgets.buildListViewItem(_list[index].portrait, _list[index].userName),
+      child: MoreWidgets.buildListViewItem(
+          _list[index].portrait, _list[index].userName),
     );
-  
   }
 
   @override
