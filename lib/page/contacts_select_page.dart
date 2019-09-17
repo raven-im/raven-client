@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/database/db_api.dart';
 import 'package:myapp/entity/contact_entity.dart';
@@ -25,6 +26,8 @@ class _ContactsSelectPageState extends State<ContactsSelectPage> {
   List<String> selectUserIds = new List();
 
   String myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
+
+  String groupName;
 
   @override
   void initState() {
@@ -87,14 +90,58 @@ class _ContactsSelectPageState extends State<ContactsSelectPage> {
     );
   }
 
+  void _showGroupNameDialog() {
+    showCupertinoDialog(
+        context: context,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: Text('请输入群名称'),
+            content: Card(
+              elevation: 0.0,
+              child: Column(
+                children: <Widget>[
+                  // Text('this is a message'),
+                  TextField(
+                    maxLength: 20,
+                    decoration: InputDecoration(
+                        hintText: '请输入群名称',
+                        filled: true,
+                        fillColor: Colors.grey.shade50),
+                    onChanged: (String text) {
+                      groupName = text;
+                    },
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              CupertinoDialogAction(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('取消'),
+              ),
+              CupertinoDialogAction(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _createGroup();
+                },
+                child: Text('确定'),
+              ),
+            ],
+          );
+        });
+  }
+
   void _createGroup() async {
     RestEntity entity = await RestManager.get().createGroup(
-        "testGroup",
+        groupName,
         "https://b-ssl.duitang.com/uploads/item/201805/13/20180513224039_tgfwu.png",
         selectUserIds);
     print("create result :" + entity.toMap().toString());
     if (entity.code == 10000) {
-      String groupId = entity.data["groupId"];
+      Navigator.pop(context);
+      // String groupId = entity.data["groupId"];
 
     }
   }
@@ -106,10 +153,10 @@ class _ContactsSelectPageState extends State<ContactsSelectPage> {
         title: Text("Select Member"),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.more_horiz),
+            icon: Icon(Icons.done),
             tooltip: 'CreateGroup',
             onPressed: () {
-              _createGroup();
+              _showGroupNameDialog();
             },
           )
         ],
