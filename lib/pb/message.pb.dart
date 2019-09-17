@@ -618,6 +618,7 @@ class ConverInfo extends $pb.GeneratedMessage {
     ..aOS(4, 'groupId')
     ..a<Int64>(5, 'readMsgId', $pb.PbFieldType.OU6, Int64.ZERO)
     ..a<MessageContent>(6, 'lastContent', $pb.PbFieldType.OM, MessageContent.getDefault, MessageContent.create)
+    ..a<Int64>(7, 'time', $pb.PbFieldType.OU6, Int64.ZERO)
     ..hasRequiredFields = false
   ;
 
@@ -659,6 +660,11 @@ class ConverInfo extends $pb.GeneratedMessage {
   set lastContent(MessageContent v) { setField(6, v); }
   $core.bool hasLastContent() => $_has(5);
   void clearLastContent() => clearField(6);
+
+  Int64 get time => $_getI64(6);
+  set time(Int64 v) { $_setInt64(6, v); }
+  $core.bool hasTime() => $_has(6);
+  void clearTime() => clearField(7);
 }
 
 class NotifyMessage extends $pb.GeneratedMessage {

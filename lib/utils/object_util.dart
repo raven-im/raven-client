@@ -61,7 +61,7 @@ class ObjectUtil {
           isUnreadCount: info.readMsgId.toInt(), //TODO  unread count
           lastMessage: info.lastContent.content,
           lastMsgType: info.lastContent.type.value,
-          timestamp: info.lastContent.time.toInt(),
+          timestamp: info.lastContent.time == 0 ? info.time.toInt() : info.lastContent.time.toInt(),
           conversationType: type);
       list.add(entity);
     });

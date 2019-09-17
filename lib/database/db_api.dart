@@ -265,7 +265,7 @@ class DataBaseApi {
   Future<List<ConversationEntity>> getConversationEntities() async {
     var db = await _init();
     var result = await db
-        .rawQuery('SELECT * FROM ${DataBaseConfig.CONVERSATIONS_TABLE} ');
+        .rawQuery('SELECT * FROM ${DataBaseConfig.CONVERSATIONS_TABLE} ORDER BY ${ConversationEntity.LAST_MESSAGE_TIME} DESC');
     List<ConversationEntity> res = [];
     for (Map<String, dynamic> item in result) {
       res.add(new ConversationEntity.fromMap(item));
@@ -337,20 +337,21 @@ class DataBaseApi {
 
   Future _updateConversationsEntity(ConversationEntity entity) async {
     var db = await _init();
-
-    String lastMsg = "default";
-    var data = json.decode(entity.lastMessage);
-    switch (entity.lastMsgType) {
-      case Constants.CONTENT_TYPE_TEXT:
-        TextEntity text = TextEntity.fromMap(data);
-        lastMsg = text.content;
-        break;
-      case Constants.CONTENT_TYPE_IMAGE:
-        FileEntity image = FileEntity.fromMap(data);
-        lastMsg = image.name;
-        break;
-      default:
-        break;
+    String lastMsg = "";
+    if (entity.lastMessage.isNotEmpty) {
+      var data = json.decode(entity.lastMessage);
+      switch (entity.lastMsgType) {
+        case Constants.CONTENT_TYPE_TEXT:
+          TextEntity text = TextEntity.fromMap(data);
+          lastMsg = text.content;
+          break;
+        case Constants.CONTENT_TYPE_IMAGE:
+          FileEntity image = FileEntity.fromMap(data);
+          lastMsg = image.name;
+          break;
+        default:
+          break;
+      }
     }
 
     await db.rawUpdate(

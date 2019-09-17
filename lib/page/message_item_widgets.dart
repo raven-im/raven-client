@@ -79,7 +79,7 @@ class MessageItemWidgets {
       OnItemClick onResend, OnItemClick onItemClick) {
     if (entity.type == Constants.NOTIFICATION) {
       return Container(
-        // margin: EdgeInsets.only(left: 10, right: 90, bottom: 30, top: 4),
+        margin: EdgeInsets.only(bottom: 10, top: 1),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
@@ -101,7 +101,7 @@ class MessageItemWidgets {
       //对方的消息
 
       return Container(
-        margin: EdgeInsets.only(left: 10, right: 90, bottom: 30, top: 4),
+        margin: EdgeInsets.only(left: 10, right: 90, bottom: 10, top: 4),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -139,7 +139,7 @@ class MessageItemWidgets {
       String myPortraitUrl =
           SPUtil.getString(Constants.KEY_LOGIN_ACCOUNT_PORTRAIT);
       return Container(
-        margin: EdgeInsets.only(left: 90, right: 10, bottom: 30, top: 4),
+        margin: EdgeInsets.only(left: 90, right: 10, bottom: 10, top: 4),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[

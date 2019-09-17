@@ -232,9 +232,7 @@ class Conversation extends BaseState<ConversationPage>
             entity.name = groupMap[entity.targetUid].name;
           }
         }
-
-        list.insert(
-            0, entity.targetUid); //group: GroupId,  single:  target user id.
+        list.add(entity.targetUid); //group: GroupId,  single:  target user id.
         map[entity.targetUid] = entity;
       });
       if (this.mounted) {

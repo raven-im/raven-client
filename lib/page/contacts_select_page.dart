@@ -95,23 +95,7 @@ class _ContactsSelectPageState extends State<ContactsSelectPage> {
     print("create result :" + entity.toMap().toString());
     if (entity.code == 10000) {
       String groupId = entity.data["groupId"];
-      // String converId = entity.data["converId"];
 
-      TextEntity text = new TextEntity(content: "测试群组");
-      String jsonText = json.encode(text.toMap());
-      print(jsonText);
-      MessageEntity messageEntity = new MessageEntity(
-          contentType: Constants.CONTENT_TYPE_TEXT,
-          fromUid: myUid,
-          targetUid: groupId,
-          convType: Constants.CONVERSATION_GROUP,
-          content: jsonText,
-          // convId: converId,
-          time: DateTime.now().millisecondsSinceEpoch.toString());
-      messageEntity.messageOwner = 0;
-      messageEntity.status = 0;
-
-      SenderMngr.sendGroupMessageReq(messageEntity);
     }
   }
 
