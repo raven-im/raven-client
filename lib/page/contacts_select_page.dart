@@ -1,16 +1,12 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/database/db_api.dart';
 import 'package:myapp/entity/contact_entity.dart';
-import 'package:myapp/entity/content_entities/text_entity.dart';
-import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/entity/rest_entity.dart';
 import 'package:myapp/manager/restful_manager.dart';
-import 'package:myapp/manager/wssender_manager.dart';
 import 'package:myapp/page/more_widgets.dart';
 import 'package:myapp/utils/constants.dart';
+import 'package:myapp/utils/dialog_util.dart';
 import 'package:myapp/utils/sp_util.dart';
 
 class ContactsSelectPage extends StatefulWidget {
@@ -139,11 +135,10 @@ class _ContactsSelectPageState extends State<ContactsSelectPage> {
         "https://b-ssl.duitang.com/uploads/item/201805/13/20180513224039_tgfwu.png",
         selectUserIds);
     print("create result :" + entity.toMap().toString());
-    if (entity.code == 10000) {
-      Navigator.pop(context);
-      // String groupId = entity.data["groupId"];
-
+    if (entity.code != 10000) {
+      DialogUtil.buildToast("Failed to create group $groupName . ${entity.code}");
     }
+    Navigator.pop(context);
   }
 
   @override
