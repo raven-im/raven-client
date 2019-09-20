@@ -8,7 +8,9 @@ import 'dart:convert';
 import 'package:myapp/entity/rest_entity.dart';
 import 'package:myapp/entity/rest_list_entity.dart';
 import 'package:myapp/utils/constants.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sy_flutter_qiniu_storage/sy_flutter_qiniu_storage.dart';
+import 'package:cookie_jar/cookie_jar.dart';
 
 class RestManager {
   //TODO  through config file
@@ -37,6 +39,9 @@ class RestManager {
   static const DETAIL_GROUP = GROUP_API_BASE + '/detail';
   static const DETAILS_GROUP = GROUP_API_BASE + '/details';
 
+  static Dio _dio;
+  static CookieJar _cookieJar;
+
   static RestManager get() {
     return _rest;
   }
@@ -44,7 +49,8 @@ class RestManager {
   RestManager._internal();
 
   Future<RestEntity> login(String username, String password) async {
-    Response response = await Dio().post(APP_SERVER_URL + USER_LOGIN,
+    await _init();
+    Response response = await _dio.post(APP_SERVER_URL + USER_LOGIN,
         data: {"username": username, "password": password});
     print(response);
     var data = json.decode(response.toString());
@@ -53,7 +59,8 @@ class RestManager {
   }
 
   Future<RestEntity> getAccess(String appKey, String token) async {
-    Response response = await Dio().get(IM_SERVER_URL + GET_ACCESS_NODE,
+    await _init();
+    Response response = await _dio.get(IM_SERVER_URL + GET_ACCESS_NODE,
         options: new Options(headers: {
           "token": token,
         }));
@@ -65,7 +72,8 @@ class RestManager {
   }
 
   Future<RestListEntity> getUserList() async {
-    Response response = await Dio()
+    await _init();
+    Response response = await _dio
         .get(APP_SERVER_URL + GET_USER_LIST, queryParameters: {"type": 1});
     print(response);
     var data = json.decode(response.toString());
@@ -75,12 +83,13 @@ class RestManager {
 
   // Fast DFS support only
   // Future<ImgEntity> uploadFile(File file, String token) async {
+  // await _init();
   //   String fileName = path.basename(file.path);
   //   FormData formData = new FormData.from({
   //     "file": new UploadFileInfo(file, fileName)
   //   });
 
-  //   Response response = await Dio().post(IM_SERVER_URL + UPLOAD_FILE,
+  //   Response response = await _dio.post(IM_SERVER_URL + UPLOAD_FILE,
   //     data: formData,
   //     options: new Options(
   //       headers: {
@@ -105,12 +114,13 @@ class RestManager {
 
   // for Fast DFS upload.
   // Future<ImgEntity> updatePortrait(File file, String uid) async {
+  // await _init();
   //   String fileName = path.basename(file.path);
   //   FormData formData = new FormData.from({
   //     "file": new UploadFileInfo(file, fileName)
   //   });
 
-  //   Response response = await Dio().post(APP_SERVER_URL + GET_USER + uid + PORTRAIT,
+  //   Response response = await _dio.post(APP_SERVER_URL + GET_USER + uid + PORTRAIT,
   //     data: formData,
   //   );
 
@@ -156,7 +166,8 @@ class RestManager {
   }
 
   Future<TokenEntity> _getFileToken(String suffix) async {
-    Response response = await Dio().get(APP_SERVER_URL + QINIU_UPLOAD,
+    await _init();
+    Response response = await _dio.get(APP_SERVER_URL + QINIU_UPLOAD,
         queryParameters: {"suffix": suffix});
 
     print(response);
@@ -174,7 +185,8 @@ class RestManager {
   }
 
   Future<void> updateUserPortraitDB(String uid, String url) async {
-    Response response = await Dio()
+    await _init();
+    Response response = await _dio
         .post(APP_SERVER_URL + GET_USER + uid, data: {"portrait": url});
 
     var data = json.decode(response.toString());
@@ -194,7 +206,8 @@ class RestManager {
    */
   Future<RestEntity> createGroup(
       String name, String portrait, List<String> members) async {
-    Response response = await Dio().post(APP_SERVER_URL + CREATE_GROUP,
+    await _init();
+    Response response = await _dio.post(APP_SERVER_URL + CREATE_GROUP,
         data: {"name": name, "portrait": portrait, "members": members});
 
     var data = json.decode(response.toString());
@@ -210,7 +223,8 @@ class RestManager {
    * 12003, "member already in group."
    */
   Future<int> joinGroup(String groupId, List<String> members) async {
-    Response response = await Dio().post(APP_SERVER_URL + JOIN_GROUP,
+    await _init();
+    Response response = await _dio.post(APP_SERVER_URL + JOIN_GROUP,
         data: {"groupId": groupId, "members": members});
 
     var data = json.decode(response.toString());
@@ -226,7 +240,8 @@ class RestManager {
    * 12002, "member not in group."
    */
   Future<int> quitGroup(String groupId, List<String> members) async {
-    Response response = await Dio().post(APP_SERVER_URL + QUIT_GROUP,
+    await _init();
+    Response response = await _dio.post(APP_SERVER_URL + QUIT_GROUP,
         data: {"groupId": groupId, "members": members});
 
     var data = json.decode(response.toString());
@@ -241,7 +256,8 @@ class RestManager {
    * 12001, "group id invalid."
    */
   Future<int> dismissGroup(String groupId) async {
-    Response response = await Dio()
+    await _init();
+    Response response = await _dio
         .post(APP_SERVER_URL + DISMISS_GROUP, data: {"groupId": groupId});
 
     var data = json.decode(response.toString());
@@ -250,7 +266,8 @@ class RestManager {
   }
 
   Future<GroupEntity> detailGroup(String groupId) async {
-    Response response = await Dio()
+    await _init();
+    Response response = await _dio
         .post(APP_SERVER_URL + DETAIL_GROUP, data: {"groupId": groupId});
 
     var data = json.decode(response.toString());
@@ -272,8 +289,9 @@ class RestManager {
   }
 
   Future<List<GroupEntity>> detailsGroup(List<String> groups) async {
+    await _init();
     List<GroupEntity> result = [];
-    Response response = await Dio()
+    Response response = await _dio
         .post(APP_SERVER_URL + DETAILS_GROUP, data: {"groups": groups});
 
     var data = json.decode(response.toString());
@@ -294,5 +312,15 @@ class RestManager {
       });
     }
     return result;
+  }
+
+  _init() async {
+    if (_dio == null) {
+      _dio = Dio();
+      Directory tempDir = await getTemporaryDirectory();
+      String tempPath = tempDir.path;
+      _cookieJar = new PersistCookieJar(dir: tempPath);
+      _dio.interceptors.add(CookieManager(_cookieJar));
+    }
   }
 }

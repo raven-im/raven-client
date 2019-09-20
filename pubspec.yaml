@@ -30,6 +30,7 @@ dependencies:
   synchronized: ^2.0.2+1 #异步相关
   rxdart: ^0.20.0 #Rx
   dio: ^2.1.2  #latest version
+  cookie_jar: ^1.0.0 #support for cookie.
   sqflite: ^1.1.1 #数据库
   path_provider: ^0.5.0+1
   flutter_launcher_icons: ^0.7.0
