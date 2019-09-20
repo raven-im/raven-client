@@ -264,13 +264,34 @@ class DataBaseApi {
   // get all conversation.
   Future<List<ConversationEntity>> getConversationEntities() async {
     var db = await _init();
-    var result = await db
-        .rawQuery('SELECT * FROM ${DataBaseConfig.CONVERSATIONS_TABLE} ORDER BY ${ConversationEntity.LAST_MESSAGE_TIME} DESC');
+    var result = await db.rawQuery(
+        'SELECT * FROM ${DataBaseConfig.CONVERSATIONS_TABLE} ORDER BY ${ConversationEntity.LAST_MESSAGE_TIME} DESC');
     List<ConversationEntity> res = [];
     for (Map<String, dynamic> item in result) {
       res.add(new ConversationEntity.fromMap(item));
     }
     return res;
+  }
+
+  Future<GroupEntity> getGroupEntity(String id) async {
+    var db = await _init();
+    var result =
+        await db.rawQuery('SELECT * FROM ${DataBaseConfig.GROUP_TABLE} '
+            'where ${GroupEntity.GROUP_ID} = "$id"');
+    List<GroupEntity> res = [];
+    for (Map<String, dynamic> item in result) {
+      res.add(GroupEntity.fromMap(item));
+    }
+
+    var memberResult =
+        await db.rawQuery('SELECT * FROM ${DataBaseConfig.GROUP_MEMBERS_TABLE} '
+            'where ${GroupMemberEntity.GROUP_ID} = "$id"');
+    List<String> members = [];
+    for (Map<String, dynamic> item in memberResult) {
+      members.add(GroupMemberEntity.fromMap(item).member);
+    }
+    res.first.members = members;
+    return res.first;
   }
 
   Future<String> getConversationIdByUserid(String uid) async {
@@ -416,7 +437,12 @@ class DataBaseApi {
 
   Future _updateGroupMemberInfo(GroupMemberEntity entity) async {
     var db = await _init();
-
+    var result = await db.rawQuery(
+        'SELECT * FROM ${DataBaseConfig.GROUP_MEMBERS_TABLE} '
+        'where ${GroupMemberEntity.GROUP_ID} = "${entity.groupId}" and ${GroupMemberEntity.MEMBER_UID} = "${entity.member}" ');
+    if (result.length > 0) {
+      return;
+    }
     await db.rawUpdate(
         'INSERT OR REPLACE INTO '
         '${DataBaseConfig.GROUP_MEMBERS_TABLE} '

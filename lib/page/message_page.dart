@@ -10,6 +10,7 @@ import 'package:myapp/base/base_state.dart';
 import 'package:myapp/database/db_api.dart';
 import 'package:myapp/entity/content_entities/file_entity.dart';
 import 'package:myapp/entity/content_entities/text_entity.dart';
+import 'package:myapp/entity/group_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/message_manager.dart';
 import 'package:myapp/manager/restful_manager.dart';
@@ -24,6 +25,8 @@ import 'package:myapp/utils/image_util.dart';
 import 'package:myapp/utils/interact_vative.dart';
 import 'package:myapp/utils/popupwindow_widget.dart';
 import 'package:myapp/utils/sp_util.dart';
+
+import 'group_setting_page.dart';
 
 /*
 *  发送聊天信息
@@ -59,6 +62,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
   List<MessageEntity> _messageList = new List();
   ScrollController _scrollController = new ScrollController();
   String myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
+  GroupEntity groupEntity;
 
   @override
   void initState() {
@@ -96,6 +100,12 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
         } else {
           MessageManager.get().requestMessageEntities(widget.convId, 0);
         }
+      });
+    }
+
+    if (widget.convType == Constants.CONVERSATION_GROUP) {
+      DataBaseApi.get().getGroupEntity(widget.targetUid).then((value) {
+        groupEntity = value;
       });
     }
   }
@@ -140,11 +150,11 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
       widget.title,
       centerTitle: true,
       elevation: 2.0,
-      // leading: IconButton(
-      //     icon: Icon(Icons.arrow_back),
-      //     onPressed: () {
-      //       Navigator.pop(context);
-      //     }),
+      leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          }),
       actions: <Widget>[
         InkWell(
             child: Container(
@@ -154,10 +164,11 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
                   size: 22,
                 )),
             onTap: () {
-              // MoreWidgets.buildDefaultMessagePop(context, _popString,
-              //     onItemClick: (res) {
-
-              // });
+              if (widget.convType == Constants.CONVERSATION_GROUP) {
+                Navigator.push(context, new MaterialPageRoute(builder: (ctx) {
+                  return GroupSettingPage(entity: groupEntity);
+                }));
+              }
             })
       ],
     );

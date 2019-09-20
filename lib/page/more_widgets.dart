@@ -740,4 +740,73 @@ class MoreWidgets {
       ],
     );
   }
+
+  /*
+  *  Group Setting-ListView的item
+  */
+  static Widget groupSettingListViewItem(String title, String text,
+      {double padding = 12.0,
+      double imageSize = 20.0,
+      bool isDivider = true,
+      Color iconColor = Colors.black,
+      Color textColor = Colors.black12,
+      OnItemClick onItemClick}) {
+    return InkWell(
+        onTap: () {
+          if (null != onItemClick) {
+            onItemClick(null);
+          }
+        },
+        onLongPress: () {},
+        child: Container(
+            padding:
+                EdgeInsets.only(left: 20.0, right: 0, top: padding, bottom: 0),
+            child: Column(children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    //文本过长，打点
+                    flex: 2,
+                    child: Text(
+                      title,
+                      maxLines: 1,
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 17.0, color: textColor),
+                    ),
+                  ),
+                  Expanded(
+                    //文本过长，打点
+                    flex: 1,
+                    child: Text(
+                      text,
+                      maxLines: 1,
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 20.0, color: textColor),
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.only(right: 16),
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.grey,
+                      size: 18,
+                    ),
+                  )
+                ],
+              ),
+              isDivider
+                  ? Container(
+                      padding: EdgeInsets.only(left: 0, top: padding + 2),
+                      child: Divider(
+                        height: 1.5,
+                      ),
+                    )
+                  : SizedBox(
+                      height: 14,
+                    )
+            ])));
+  }
 }
