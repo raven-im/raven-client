@@ -91,7 +91,7 @@ class _ContactsSelectPageState extends State<ContactsSelectPage> {
         context: context,
         builder: (context) {
           return CupertinoAlertDialog(
-            title: Text('请输入群名称'),
+            title: Text('Group Name'),
             content: Card(
               elevation: 0.0,
               child: Column(
@@ -100,7 +100,7 @@ class _ContactsSelectPageState extends State<ContactsSelectPage> {
                   TextField(
                     maxLength: 20,
                     decoration: InputDecoration(
-                        hintText: '请输入群名称',
+                        hintText: 'Please input group name',
                         filled: true,
                         fillColor: Colors.grey.shade50),
                     onChanged: (String text) {
@@ -115,14 +115,14 @@ class _ContactsSelectPageState extends State<ContactsSelectPage> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text('取消'),
+                child: Text('Cancel'),
               ),
               CupertinoDialogAction(
                 onPressed: () {
                   Navigator.pop(context);
                   _createGroup();
                 },
-                child: Text('确定'),
+                child: Text('OK'),
               ),
             ],
           );
