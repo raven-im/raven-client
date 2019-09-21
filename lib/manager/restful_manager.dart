@@ -228,8 +228,8 @@ class RestManager {
         data: {"groupId": groupId, "members": members});
 
     var data = json.decode(response.toString());
-    RestEntity entity = RestEntity.fromMap(data);
-    return entity.code;
+    // RestEntity entity = RestEntity.fromMap(data);
+    return data["code"];
   }
 
   /*
@@ -245,8 +245,8 @@ class RestManager {
         data: {"groupId": groupId, "members": members});
 
     var data = json.decode(response.toString());
-    RestEntity entity = RestEntity.fromMap(data);
-    return entity.code;
+    // RestEntity entity = RestEntity.fromMap(data);
+    return data["code"];
   }
 
   /*
@@ -261,8 +261,8 @@ class RestManager {
         .post(APP_SERVER_URL + DISMISS_GROUP, data: {"groupId": groupId});
 
     var data = json.decode(response.toString());
-    RestEntity entity = RestEntity.fromMap(data);
-    return entity.code;
+    // RestEntity entity = RestEntity.fromMap(data);
+    return data["code"];
   }
 
   Future<GroupEntity> detailGroup(String groupId) async {

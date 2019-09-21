@@ -179,12 +179,14 @@ class SenderMngr {
             list.add(message.converAck.converInfo);
             entities = ObjectUtil.getConvEntities(myUid, list);
           }
-          await DataBaseApi.get().updateConversationEntities(entities);
-          await DataBaseApi.get().updateGroupInfo(entities);
-          //notify Pull conversation.
-          await new Future.delayed(new Duration(milliseconds: 1000));
-          InteractNative.getAppEventSink()
-              .add(InteractNative.PULL_CONVERSATION);
+          if (entities.length > 0) {
+            await DataBaseApi.get().updateConversationEntities(entities);
+            await DataBaseApi.get().updateGroupInfo(entities);
+            //notify Pull conversation.
+            await new Future.delayed(new Duration(milliseconds: 1000));
+            InteractNative.getAppEventSink()
+                .add(InteractNative.PULL_CONVERSATION);
+          }
         } else {
           print("error: conversation ack: $message.converAck.code ");
         }

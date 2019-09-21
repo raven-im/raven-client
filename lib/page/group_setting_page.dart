@@ -2,7 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/database/db_api.dart';
 import 'package:myapp/entity/group_entity.dart';
+import 'package:myapp/manager/restful_manager.dart';
+import 'package:myapp/page/group_member_select.dart';
+import 'package:myapp/utils/constants.dart';
+import 'package:myapp/utils/dialog_util.dart';
 import 'package:myapp/utils/file_util.dart';
+import 'package:myapp/utils/sp_util.dart';
 import 'more_widgets.dart';
 
 /*
@@ -24,7 +29,9 @@ class GroupSettingPage extends StatefulWidget {
 
 class _GroupSettingState extends State<GroupSettingPage> {
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
+  String myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
   String groupOwner;
+  bool isOwner = false;
 
   @override
   void initState() {
@@ -33,6 +40,7 @@ class _GroupSettingState extends State<GroupSettingPage> {
   }
 
   _initData() {
+    isOwner = widget.entity.groupOwner == myUid;
     DataBaseApi.get()
         .getContactsEntity(widget.entity.groupOwner)
         .then((entity) {
@@ -41,6 +49,28 @@ class _GroupSettingState extends State<GroupSettingPage> {
         setState(() {});
       }
     });
+  }
+
+  _quitGroup() async {
+    var members = new List();
+    members.add(myUid);
+
+    int result =
+        await RestManager.get().quitGroup(widget.entity.groupId, members);
+    if (result != 10000) {
+      DialogUtil.buildToast(
+          "Failed to quit group ${widget.entity.name} . $result");
+    }
+    Navigator.pop(context);
+  }
+
+  _dissmissGroup() async {
+    int result = await RestManager.get().dismissGroup(widget.entity.groupId);
+    if (result != 10000) {
+      DialogUtil.buildToast(
+          "Failed to dismiss group ${widget.entity.name} . $result");
+    }
+    Navigator.pop(context);
   }
 
   @override
@@ -62,19 +92,11 @@ class _GroupSettingState extends State<GroupSettingPage> {
                   child: new Image.asset(
                       FileUtil.getImagePath('raven',
                           dir: 'splash'), //TODO widget.entity.portrait,
-                      height: 120.0,
-                      width: 120.0),
+                      height: 150.0,
+                      width: 150.0),
                 ),
               ),
               SizedBox(height: 10),
-              new Center(
-                  child: Text(
-                widget.entity.name,
-                maxLines: 1,
-                softWrap: true,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 22.0, color: Colors.black),
-              )),
               MoreWidgets.buildDivider(),
               MoreWidgets.groupSettingListViewItem(
                   'Group Name', widget.entity.name,
@@ -98,6 +120,37 @@ class _GroupSettingState extends State<GroupSettingPage> {
                 //         );
               }),
               MoreWidgets.buildDivider(),
+              MoreWidgets.defaultListViewItem(null, 'Member Managment',
+                  textColor: Colors.black,
+                  isDivider: false, onItemClick: (res) {
+                Navigator.push(
+                    context,
+                    new CupertinoPageRoute<void>(
+                        builder: (ctx) => GroupMemberSelectPage(
+                              entity: widget.entity,
+                            )));
+              }),
+              MoreWidgets.buildDivider(),
+              SizedBox(height: 50),
+              RaisedButton(
+                textColor: Colors.white,
+                color: Colors.redAccent,
+                padding: EdgeInsets.all(12.0),
+                shape: new StadiumBorder(
+                    side: new BorderSide(
+                  style: BorderStyle.solid,
+                  color: Colors.grey,
+                )),
+                child: Text(isOwner ? 'Dismiss' : 'Quit',
+                    style: new TextStyle(fontSize: 16.0)),
+                onPressed: () {
+                  if (isOwner) {
+                    _dissmissGroup();
+                  } else {
+                    _quitGroup();
+                  }
+                },
+              ),
             ],
           )),
           appBar: MoreWidgets.buildAppBar(

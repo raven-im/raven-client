@@ -405,7 +405,7 @@ class DataBaseApi {
     groupEntities.forEach((entity) {
       _updateGroupInfo(entity);
       entity.members.forEach((member) {
-        _updateGroupMemberInfo(GroupMemberEntity(
+        updateGroupMemberInfo(GroupMemberEntity(
           groupId: entity.groupId,
           conversationId: entity.conversationId,
           member: member,
@@ -435,7 +435,7 @@ class DataBaseApi {
         ]);
   }
 
-  Future _updateGroupMemberInfo(GroupMemberEntity entity) async {
+  Future updateGroupMemberInfo(GroupMemberEntity entity) async {
     var db = await _init();
     var result = await db.rawQuery(
         'SELECT * FROM ${DataBaseConfig.GROUP_MEMBERS_TABLE} '
@@ -454,6 +454,17 @@ class DataBaseApi {
           entity.conversationId,
           entity.member,
         ]);
+  }
+
+  Future deleteGroupMemberInfo(GroupMemberEntity entity) async {
+    var db = await _init();
+    await db.rawUpdate(
+        'DELETE FROM '
+        '${DataBaseConfig.GROUP_MEMBERS_TABLE} '
+        ' where ${GroupMemberEntity.GROUP_ID} = "${entity.groupId}" and '
+        ' ${GroupMemberEntity.CONVERSATION_ID} = "${entity.conversationId}" and '
+        ' ${GroupMemberEntity.MEMBER_UID} = "${entity.member}" '
+        );
   }
 
   Future<List<GroupEntity>> getAllGroupEntities() async {

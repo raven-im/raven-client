@@ -766,7 +766,7 @@ class MoreWidgets {
                 children: <Widget>[
                   Expanded(
                     //文本过长，打点
-                    flex: 2,
+                    flex: 3,
                     child: Text(
                       title,
                       maxLines: 1,
