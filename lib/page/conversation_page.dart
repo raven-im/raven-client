@@ -93,6 +93,7 @@ class Conversation extends BaseState<ConversationPage>
             onTap: () {
               MoreWidgets.buildDefaultMessagePop(context, _popString,
                   onItemClick: (res) {
+                if (res == null) return;
                 print("did tap :" + res);
                 switch (res) {
                   case 'one':

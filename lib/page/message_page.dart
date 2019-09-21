@@ -27,6 +27,7 @@ import 'package:myapp/utils/popupwindow_widget.dart';
 import 'package:myapp/utils/sp_util.dart';
 
 import 'group_setting_page.dart';
+import 'single_setting_page copy.dart';
 
 /*
 *  发送聊天信息
@@ -174,6 +175,11 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
                 Navigator.push(context, new MaterialPageRoute(builder: (ctx) {
                   return GroupSettingPage(groupId: widget.targetUid);
                 }));
+              } else if (widget.convType == Constants.CONVERSATION_SINGLE) {
+                Navigator.push(context, new MaterialPageRoute(builder: (ctx) {
+                  return SingleSettingPage(targetUid: widget.targetUid);
+                }));
+                
               }
             })
       ],
