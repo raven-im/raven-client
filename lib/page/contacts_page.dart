@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/database/db_api.dart';
-
 import 'package:myapp/entity/contact_entity.dart';
-import 'package:myapp/page/message_page.dart';
+import 'package:myapp/page/contact_details.dart';
 import 'package:myapp/page/more_widgets.dart';
 import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/sp_util.dart';
@@ -98,12 +97,8 @@ class Contacts extends State<ContactsPage> with AutomaticKeepAliveClientMixin {
         Navigator.push(
             context,
             new CupertinoPageRoute<void>(
-                builder: (ctx) => MessagePage(
-                      title: _list[index].userName,
+                builder: (ctx) => ContactsDetailPage(
                       targetUid: _list[index].userId,
-                      targetUrl: _list[index].portrait,
-                      convId: _map[_list[index].userId],
-                      convType: Constants.CONVERSATION_SINGLE,
                     )));
       },
       child: MoreWidgets.buildListViewItem(
