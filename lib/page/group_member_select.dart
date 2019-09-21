@@ -8,6 +8,7 @@ import 'package:myapp/manager/restful_manager.dart';
 import 'package:myapp/page/more_widgets.dart';
 import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/dialog_util.dart';
+import 'package:myapp/utils/interact_vative.dart';
 import 'package:myapp/utils/sp_util.dart';
 
 class GroupMemberSelectPage extends StatefulWidget {
@@ -144,6 +145,8 @@ class _MemberSelectPageState extends State<GroupMemberSelectPage> {
         });
       }
     }
+    await new Future.delayed(new Duration(milliseconds: 500));
+    InteractNative.getAppEventSink().add(InteractNative.PULL_GROUP_INFO);
     Navigator.pop(context);
   }
 

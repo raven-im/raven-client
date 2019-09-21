@@ -106,6 +106,9 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
     if (widget.convType == Constants.CONVERSATION_GROUP) {
       DataBaseApi.get().getGroupEntity(widget.targetUid).then((value) {
         groupEntity = value;
+        if (this.mounted) {
+          setState(() {});
+        }
       });
     }
   }
@@ -147,7 +150,10 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
   _appBar() {
     return MoreWidgets.buildAppBar(
       context,
-      widget.title,
+      widget.title +
+          (groupEntity != null
+              ? '(' + groupEntity.members.length.toString() + ')'
+              : ''),
       centerTitle: true,
       elevation: 2.0,
       leading: IconButton(
@@ -166,7 +172,7 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
             onTap: () {
               if (widget.convType == Constants.CONVERSATION_GROUP) {
                 Navigator.push(context, new MaterialPageRoute(builder: (ctx) {
-                  return GroupSettingPage(entity: groupEntity);
+                  return GroupSettingPage(groupId: widget.targetUid);
                 }));
               }
             })
@@ -559,6 +565,15 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
   void notify(Object type) {
     if (type == InteractNative.PULL_MESSAGE) {
       _pullMsgAndDisplay();
+    } else if (type == InteractNative.PULL_GROUP_INFO) {
+      if (widget.convType == Constants.CONVERSATION_GROUP) {
+        DataBaseApi.get().getGroupEntity(widget.targetUid).then((value) {
+          groupEntity = value;
+          if (this.mounted) {
+            setState(() {});
+          }
+        });
+      }
     }
   }
 }

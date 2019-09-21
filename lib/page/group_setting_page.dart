@@ -1,12 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/base/base_state.dart';
 import 'package:myapp/database/db_api.dart';
 import 'package:myapp/entity/group_entity.dart';
+import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/restful_manager.dart';
 import 'package:myapp/page/group_member_select.dart';
 import 'package:myapp/utils/constants.dart';
 import 'package:myapp/utils/dialog_util.dart';
 import 'package:myapp/utils/file_util.dart';
+import 'package:myapp/utils/interact_vative.dart';
 import 'package:myapp/utils/sp_util.dart';
 import 'more_widgets.dart';
 
@@ -16,10 +19,10 @@ import 'more_widgets.dart';
 class GroupSettingPage extends StatefulWidget {
   const GroupSettingPage({
     Key key,
-    @required this.entity,
+    @required this.groupId,
   }) : super(key: key);
 
-  final GroupEntity entity;
+  final String groupId;
 
   @override
   State<StatefulWidget> createState() {
@@ -27,11 +30,12 @@ class GroupSettingPage extends StatefulWidget {
   }
 }
 
-class _GroupSettingState extends State<GroupSettingPage> {
+class _GroupSettingState extends BaseState<GroupSettingPage> {
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
   String myUid = SPUtil.getString(Constants.KEY_LOGIN_UID);
   String groupOwner;
   bool isOwner = false;
+  GroupEntity entity;
 
   @override
   void initState() {
@@ -40,11 +44,15 @@ class _GroupSettingState extends State<GroupSettingPage> {
   }
 
   _initData() {
-    isOwner = widget.entity.groupOwner == myUid;
-    DataBaseApi.get()
-        .getContactsEntity(widget.entity.groupOwner)
-        .then((entity) {
-      groupOwner = entity.userName;
+    DataBaseApi.get().getGroupEntity(widget.groupId).then((entity) {
+      this.entity = entity;
+      isOwner = entity.groupOwner == myUid;
+      DataBaseApi.get().getContactsEntity(entity.groupOwner).then((entity) {
+        groupOwner = entity.userName;
+        if (this.mounted) {
+          setState(() {});
+        }
+      });
       if (this.mounted) {
         setState(() {});
       }
@@ -56,20 +64,24 @@ class _GroupSettingState extends State<GroupSettingPage> {
     members.add(myUid);
 
     int result =
-        await RestManager.get().quitGroup(widget.entity.groupId, members);
+        await RestManager.get().quitGroup(entity.groupId, members);
     if (result != 10000) {
       DialogUtil.buildToast(
-          "Failed to quit group ${widget.entity.name} . $result");
+          "Failed to quit group ${entity.name} . $result");
     }
+    await new Future.delayed(new Duration(milliseconds: 500));
+    InteractNative.getAppEventSink().add(InteractNative.PULL_GROUP_INFO);
     Navigator.pop(context);
   }
 
   _dissmissGroup() async {
-    int result = await RestManager.get().dismissGroup(widget.entity.groupId);
+    int result = await RestManager.get().dismissGroup(entity.groupId);
     if (result != 10000) {
       DialogUtil.buildToast(
-          "Failed to dismiss group ${widget.entity.name} . $result");
+          "Failed to dismiss group ${entity.name} . $result");
     }
+    await new Future.delayed(new Duration(milliseconds: 500));
+    InteractNative.getAppEventSink().add(InteractNative.PULL_GROUP_INFO);
     Navigator.pop(context);
   }
 
@@ -99,7 +111,7 @@ class _GroupSettingState extends State<GroupSettingPage> {
               SizedBox(height: 10),
               MoreWidgets.buildDivider(),
               MoreWidgets.groupSettingListViewItem(
-                  'Group Name', widget.entity.name,
+                  'Group Name', entity != null ? entity.name : 'Group',
                   textColor: Colors.black,
                   isDivider: false, onItemClick: (res) {
                 // Navigator.push(
@@ -110,7 +122,7 @@ class _GroupSettingState extends State<GroupSettingPage> {
               }),
               MoreWidgets.buildDivider(),
               MoreWidgets.groupSettingListViewItem('Group Owner',
-                  groupOwner == null ? widget.entity.groupOwner : groupOwner,
+                  groupOwner == null ? (entity != null ? entity.groupOwner: 'Owner') : groupOwner,
                   textColor: Colors.black,
                   isDivider: false, onItemClick: (res) {
                 // Navigator.push(
@@ -127,7 +139,7 @@ class _GroupSettingState extends State<GroupSettingPage> {
                     context,
                     new CupertinoPageRoute<void>(
                         builder: (ctx) => GroupMemberSelectPage(
-                              entity: widget.entity,
+                              entity: entity,
                             )));
               }),
               MoreWidgets.buildDivider(),
@@ -155,7 +167,7 @@ class _GroupSettingState extends State<GroupSettingPage> {
           )),
           appBar: MoreWidgets.buildAppBar(
             context,
-            'Group (${widget.entity.members.length})',
+            'Group (${entity != null ? entity.members.length : 0})',
             centerTitle: true,
             elevation: 2.0,
             leading: IconButton(
@@ -165,5 +177,15 @@ class _GroupSettingState extends State<GroupSettingPage> {
                 }),
           ),
         ));
+  }
+
+  @override
+  void updateData(MessageEntity entity) {}
+
+  @override
+  void notify(Object type) {
+    if (type == InteractNative.PULL_GROUP_INFO) {
+      _initData();
+    }
   }
 }
