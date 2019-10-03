@@ -12,7 +12,8 @@ class GroupMemberEntity {
   String groupId, conversationId, member;
 
   GroupMemberEntity(
-      {@required this.groupId,
+      {
+      this.groupId,
       @required this.conversationId,
       @required this.member});
 

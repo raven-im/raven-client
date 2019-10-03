@@ -68,9 +68,6 @@ class _GroupSettingState extends BaseState<GroupSettingPage> {
       DialogUtil.buildToast(
           "Failed to quit group ${entity.name} . $result");
     }
-    InteractNative.getAppEventSink().add(InteractNative.PULL_GROUP_INFO);
-    await new Future.delayed(new Duration(milliseconds: 500));
-    InteractNative.getAppEventSink().add(InteractNative.PULL_CONVERSATION);
     Navigator.pop(context, true);
   }
 
@@ -80,10 +77,6 @@ class _GroupSettingState extends BaseState<GroupSettingPage> {
       DialogUtil.buildToast(
           "Failed to dismiss group ${entity.name} . $result");
     }
-    InteractNative.getAppEventSink().add(InteractNative.PULL_GROUP_INFO);
-    await new Future.delayed(new Duration(milliseconds: 500));
-    InteractNative.getAppEventSink().add(InteractNative.PULL_CONVERSATION);
-    
     Navigator.pop(context, true);
   }
 

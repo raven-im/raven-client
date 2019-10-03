@@ -4,6 +4,7 @@ import 'package:fixnum/fixnum.dart';
 import 'package:myapp/database/db_api.dart';
 import 'package:myapp/entity/content_entities/notification_entity.dart';
 import 'package:myapp/entity/conversation_entity.dart';
+import 'package:myapp/entity/group_member_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/conversation_manager.dart';
 import 'package:myapp/manager/message_builder.dart';
@@ -237,6 +238,24 @@ class SenderMngr {
           case Constants.GROUP_CHANGE_JOIN:
             break;
           case Constants.GROUP_CHANGE_QUIT:
+            if (myUid == message.notifyMessage.fromUid) {
+              // quit , so delete the db , route back.
+              DataBaseApi.get().deleteConversationById(message.notifyMessage.converId);
+              //notify Pull conversation.
+              await new Future.delayed(new Duration(milliseconds: 500));
+              InteractNative.getAppEventSink()
+                  .add(InteractNative.PULL_CONVERSATION);
+              InteractNative.getAppEventSink()
+                  .add(InteractNative.GROUP_KICKED);
+            } else {
+              DataBaseApi.get().deleteGroupMemberInfo(GroupMemberEntity(
+                member: message.notifyMessage.fromUid,
+                conversationId: message.notifyMessage.converId,
+              ));
+              //other quit, delete the db. update group member info.
+              InteractNative.getAppEventSink()
+                  .add(InteractNative.PULL_GROUP_INFO);
+            }
             break;
           case Constants.GROUP_CHANGE_KICK:
             if (gcEntity.members.contains(myUid)) {
@@ -248,6 +267,17 @@ class SenderMngr {
                   .add(InteractNative.PULL_CONVERSATION);
               InteractNative.getAppEventSink()
                   .add(InteractNative.GROUP_KICKED);
+            } else {
+              gcEntity.members.forEach((member) {
+                if (member != myUid) {
+                  DataBaseApi.get().deleteGroupMemberInfo(GroupMemberEntity(
+                    member: member,
+                    conversationId: message.notifyMessage.converId,
+                  ));
+                }
+              });
+              InteractNative.getAppEventSink()
+                  .add(InteractNative.PULL_GROUP_INFO);
             }
             break;
           case Constants.GROUP_CHANGE_DISMISS:

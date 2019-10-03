@@ -123,7 +123,6 @@ class _MemberSelectPageState extends State<GroupMemberSelectPage> {
         delMembers.forEach((member) {
           DataBaseApi.get().deleteGroupMemberInfo(GroupMemberEntity(
             member: member,
-            groupId: widget.entity.groupId,
             conversationId: widget.entity.conversationId,
           ));
         });

@@ -472,8 +472,7 @@ class DataBaseApi {
     var db = await _init();
     await db.rawUpdate('DELETE FROM '
         '${DataBaseConfig.GROUP_MEMBERS_TABLE} '
-        ' where ${GroupMemberEntity.GROUP_ID} = "${entity.groupId}" and '
-        ' ${GroupMemberEntity.CONVERSATION_ID} = "${entity.conversationId}" and '
+        ' where ${GroupMemberEntity.CONVERSATION_ID} = "${entity.conversationId}" and '
         ' ${GroupMemberEntity.MEMBER_UID} = "${entity.member}" ');
   }
 
