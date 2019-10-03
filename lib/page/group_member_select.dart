@@ -115,7 +115,7 @@ class _MemberSelectPageState extends State<GroupMemberSelectPage> {
     });
     if (delMembers.length > 0) {
       int result =
-          await RestManager.get().quitGroup(widget.entity.groupId, delMembers);
+          await RestManager.get().kickGroup(widget.entity.groupId, delMembers);
       if (result != 10000) {
         DialogUtil.buildToast(
             "Failed to quit group ${widget.entity.name} . $result");

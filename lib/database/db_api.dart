@@ -318,6 +318,18 @@ class DataBaseApi {
     return res.length > 0;
   }
 
+  Future<ConversationEntity> getConversationById(String convId) async {
+    var db = await _init();
+    var result = await db
+        .rawQuery('SELECT * FROM ${DataBaseConfig.CONVERSATIONS_TABLE} '
+            'where ${ConversationEntity.CON_ID} = "$convId"');
+    List<ConversationEntity> res = [];
+    for (Map<String, dynamic> item in result) {
+      res.add(ConversationEntity.fromMap(item));
+    }
+    return res.first;
+  }
+
   Future updateConversationEntity(String convId, MessageEntity entity) async {
     await _updateConversationEntity(convId, entity);
   }
@@ -458,13 +470,11 @@ class DataBaseApi {
 
   Future deleteGroupMemberInfo(GroupMemberEntity entity) async {
     var db = await _init();
-    await db.rawUpdate(
-        'DELETE FROM '
+    await db.rawUpdate('DELETE FROM '
         '${DataBaseConfig.GROUP_MEMBERS_TABLE} '
         ' where ${GroupMemberEntity.GROUP_ID} = "${entity.groupId}" and '
         ' ${GroupMemberEntity.CONVERSATION_ID} = "${entity.conversationId}" and '
-        ' ${GroupMemberEntity.MEMBER_UID} = "${entity.member}" '
-        );
+        ' ${GroupMemberEntity.MEMBER_UID} = "${entity.member}" ');
   }
 
   Future<List<GroupEntity>> getAllGroupEntities() async {
@@ -487,5 +497,44 @@ class DataBaseApi {
       }
     }
     return res;
+  }
+
+  Future _deleteGroupMemberById(String convId) async {
+    var db = await _init();
+    await db.rawUpdate('DELETE FROM '
+        '${DataBaseConfig.GROUP_MEMBERS_TABLE} '
+        ' where ${GroupMemberEntity.CONVERSATION_ID} = "$convId" ');
+  }
+
+  Future _deleteGroupById(String convId) async {
+    var db = await _init();
+    await db.rawUpdate('DELETE FROM '
+        '${DataBaseConfig.GROUP_TABLE} '
+        ' where ${GroupEntity.CONVERSATION_ID} = "$convId" ');
+  }
+
+  Future _deleteConversationById(String convId) async {
+    var db = await _init();
+    await db.rawUpdate('DELETE FROM '
+        '${DataBaseConfig.CONVERSATIONS_TABLE} '
+        ' where ${ConversationEntity.CON_ID} = "$convId" ');
+  }
+
+  Future _deleteMsgsById(String convId) async {
+    var db = await _init();
+    await db.rawUpdate('DELETE FROM '
+        '${DataBaseConfig.MESSAGES_TABLE} '
+        ' where ${MessageEntity.CONVERSATION_ID} = "$convId" ');
+  }
+
+
+  Future deleteConversationById(String convId) async {
+    ConversationEntity entity = await getConversationById(convId);
+    _deleteConversationById(convId);
+    _deleteMsgsById(convId);
+    if (entity.conversationType == Constants.CONVERSATION_GROUP) {
+      _deleteGroupMemberById(convId);
+      _deleteGroupById(convId);
+    }
   }
 }

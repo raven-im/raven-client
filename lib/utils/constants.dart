@@ -25,4 +25,11 @@ class Constants {
 
   static const String DEFAULT_PORTRAIT =
       "https://api.adorable.io/avatars/285/1.png";
+
+  //group operation
+  static const int GROUP_CHANGE_CREATE = 1;
+  static const int GROUP_CHANGE_JOIN = 2;
+  static const int GROUP_CHANGE_QUIT = 3;
+  static const int GROUP_CHANGE_KICK = 4;
+  static const int GROUP_CHANGE_DISMISS = 5;
 }

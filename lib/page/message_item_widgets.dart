@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:myapp/entity/content_entities/file_entity.dart';
+import 'package:myapp/entity/content_entities/notification_entity.dart';
 import 'package:myapp/entity/content_entities/text_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/utils/constants.dart';
@@ -278,14 +279,14 @@ class MessageItemWidgets {
 
   static Widget buildNotificationWidget(MessageEntity entity) {
     var data = json.decode(entity.content);
-    TextEntity text = TextEntity.fromMap(data);
+    NotificationEntity notify = NotificationEntity.fromMap(data);
     return ClipRRect(
       borderRadius: BorderRadius.circular(8.0),
       child: Container(
         padding: EdgeInsets.only(left: 10, right: 10, top: 6, bottom: 6),
         color: Colors.grey,
         child: Text(
-          text.content,
+          notify.notification,
           style: TextStyle(fontSize: 12, color: Colors.white),
         ),
       ),

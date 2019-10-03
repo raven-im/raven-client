@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:fixnum/fixnum.dart';
 import 'package:myapp/database/db_api.dart';
+import 'package:myapp/entity/content_entities/notification_entity.dart';
 import 'package:myapp/entity/conversation_entity.dart';
 import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/conversation_manager.dart';
@@ -179,7 +182,7 @@ class SenderMngr {
             list.add(message.converAck.converInfo);
             entities = ObjectUtil.getConvEntities(myUid, list);
           }
-          if (entities.length > 0) {
+          if (entities != null && entities.length > 0) {
             await DataBaseApi.get().updateConversationEntities(entities);
             await DataBaseApi.get().updateGroupInfo(entities);
             //notify Pull conversation.
@@ -221,8 +224,36 @@ class SenderMngr {
             ObjectUtil.getMsgEntity(myUid, message.upDownMessage), true);
         break;
       case RavenMessage_Type.NotifyMessage:
-        DataBaseApi.get().updateMessageEntity(
-            ObjectUtil.getNotifyEntity(myUid, message.notifyMessage), true);
+        MessageEntity entity =
+            ObjectUtil.getNotifyEntity(myUid, message.notifyMessage);
+        DataBaseApi.get().updateMessageEntity(entity, true);
+        //parse the GroupChangeEntity, do the operation.
+        var data = json.decode(entity.content);
+        NotificationEntity gcEntity = NotificationEntity.fromMap(data);
+        print(" receive notifications. ${gcEntity.type}");
+        switch (gcEntity.type) {
+          case Constants.GROUP_CHANGE_CREATE:
+            break;
+          case Constants.GROUP_CHANGE_JOIN:
+            break;
+          case Constants.GROUP_CHANGE_QUIT:
+            break;
+          case Constants.GROUP_CHANGE_KICK:
+            if (gcEntity.members.contains(myUid)) {
+              // kick me ,  so delete the db , route back.
+              DataBaseApi.get().deleteConversationById(message.notifyMessage.converId);
+              //notify Pull conversation.
+              await new Future.delayed(new Duration(milliseconds: 500));
+              InteractNative.getAppEventSink()
+                  .add(InteractNative.PULL_CONVERSATION);
+              InteractNative.getAppEventSink()
+                  .add(InteractNative.GROUP_KICKED);
+            }
+            break;
+          case Constants.GROUP_CHANGE_DISMISS:
+            break; 
+        }
+
         break;
     }
   }

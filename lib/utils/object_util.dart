@@ -166,6 +166,6 @@ class ObjectUtil {
     SenderMngr.release();
     //notify UI switch.
     InteractNative.getAppEventSink().add(InteractNative.CHANGE_PAGE_TO_LOGIN);
-    InteractNative.closeStream();
+    // InteractNative.closeStream();
   }
 }

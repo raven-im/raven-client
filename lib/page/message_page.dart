@@ -580,6 +580,10 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
           }
         });
       }
+    } else if (type == InteractNative.GROUP_KICKED) {
+      if (widget.convType == Constants.CONVERSATION_GROUP) {
+        Navigator.pop(context);
+      }
     }
   }
 }

@@ -60,11 +60,11 @@ class _GroupSettingState extends BaseState<GroupSettingPage> {
   }
 
   _quitGroup() async {
-    var members = new List();
+    List<String> members = new List();
     members.add(myUid);
 
     int result =
-        await RestManager.get().quitGroup(entity.groupId, members);
+        await RestManager.get().quitGroup(entity.groupId);
     if (result != 10000) {
       DialogUtil.buildToast(
           "Failed to quit group ${entity.name} . $result");

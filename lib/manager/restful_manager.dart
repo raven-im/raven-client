@@ -35,6 +35,7 @@ class RestManager {
   static const CREATE_GROUP = GROUP_API_BASE + '/create';
   static const JOIN_GROUP = GROUP_API_BASE + '/join';
   static const QUIT_GROUP = GROUP_API_BASE + '/quit';
+  static const QUIT_KICK = GROUP_API_BASE + '/kick';
   static const DISMISS_GROUP = GROUP_API_BASE + '/dismiss';
   static const DETAIL_GROUP = GROUP_API_BASE + '/detail';
   static const DETAILS_GROUP = GROUP_API_BASE + '/details';
@@ -239,10 +240,29 @@ class RestManager {
    * 12001, "group id invalid."
    * 12002, "member not in group."
    */
-  Future<int> quitGroup(String groupId, List<String> members) async {
+  Future<int> kickGroup(String groupId, List<String> members) async {
     await _init();
-    Response response = await _dio.post(APP_SERVER_URL + QUIT_GROUP,
+    Response response = await _dio.post(APP_SERVER_URL + QUIT_KICK,
         data: {"groupId": groupId, "members": members});
+
+    var data = json.decode(response.toString());
+    // RestEntity entity = RestEntity.fromMap(data);
+    return data["code"];
+  }
+
+  /*
+   * result entity.
+   * entity.code: 
+   * 10000, "success"
+   * 12001, "group id invalid."
+   * 10106, "User not login."
+   * 12003, "member already in group."
+   * only logined user can quit group.
+   */
+  Future<int> quitGroup(String groupId) async {
+    await _init();
+    Response response = await _dio
+        .post(APP_SERVER_URL + QUIT_GROUP, data: {"groupId": groupId});
 
     var data = json.decode(response.toString());
     // RestEntity entity = RestEntity.fromMap(data);
@@ -297,7 +317,7 @@ class RestManager {
     var data = json.decode(response.toString());
     RestListEntity entity = RestListEntity.fromMap(data);
 
-    if (Constants.RSP_COMMON_SUCCESS == entity.code) {
+    if (Constants.RSP_COMMON_SUCCESS == entity.code && entity.data != null) {
       entity.data.forEach((data) {
         result.add(GroupEntity(
           conversationId: data['conversationId'],
