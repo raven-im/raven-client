@@ -251,6 +251,14 @@ class SenderMngr {
             }
             break;
           case Constants.GROUP_CHANGE_DISMISS:
+              // dimiss ,  so delete the db , route back.
+              DataBaseApi.get().deleteConversationById(message.notifyMessage.converId);
+              //notify Pull conversation.
+              await new Future.delayed(new Duration(milliseconds: 500));
+              InteractNative.getAppEventSink()
+                  .add(InteractNative.PULL_CONVERSATION);
+              InteractNative.getAppEventSink()
+                  .add(InteractNative.GROUP_KICKED);
             break; 
         }
 

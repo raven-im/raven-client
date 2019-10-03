@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:myapp/utils/interact_vative.dart';
 
 abstract class BaseState<T extends StatefulWidget> extends State<T> {
+  StreamSubscription subscription;
   @override
   void initState() {
     super.initState();
@@ -10,9 +12,15 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
 
   _addListener() {
     InteractNative.initAppEvent();
-    InteractNative.getAppEventStream().listen((value) {
+    subscription = InteractNative.getAppEventStream().listen((value) {
       notify(value);
     });
+  }
+
+  @override
+  void dispose() {
+    subscription.cancel();
+    super.dispose();
   }
 
   @protected

@@ -172,13 +172,21 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
                 )),
             onTap: () {
               if (widget.convType == Constants.CONVERSATION_GROUP) {
-                Navigator.push(context, new MaterialPageRoute(builder: (ctx) {
+                Navigator.push<bool>(context, new MaterialPageRoute(builder: (ctx) {
                   return GroupSettingPage(groupId: widget.targetUid);
-                }));
+                })).then((flag) {
+                  // true means put on the "dismiss" or "quit" button.
+                  if (flag)
+                    Navigator.pop(context);
+                });
               } else if (widget.convType == Constants.CONVERSATION_SINGLE) {
-                Navigator.push(context, new MaterialPageRoute(builder: (ctx) {
+                Navigator.push<bool>(context, new MaterialPageRoute(builder: (ctx) {
                   return SingleSettingPage(targetUid: widget.targetUid);
-                }));
+                })).then((flag) {
+                  // true means put on the "dismiss" or "quit" button.
+                  if (flag)
+                    Navigator.pop(context);
+                });
                 
               }
             })
