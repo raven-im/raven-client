@@ -545,31 +545,30 @@ class MessageState extends BaseState<MessagePage> with WidgetsBindingObserver {
   }
 
   @override
-  void updateData(MessageEntity entity) {
-    if (entity.convId != widget.convId) {
-      return;
-    }
-    DataBaseApi.get().getAllContactsEntities().then((contacts) {
-      // for me.
-      contacts.forEach((contact) {
-        if (contact.userId == entity.fromUid) {
-          entity.senderName = contact.userName;
-        }
-      });
-      if (widget.convId == null) {
-        widget.convId = entity.convId;
-      }
-
-      _messageList.insert(0, entity);
-      if (this.mounted) {
-        setState(() {});
-      }
-    });
-  }
-
-  @override
   void notify(Object type) {
-    if (type == InteractNative.PULL_MESSAGE) {
+    if (type is MessageEntity) {
+      MessageEntity entity = type;
+      if (entity.convId != widget.convId) {
+            return;
+          }
+          DataBaseApi.get().getAllContactsEntities().then((contacts) {
+            // for me.
+            contacts.forEach((contact) {
+              if (contact.userId == entity.fromUid) {
+                entity.senderName = contact.userName;
+              }
+            });
+            if (widget.convId == null) {
+              widget.convId = entity.convId;
+            }
+
+            _messageList.insert(0, entity);
+            if (this.mounted) {
+              setState(() {});
+            }
+          });
+    }
+    else if (type == InteractNative.PULL_MESSAGE) {
       _pullMsgAndDisplay();
     } else if (type == InteractNative.PULL_GROUP_INFO) {
       if (widget.convType == Constants.CONVERSATION_GROUP) {

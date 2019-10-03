@@ -215,7 +215,7 @@ class DataBaseApi {
   Future updateMessageEntity(MessageEntity entity, bool notify) async {
     _updateMessagesEntity(entity).then((_) {
       if (notify) {
-        InteractNative.getMessageEventSink().add(entity);
+        InteractNative.getAppEventSink().add(entity);
       }
     });
 

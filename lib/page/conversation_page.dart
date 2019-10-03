@@ -7,7 +7,6 @@ import 'package:myapp/database/db_api.dart';
 import 'package:myapp/entity/contact_entity.dart';
 import 'package:myapp/entity/conversation_entity.dart';
 import 'package:myapp/entity/group_entity.dart';
-import 'package:myapp/entity/message_entity.dart';
 // import 'package:myapp/manager/sender_manager.dart';
 import 'package:myapp/manager/wssender_manager.dart';
 import 'package:myapp/page/message_page.dart';
@@ -202,9 +201,6 @@ class Conversation extends BaseState<ConversationPage>
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
   }
-
-  @override
-  void updateData(MessageEntity entity) {}
 
   @override
   void notify(Object type) async {

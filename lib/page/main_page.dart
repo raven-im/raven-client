@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/base/base_state.dart';
 import 'package:myapp/database/db_api.dart';
-import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/contacts_manager.dart';
 // import 'package:myapp/manager/sender_manager.dart';
 import 'package:myapp/manager/wssender_manager.dart';
@@ -181,7 +180,4 @@ class _MyHomePageState extends BaseState<MyHomePage> {
       });
     }
   }
-
-  @override
-  void updateData(MessageEntity entity) {}
 }

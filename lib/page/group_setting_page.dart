@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:myapp/base/base_state.dart';
 import 'package:myapp/database/db_api.dart';
 import 'package:myapp/entity/group_entity.dart';
-import 'package:myapp/entity/message_entity.dart';
 import 'package:myapp/manager/restful_manager.dart';
 import 'package:myapp/page/group_member_select.dart';
 import 'package:myapp/utils/constants.dart';
@@ -178,9 +177,6 @@ class _GroupSettingState extends BaseState<GroupSettingPage> {
           ),
         ));
   }
-
-  @override
-  void updateData(MessageEntity entity) {}
 
   @override
   void notify(Object type) {
